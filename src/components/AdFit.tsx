@@ -9,7 +9,7 @@ interface AdFitProps {
   style?: React.CSSProperties;
 }
 
-export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V9hsnH4cMSNICaii', width = '250', height = '250', className, style }) => {
+export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V9hsnH4cMSNICaii', width = '100%', height = '100%', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
 
@@ -43,7 +43,7 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
   );
 });
 
-export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-EdZGhdPNNZvANVdn', width = '320', className, style }) => {
+export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-EdZGhdPNNZvANVdn', width = '100%', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
 
