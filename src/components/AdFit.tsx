@@ -20,6 +20,8 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
       return;
     }
 
+    if (!isActive) return;
+
     if (containerRef.current && !isLoaded.current) {
       const ins = document.createElement('ins');
       ins.className = 'kakao_ad_area';
@@ -50,7 +52,7 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
 
       isLoaded.current = true;
     }
-  }, [unit, width, height]);
+  }, [unit, width, height, isActive]);
 
   return (
     <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: 'linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 100%)', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255, 182, 193, 0.15)', overflow: 'hidden', padding: '20px', opacity: isActive ? 1 : 0, transition: 'opacity 0.3s ease-in-out', pointerEvents: isActive ? 'auto' : 'none' }}>
