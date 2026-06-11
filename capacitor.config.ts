@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.wjedulab.kkeul',
   appName: '끌',
   webDir: 'dist',
-  server: {
-    hostname: 'highschool-score.com',
-    androidScheme: 'https'
-  },
   plugins: {
     LocalNotifications: {
       smallIcon: 'ic_notification',
