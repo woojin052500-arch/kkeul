@@ -91,7 +91,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
       let userProfile = await db.getProfile(email);
       if (!userProfile || !userProfile.role) {
         const fallbackProfile: Profile = {
-          id: userProfile?.id || 'u' + Math.random().toString(36).substring(2, 11) + '-' + Date.now().toString(36),
+          id: userProfile?.id || crypto.randomUUID(),
           email: email,
           name: userProfile?.name || email.split('@')[0],
           location: '전국',

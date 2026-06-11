@@ -823,7 +823,7 @@ export const db = {
       if (accounts.some((acc: any) => acc.email === email)) {
         return { user: null, error: { message: '이미 가입된 이메일입니다.' } };
       }
-      const newUserId = 'u' + Math.random().toString(36).substring(2, 11) + '-' + Date.now().toString(36);
+      const newUserId = crypto.randomUUID();
       accounts.push({ id: newUserId, email, password, name });
       localStorage.setItem('kkeul_mock_accounts', JSON.stringify(accounts));
       return { user: { id: newUserId, email, name }, error: null };

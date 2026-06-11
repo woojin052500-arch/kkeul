@@ -285,6 +285,12 @@ function App() {
       if (savedProfile) {
         try {
           const parsedProfile = JSON.parse(savedProfile) as Profile;
+          // Migrate old mock IDs to UUID format to prevent Supabase 400 Bad Request
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (parsedProfile && parsedProfile.id && !uuidRegex.test(parsedProfile.id)) {
+            parsedProfile.id = crypto.randomUUID();
+            localStorage.setItem('kkeul_profile', JSON.stringify(parsedProfile));
+          }
           setProfile(parsedProfile);
           setScreen('main');
           isLoggedIn = true;
@@ -356,8 +362,16 @@ function App() {
         if (savedProfile) {
           try {
             const prof = JSON.parse(savedProfile);
-            // 모의 계정(id가 'u'로 시작)이면 초기화하지 않고 리턴
-            if (prof && prof.id && prof.id.startsWith('u')) {
+            // Migrate old mock IDs to UUID format to prevent Supabase 400 Bad Request
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            if (prof && prof.id && !uuidRegex.test(prof.id)) {
+              prof.id = crypto.randomUUID();
+              localStorage.setItem('kkeul_profile', JSON.stringify(prof));
+            }
+            // 모의 계정(id가 'u'로 시작하거나 로컬 계정 목록에 있는 경우)이면 초기화하지 않고 리턴
+            const mockAccounts = JSON.parse(localStorage.getItem('kkeul_mock_accounts') || '[]');
+            const isMock = mockAccounts.some((acc) => acc.email === prof.email);
+            if (isMock || (prof && prof.id && prof.id.startsWith('u'))) {
               return;
             }
           } catch (e) {}
