@@ -48,12 +48,12 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
   }, [unit, width, height]);
 
   return (
-    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: '#FFFFFF', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 12, right: 12, backgroundColor: 'rgba(0,0,0,0.6)', color: '#FFF', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', zIndex: 10 }}>AD</div>
+    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: isFailed ? '#0F172A' : '#FFFFFF', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 12, right: 12, backgroundColor: isFailed ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.6)', color: isFailed ? '#94A3B8' : '#FFF', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', zIndex: 10 }}>AD</div>
       {isFailed ? (
-        <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #F8FAFC, #F1F5F9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '28px', fontWeight: 800, color: '#CBD5E1', letterSpacing: '1px' }}>KKEUL</span>
-          <span style={{ fontSize: '12px', color: '#94A3B8', marginTop: '8px', fontWeight: 500 }}>추천을 준비중입니다</span>
+        <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1E293B, #0F172A)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '28px', fontWeight: 800, color: '#334155', letterSpacing: '2px', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>KKEUL</span>
+          <span style={{ fontSize: '12px', color: '#475569', marginTop: '10px', fontWeight: 500 }}>프리미엄 스폰서 공간</span>
         </div>
       ) : (
         <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
@@ -101,11 +101,11 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
   }, [unit, width]);
 
   return (
-    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.2)', color: '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
+    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: isFailed ? '#0F172A' : '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: isFailed ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.2)', color: isFailed ? '#94A3B8' : '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
       {isFailed ? (
-        <div style={{ width: '100%', minHeight: '100px', background: 'linear-gradient(135deg, #F8FAFC, #F1F5F9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '20px', fontWeight: 800, color: '#CBD5E1', letterSpacing: '1px' }}>KKEUL</span>
+        <div style={{ width: '100%', minHeight: '100px', background: 'linear-gradient(135deg, #1E293B, #0F172A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '20px', fontWeight: 800, color: '#334155', letterSpacing: '2px' }}>KKEUL</span>
         </div>
       ) : (
         <div ref={containerRef} style={{ width: '100%', minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
@@ -165,10 +165,10 @@ export const AdFitFixedBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DA
   }, [unit, width]);
 
   return (
-    <div className={className} style={{ ...style, position: 'fixed', bottom: '65px', left: 0, width: '100%', zIndex: 999, minHeight: '50px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #E5E8EB', boxShadow: '0 -2px 10px rgba(0,0,0,0.02)' }}>
+    <div className={className} style={{ ...style, position: 'fixed', bottom: '65px', left: 0, width: '100%', zIndex: 999, minHeight: '50px', background: isFailed ? '#0F172A' : '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: isFailed ? '1px solid #1E293B' : '1px solid #E5E8EB', boxShadow: '0 -2px 10px rgba(0,0,0,0.02)' }}>
       {isFailed ? (
-        <div style={{ width: '100%', height: '50px', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '14px', fontWeight: 800, color: '#CBD5E1', letterSpacing: '1px' }}>KKEUL</span>
+        <div style={{ width: '100%', height: '50px', background: '#0F172A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '14px', fontWeight: 800, color: '#334155', letterSpacing: '1px' }}>KKEUL</span>
         </div>
       ) : (
         <div ref={containerRef} style={{ width: '100%', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
