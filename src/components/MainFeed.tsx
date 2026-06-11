@@ -1223,7 +1223,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     let insertedAds = 0;
                     adIndices.forEach((targetIndex) => {
                       let relativePos = targetIndex - swipesDone;
-                      if (relativePos <= 0) relativePos = 1;
                       // 아직 지나치지 않은 광고만 큐에 삽입 (relativePos가 0이면 현재 맨 앞)
                       if (relativePos >= 0 && relativePos <= swipeQueue.length) {
                         swipeQueue.splice(relativePos + insertedAds, 0, {
@@ -1260,7 +1259,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         }
 
                         // 드래그 및 슬라이드아웃 물리 스타일 계산
-                        let transformStyle = 'translateZ(0)';
+                        let transformStyle = isTop ? 'translateZ(0)' : '';
                         let transitionStyle = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
 
                         if (isDragging) {
