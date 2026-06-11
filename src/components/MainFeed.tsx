@@ -19,7 +19,7 @@ import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { purchase } from '../utils/billing';
 import { Contacts } from '@capacitor-community/contacts';
-import { AdFitNativeCard, AdFitBanner100 } from './AdFit';
+import { AdFitNativeCard, AdFitBanner100, AdFitBanner50 } from './AdFit';
 
 
 const BADGE_DETAILS: Record<string, { emoji: string; color: string; neonColor: string; criteria: string }> = {
@@ -1719,10 +1719,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       .map((ann, idx) => {
                         const isBookmarked = bookmarks.includes(ann.id);
                         const dday = getDDay(ann.deadline);
-                        const showAd = idx === 7 || idx === 15;
+                        const showAd100 = idx === 7;
+                        const showAd50 = idx === 15;
                         return (
                           <React.Fragment key={ann.id}>
-                          {showAd && <AdFitBanner100 />}
+                          {showAd100 && <AdFitBanner100 />}
+                          {showAd50 && <AdFitBanner50 />}
                           <div
                             onClick={() => onSelectAnnouncement(ann)}
                             className="animate-fade-in toss-card-spring"
