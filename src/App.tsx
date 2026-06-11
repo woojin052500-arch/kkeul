@@ -315,6 +315,11 @@ function App() {
           if (session && session.user && session.user.email) {
             const userProfile = await db.getProfile(session.user.email);
             if (userProfile) {
+              // Auto-heal: Ensure profile ID matches REAL Supabase Auth UUID!
+              if (userProfile.id !== session.user.id) {
+                userProfile.id = session.user.id;
+                db.saveProfile(userProfile);
+              }
               setProfile(userProfile);
               localStorage.setItem('kkeul_profile', JSON.stringify(userProfile));
               setScreen('main');

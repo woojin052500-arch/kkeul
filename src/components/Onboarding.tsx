@@ -82,7 +82,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
     if (!isValidEmail || !isValidPassword) return;
     try {
       setIsSubmitting(true);
-      const { error } = await db.signIn(email, password);
+      const { user, error } = await db.signIn(email, password);
       if (error) {
         alert(`로그인 실패: ${error.message}`);
         setIsSubmitting(false);
@@ -91,7 +91,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
       let userProfile = await db.getProfile(email);
       if (!userProfile || !userProfile.role) {
         const fallbackProfile: Profile = {
-          id: userProfile?.id || crypto.randomUUID(),
+          id: userProfile?.id || user?.id || crypto.randomUUID(),
           email: email,
           name: userProfile?.name || email.split('@')[0],
           location: '전국',
