@@ -36,9 +36,25 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
   }, [unit, width, height]);
 
   return (
-    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: '#FFFFFF', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 12, right: 12, backgroundColor: 'rgba(0,0,0,0.6)', color: '#FFF', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', zIndex: 10 }}>AD</div>
-      <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
+    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: 'linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 100%)', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255, 182, 193, 0.15)', overflow: 'hidden', padding: '20px' }}>
+      <div style={{ position: 'absolute', top: 16, right: 16, backgroundColor: 'rgba(0,0,0,0.5)', color: '#FFF', fontSize: '10px', fontWeight: 800, padding: '3px 8px', borderRadius: '6px', zIndex: 10, letterSpacing: '0.5px' }}>AD</div>
+      
+      {/* 귀여운 문구 영역 */}
+      <div style={{ marginBottom: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '20px' }}>💖</span>
+          <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#FF6B6B', margin: 0, letterSpacing: '-0.5px' }}>서버비에 큰 도움이 됩니다!</h3>
+          <span style={{ fontSize: '20px' }}>💖</span>
+        </div>
+        <p style={{ fontSize: '14px', fontWeight: 600, color: '#495057', margin: 0, background: 'rgba(255,255,255,0.6)', padding: '4px 12px', borderRadius: '12px' }}>
+          개발자를 위해 한 번씩만 눌러주세요 🥺
+        </p>
+      </div>
+
+      {/* 250x250 카카오 광고 컨테이너 - 시각적 분리감 부여 */}
+      <div style={{ width: '250px', height: '250px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.04)' }}>
+        <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
+      </div>
     </div>
   );
 });
