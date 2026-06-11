@@ -23,14 +23,14 @@ const insertAdFitScript = (container: HTMLDivElement | null, unit: string, width
 
   const script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = 'https://t1.daumcdn.net/kas/static/ba.min.js';
+  script.src = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
   script.async = true;
 
   container.appendChild(ins);
   container.appendChild(script);
 };
 
-export const AdFitNativeCard: React.FC<AdFitProps> = ({ unit = 'DAN-eBDvYxQLeXuD9vDe', width = '100%', height = '100%', className, style }) => {
+export const AdFitNativeCard: React.FC<AdFitProps> = ({ unit = 'DAN-V9hsnH4cMSNICaii', width = '250', height = '250', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const AdFitNativeCard: React.FC<AdFitProps> = ({ unit = 'DAN-eBDvYxQLeXuD
   );
 };
 
-export const AdFitBanner100: React.FC<AdFitProps> = ({ unit = 'DAN-6zKqfsRSMuGEBTqh', width = '100%', className, style }) => {
+export const AdFitBanner100: React.FC<AdFitProps> = ({ unit = 'DAN-EdZGhdPNNZvANVdn', width = '320', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
