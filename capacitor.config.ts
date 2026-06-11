@@ -4,6 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.wjedulab.kkeul',
   appName: '끌',
   webDir: 'dist',
+  server: {
+    hostname: 'kkeul.vercel.app',
+    androidScheme: 'https'
+  },
   plugins: {
     LocalNotifications: {
       smallIcon: 'ic_notification',
