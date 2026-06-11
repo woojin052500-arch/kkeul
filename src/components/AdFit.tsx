@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 
 interface AdFitProps {
@@ -12,19 +12,12 @@ interface AdFitProps {
 export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V9hsnH4cMSNICaii', width = '100%', height = '100%', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
-  const [isFailed, setIsFailed] = useState(false);
 
   useEffect(() => {
     if (isLoaded.current || !containerRef.current) return;
     isLoaded.current = true;
 
     containerRef.current.innerHTML = '';
-    
-    const failCallbackName = `adfit_fail_${unit.replace(/-/g, '_')}_${Math.random().toString(36).substring(2, 9)}`;
-    (window as any)[failCallbackName] = () => {
-      console.log(`AdFit load failed or empty for unit: ${unit}`);
-      setIsFailed(true);
-    };
 
     const ins = document.createElement('ins');
     ins.className = 'kakao_ad_area';
@@ -32,7 +25,6 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
     ins.setAttribute('data-ad-unit', unit);
     ins.setAttribute('data-ad-width', width === '100%' ? '250' : width.toString());
     ins.setAttribute('data-ad-height', height === '100%' ? '250' : height.toString());
-    ins.setAttribute('data-ad-onfail', failCallbackName);
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -41,23 +33,12 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
 
     containerRef.current.appendChild(ins);
     containerRef.current.appendChild(script);
-
-    return () => {
-      delete (window as any)[failCallbackName];
-    };
   }, [unit, width, height]);
 
   return (
-    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: isFailed ? '#0F172A' : '#FFFFFF', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 12, right: 12, backgroundColor: isFailed ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.6)', color: isFailed ? '#94A3B8' : '#FFF', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', zIndex: 10 }}>AD</div>
-      {isFailed ? (
-        <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1E293B, #0F172A)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '28px', fontWeight: 800, color: '#334155', letterSpacing: '2px', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>KKEUL</span>
-          <span style={{ fontSize: '12px', color: '#475569', marginTop: '10px', fontWeight: 500 }}>프리미엄 스폰서 공간</span>
-        </div>
-      ) : (
-        <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
-      )}
+    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: '#FFFFFF', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 12, right: 12, backgroundColor: 'rgba(0,0,0,0.6)', color: '#FFF', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', zIndex: 10 }}>AD</div>
+      <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
     </div>
   );
 });
@@ -65,7 +46,6 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
 export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-EdZGhdPNNZvANVdn', width = '100%', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
-  const [isFailed, setIsFailed] = useState(false);
 
   useEffect(() => {
     if (isLoaded.current || !containerRef.current) return;
@@ -73,19 +53,12 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
 
     containerRef.current.innerHTML = '';
 
-    const failCallbackName = `adfit_fail_${unit.replace(/-/g, '_')}_${Math.random().toString(36).substring(2, 9)}`;
-    (window as any)[failCallbackName] = () => {
-      console.log(`AdFit load failed or empty for unit: ${unit}`);
-      setIsFailed(true);
-    };
-
     const ins = document.createElement('ins');
     ins.className = 'kakao_ad_area';
     ins.style.display = 'none';
     ins.setAttribute('data-ad-unit', unit);
     ins.setAttribute('data-ad-width', width === '100%' ? '320' : width.toString());
     ins.setAttribute('data-ad-height', '100');
-    ins.setAttribute('data-ad-onfail', failCallbackName);
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -94,22 +67,12 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
 
     containerRef.current.appendChild(ins);
     containerRef.current.appendChild(script);
-
-    return () => {
-      delete (window as any)[failCallbackName];
-    };
   }, [unit, width]);
 
   return (
-    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: isFailed ? '#0F172A' : '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: isFailed ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.2)', color: isFailed ? '#94A3B8' : '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
-      {isFailed ? (
-        <div style={{ width: '100%', minHeight: '100px', background: 'linear-gradient(135deg, #1E293B, #0F172A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '20px', fontWeight: 800, color: '#334155', letterSpacing: '2px' }}>KKEUL</span>
-        </div>
-      ) : (
-        <div ref={containerRef} style={{ width: '100%', minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
-      )}
+    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.2)', color: '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
+      <div ref={containerRef} style={{ width: '100%', minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
     </div>
   );
 });
@@ -117,7 +80,6 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
 export const AdFitFixedBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-xDjPylBX9XVfPMUY', width = '100%', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
-  const [isFailed, setIsFailed] = useState(false);
 
   if (Capacitor.isNativePlatform()) {
     return null;
@@ -136,12 +98,6 @@ export const AdFitFixedBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DA
     }
 
     containerRef.current.innerHTML = '';
-    
-    const failCallbackName = `adfit_fail_${unit.replace(/-/g, '_')}_${Math.random().toString(36).substring(2, 9)}`;
-    (window as any)[failCallbackName] = () => {
-      console.log(`AdFit load failed or empty for unit: ${unit}`);
-      setIsFailed(true);
-    };
 
     const ins = document.createElement('ins');
     ins.className = 'kakao_ad_area';
@@ -149,7 +105,6 @@ export const AdFitFixedBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DA
     ins.setAttribute('data-ad-unit', unit);
     ins.setAttribute('data-ad-width', width === '100%' ? '320' : width.toString());
     ins.setAttribute('data-ad-height', '50');
-    ins.setAttribute('data-ad-onfail', failCallbackName);
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -158,21 +113,11 @@ export const AdFitFixedBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DA
 
     containerRef.current.appendChild(ins);
     containerRef.current.appendChild(script);
-
-    return () => {
-      delete (window as any)[failCallbackName];
-    };
   }, [unit, width]);
 
   return (
-    <div className={className} style={{ ...style, position: 'fixed', bottom: '65px', left: 0, width: '100%', zIndex: 999, minHeight: '50px', background: isFailed ? '#0F172A' : '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: isFailed ? '1px solid #1E293B' : '1px solid #E5E8EB', boxShadow: '0 -2px 10px rgba(0,0,0,0.02)' }}>
-      {isFailed ? (
-        <div style={{ width: '100%', height: '50px', background: '#0F172A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '14px', fontWeight: 800, color: '#334155', letterSpacing: '1px' }}>KKEUL</span>
-        </div>
-      ) : (
-        <div ref={containerRef} style={{ width: '100%', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
-      )}
+    <div className={className} style={{ ...style, position: 'fixed', bottom: '65px', left: 0, width: '100%', zIndex: 999, minHeight: '50px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #E5E8EB', boxShadow: '0 -2px 10px rgba(0,0,0,0.02)' }}>
+      <div ref={containerRef} style={{ width: '100%', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
     </div>
   );
 });
