@@ -710,6 +710,7 @@ p {
   user-select: none;
   word-break: keep-all;
   overflow-wrap: break-word;
+  transform: translateZ(0);
 }
 
 .swipe-card-wrapper:active {
