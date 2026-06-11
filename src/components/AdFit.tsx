@@ -71,9 +71,15 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
       </div>
 
       {/* 250x250 카카오 광고 컨테이너 - 시각적 분리감 부여 */}
-      <div style={{ width: '250px', height: '250px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.04)' }}>
+      <div style={{ width: '250px', height: '250px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.04)', position: 'relative' }}>
         <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
       </div>
+
+      {/* 드래그를 가능하게 하는 투명 오버레이 (가장자리 40px) */}
+      <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: '40px', zIndex: 20 }} />
+      <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '40px', zIndex: 20 }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40px', zIndex: 20 }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40px', zIndex: 20 }} />
     </div>
   );
 });

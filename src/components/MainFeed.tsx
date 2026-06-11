@@ -93,6 +93,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
   // 스와이프 Pass 처리되어 영구 제외할 공고 ID 목록
   const [passedIds, setPassedIds] = useState<string[]>([]);
+  const [sessionSwipes, setSessionSwipes] = useState<number>(0);
 
   // 친구 초대 및 추천 가입 게이미피케이션 상태
   const [invitationCode, setInvitationCode] = useState<string>('');
@@ -427,6 +428,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       if (card.category === 'AD') {
         // 광고 카드인 경우 푸시 알림 및 백엔드 로그 없이 그냥 큐 진행만 시킴
         setPassedIds(prev => [...prev, card.id]);
+        setSessionSwipes(prev => prev + 1);
       } else {
         await db.recordUserAction(profile.id, profile.email, card.id, actionType);
 
@@ -453,6 +455,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             `피드에서 제외되었습니다. 관련 분야의 추천 빈도가 조정됩니다.`
           );
         }
+        setSessionSwipes(prev => prev + 1);
       }
       // 0.3초 애니메이션 진행 후 상태 초기화
       setTimeout(() => {
@@ -483,7 +486,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     setSwipeDismissedId(card.id);
     setDragOffset({ x: actionType === 'like' ? 250 : -250, y: 0 });
 
-    await db.recordUserAction(profile.id, profile.email, card.id, actionType);
+    if (card.category === 'AD') {
+      setPassedIds(prev => [...prev, card.id]);
+      setSessionSwipes(prev => prev + 1);
+    } else {
+      await db.recordUserAction(profile.id, profile.email, card.id, actionType);
 
     if (showSimulation && simulationStep === 2) {
       setSimulationStep(3);
@@ -505,6 +512,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       );
     }
 
+      setSessionSwipes(prev => prev + 1);
+    }
     setTimeout(() => {
       setDragCardId(null);
       setDragStart(null);
@@ -1218,7 +1227,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       ann => !bookmarks.includes(ann.id) && ann.id !== 'ann-premium-locked'
                     );
                     const swipeQueue = [...baseSwipeQueue];
-                    const swipesDone = bookmarks.length + passedIds.length;
+                    const swipesDone = sessionSwipes;
                     const adIndices = [5, 11, 17, 23, 29, 35, 41]; // 4~6개 간격으로 광고 노출 (처음 5개는 무조건 일반 카드)
                     let insertedAds = 0;
                     adIndices.forEach((targetIndex) => {
