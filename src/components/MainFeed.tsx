@@ -1242,19 +1242,26 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     });
 
                     if (swipeQueue.length > 0) {
-                      return swipeQueue.slice(0, 3).map((ann, idx) => {
+                      let visibleCount = 0;
+                      return swipeQueue.slice(0, 5).map((ann, idx) => {
                         const isTop = idx === 0;
+                        const isHiddenAd = ann.category === 'AD' && !isTop;
                         const isDragging = isTop && dragCardId === ann.id;
                         const isDismissed = ann.id === swipeDismissedId;
 
                         // 스택 효과 클래스
-                        let stackClass = '';
-                        if (idx === 1) stackClass = 'stack-1';
-                        else if (idx === 2) stackClass = 'stack-2';
+                        let stackClass = 'stack-hidden';
+                        if (isTop) {
+                          stackClass = '';
+                        } else if (!isHiddenAd) {
+                          visibleCount++;
+                          if (visibleCount === 1) stackClass = 'stack-1';
+                          else if (visibleCount === 2) stackClass = 'stack-2';
+                        }
 
                         // 드래그 및 슬라이드아웃 물리 스타일 계산
                         let transformStyle = 'translateZ(0)';
-                        let transitionStyle = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                        let transitionStyle = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
 
                         if (isDragging) {
                           const rotate = dragOffset.x / 14;
