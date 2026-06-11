@@ -1,0 +1,18 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: "0 1 * * *" # 매일 KST 10:00 (UTC 01:00)에 실행
+  workflow_dispatch: # 수동 실행 지원
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Heartbeat to Supabase RPC
+        run: |
+          curl -f -X POST \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Length: 0" \
+            "https://mzhwbygibrymzjaavyuu.supabase.co/rest/v1/rpc/heartbeat_rpc"

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>초개인화 청소년 기회 매칭 플랫폼 '끌(Kkeul)' 전체 기능 정의서</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm;
+      @bottom-right {
+        content: counter(page);
+        font-size: 9pt;
+        font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        color: #888888;
+      }
+      @bottom-left {
+        content: "WJedulab | 끌(Kkeul) 플랫폼 명세서";
+        font-size: 9pt;
+        font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        color: #888888;
+      }
+    }
+    
+    body {
+      font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+      color: #333333;
+      line-height: 1.6;
+      font-size: 10.5pt;
+    }
+
+    h1, h2, h3, h4 {
+      color: #1e293b;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 26pt;
+      margin-top: 50mm;
+      margin-bottom: 5mm;
+      text-align: center;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-size: 14pt;
+      color: #64748b;
+      text-align: center;
+      margin-bottom: 80mm;
+    }
+
+    .metadata-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20mm;
+    }
+
+    .metadata-table td {
+      padding: 8px;
+      font-size: 10pt;
+      color: #475569;
+    }
+
+    .metadata-table td.label {
+      font-weight: bold;
+      width: 25%;
+      color: #1e293b;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .section-title {
+      font-size: 18pt;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-top: 15mm;
+      margin-bottom: 8mm;
+      color: #0f172a;
+    }
+
+    .subsection-title {
+      font-size: 13pt;
+      margin-top: 8mm;
+      margin-bottom: 4mm;
+      color: #1e293b;
+      border-left: 4px solid #ec4899; /* Neon Pink Point */
+      padding-left: 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      text-align: justify;
+    }
+
+    ul, ol {
+      margin-top: 4px;
+      margin-bottom: 12px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .highlight-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #3b82f6;
+      padding: 15px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+
+    .highlight-box.pink {
+      border-left-color: #ec4899;
+      background-color: #fdf2f8;
+    }
+
+    .feature-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .feature-table th, .feature-table td {
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      font-size: 9.5pt;
+      text-align: left;
+    }
+
+    .feature-table th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: bold;
+    }
+
+    .feature-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge-icon {
+      display: inline-block;
+      padding: 2px 6px;
+      background-color: #ec4899;
+      color: white;
+      font-size: 8pt;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 표지 (Cover Page) -->
+  <div class="page-break">
+    <h1>초개인화 청소년 기회 매칭 플랫폼<br>'끌(Kkeul)' 전체 기능 정의서</h1>
+    <div class="subtitle">스와이프 UX, 마이크로 공유 바이럴, 천안 로컬 큐레이션 및 AI 연동 스펙</div>
+    
+    <table class="metadata-table">
+      <tr>
+        <td class="label">작성 주체</td>
+        <td>WJedulab (대표 염우진)</td>
+      </tr>
+      <tr>
+        <td class="label">개발 및 기술 설계</td>
+        <td>Antigravity AI Pair Programmer</td>
+      </tr>
+      <tr>
+        <td class="label">작성 일자</td>
+        <td>2026년 05월 23일</td>
+      </tr>
+      <tr>
+        <td class="label">플랫폼 환경</td>
+        <td>React Native (Expo), Supabase, Capacitor (Android)</td>
+      </tr>
+      <tr>
+        <td class="label">문서 버전</td>
+        <td>v1.2 (최종 안정화 버전)</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 2. 목차 (TOC) -->
+  <div class="page-break">
+    <div class="section-title">목 차</div>
+    <ol style="font-size: 11pt; line-height: 2.0; margin-top: 10mm;">
+      <li><strong>프로젝트 개요 및 아키텍처</strong></li>
+      <li><strong>유저 대상(B2C) 핵심 프론트엔드 기능</strong>
+        <ul>
+          <li>2.1. 토스형 단계별 온보딩 & 약관 동의 플로우</li>
+          <li>2.2. 물리 엔진 기반 스와이프 매칭 카드 인터페이스 (Like/Pass)</li>
+          <li>2.3. 마찰 없는 마이크로 공유 & 게이미피케이션 바이럴 루프</li>
+          <li>2.4. 천안 지역 특화 큐레이션 및 실시간 푸시 알림</li>
+          <li>2.5. Claude AI 기반 프리미엄 개인화 추천 피드</li>
+        </ul>
+      </li>
+      <li><strong>기관/기업 대상(B2B) 호스트 기능</strong>
+        <ul>
+          <li>3.1. 공모 등록 시 맞춤 학생 실시간 타겟 알림 및 매칭 조회</li>
+          <li>3.2. 토스 스타일 분야 선택 카드 그리드 인터페이스</li>
+        </ul>
+      </li>
+      <li><strong>네이티브 모바일 및 하이브리드 연동 기술</strong>
+        <ul>
+          <li>4.1. 모바일 내장 캘린더 동기화</li>
+          <li>4.2. Local Notifications 알림 예약 스케줄러</li>
+          <li>4.3. R8/Proguard 난독화 최적화 & 가독화 파일 자동 생성</li>
+        </ul>
+      </li>
+      <li><strong>비즈니스 모델 및 마케팅 전략 요약</strong></li>
+    </ol>
+  </div>
+
+  <!-- 3. 본문 1: 개요 및 B2C 핵심 기능 -->
+  <div class="page-break">
+    <div class="section-title">1. 프로젝트 개요 및 아키텍처</div>
+    <p>
+      청소년 기회 매칭 플랫폼 <strong>'끌(Kkeul)'</strong>은 청소년(중·고등학생)의 관심 분야 및 지역 정보를 기반으로 대외활동, 공모전, 캠프, 멘토링 등의 기회를 1:1 초개인화하여 매칭해 주는 하이브리드 모바일 애플리케이션입니다. 
+    </p>
+    <p>
+      본 플랫폼은 초기 가입 이탈을 방지하는 <strong>토스형 마이크로 온보딩</strong>, 청소년의 터치 제스처에 최적화된 <strong>스와이프 매칭 UI</strong>, 카카오톡/인스타그램에 최적화된 <strong>마이크로 공유 모델</strong>, 천안시 및 인근 대학 대외활동을 핵심 타겟으로 하는 <strong>로컬 밀착형 큐레이션</strong>을 유기적으로 결합하여 높은 리텐션과 바이럴 성장을 유도합니다.
+    </p>
+    <div class="highlight-box">
+      <strong>핵심 기술 스택:</strong>
+      <ul>
+        <li>프론트엔드: React, Vite, Tailwind CSS / Vanilla CSS</li>
+        <li>백엔드/인프라: Supabase, PostgreSQL, Edge Functions (Claude AI API 연동)</li>
+        <li>하이브리드 모바일 브릿지: CapacitorJS (Android Native 빌드)</li>
+        <li>주요 네이티브 플러그인: @capacitor/haptics, @capacitor/share, @capacitor/local-notifications, cordova-plugin-calendar</li>
+      </ul>
+    </div>
+
+    <div class="section-title">2. 유저 대상(B2C) 핵심 프론트엔드 기능</div>
+    
+    <div class="subsection-title">2.1. 토스형 단계별 온보딩 & 약관 동의 플로우</div>
+    <p>
+      학생들이 한 페이지에 복잡한 가입 정보를 입력하며 이탈하는 것을 막기 위해, 한 화면에 단 한 가지의 입력만 수행하도록 유도하는 토스형 온보딩 방식을 채택하였습니다.
+    </p>
+    <ul>
+      <li><strong>슬라이드 전환 흐름:</strong> [이메일] &rarr; [비밀번호] &rarr; [이름] &rarr; [약관 동의] &rarr; [역할 선택: 학생/개최사] &rarr; [학적 및 지역, 관심 카테고리 정보] 순으로 부드러운 애니메이션 전환이 이루어집니다.</li>
+      <li><strong>엔터 키 및 자동 포커싱:</strong> 모바일 및 데스크톱 환경 모두에서 입력 완료 후 Enter 키를 누르면 다음 화면으로 즉시 전환되는 마이크로 편의를 적용하였습니다.</li>
+      <li><strong>리워드 지급:</strong> 가입 완료와 동시에 환영 메시지와 함께 <strong>100 XP 경험치 바 상승 애니메이션</strong>을 렌더링하여 성취감을 부여합니다.</li>
+    </ul>
+
+    <div class="subsection-title">2.2. 물리 엔진 기반 스와이프 매칭 카드 인터페이스</div>
+    <p>
+      전통적인 리스트 뷰 외에 틴더/토스 스타일의 <strong>카드 스와이프 뷰</strong>를 도입하여, 사용자가 카드를 드래그하며 직관적으로 관심 여부를 표명할 수 있도록 하였습니다.
+    </p>
+    <ul>
+      <li><strong>드래그 및 회전 물리 효과:</strong> 마우스 및 터치 드래그 양에 따라 카드가 기울어지며(Rotate), 가로 100px 임계값을 넘어갈 경우 좌(Pass)/우(Like) 판정이 이루어집니다.</li>
+      <li><strong>햅틱 피드백 연동:</strong> 임계값 도달 판정 시 `@capacitor/haptics`를 구동해 네이티브 진동(Medium Impact)을 주어 물리적인 쫀득함을 극대화했습니다.</li>
+      <li><strong>Pass 카드의 피드 영구 제외:</strong> Pass 처리한 카드는 Supabase `user_actions` 테이블에 반영되어 피드에서 영구적으로 제외되며, 해당 카테고리의 노출 강도가 낮아지도록 실시간 알림 시뮬레이션이 연동됩니다.</li>
+    </ul>
+  </div>
+
+  <!-- 4. 본문 2: B2C 상세 및 B2B 기능 -->
+  <div class="page-break">
+    <div class="subsection-title">2.3. 마찰 없는 마이크로 공유 & 게이미피케이션 바이럴 루프</div>
+    <p>
+      청소년들의 자랑 및 추천 성향을 자극하여 친구가 친구를 데려오게 하는 구조(Viral Loop)를 게이미피케이션 요소와 연결하여 구현했습니다.
+    </p>
+    <ul>
+      <li><strong>원터치 마이크로 공유:</strong> 공고의 타겟 학년/지역에 맞춰 *"불당동 고2 주목! IT 캠프 자리 딱 3개 남았어요"* 등의 카피를 자동으로 주입하고 `@capacitor/share`를 통해 모바일 OS의 네이티브 Share Sheet(카카오톡, 인스타 등 공유창)를 즉시 실행합니다.</li>
+      <li><strong>딥링크 및 추천인 리워드 해제 시스템:</strong> 추천 링크를 통해 유입되거나 시뮬레이터에 추천 코드를 기입할 시, <strong>'인싸의 탄생' 한정 업적 배지</strong>와 <strong>100 XP 경험치</strong>가 지급됩니다.</li>
+      <li><strong>네온 핑크 테마 및 프리미엄 뷰 해금:</strong> 추천인 가입 시 로컬 스토리지 상태가 업데이트되며, 일반 유저에게 제공되지 않는 <strong>'한정판 네온 핑크 스와이프 테마'</strong> 및 잠겨있던 <strong>'비공개 프리미엄 공고'</strong>가 오픈되어 보상에 대한 유인을 제공합니다.</li>
+    </ul>
+
+    <div class="subsection-title">2.4. 천안 지역 특화 큐레이션 및 실시간 푸시 알림</div>
+    <p>
+      로컬 타겟 마케팅 및 데이터 확보를 위해 충청남도 천안 지역의 청소년을 핵심 타겟으로 하는 로컬 콘텐츠 기획을 이식하였습니다.
+    </p>
+    <ul>
+      <li><strong>천안 전용 큐레이션 섹션:</strong> 학생 홈 화면 메인 피드 내에 "이번 주 천안 고등학생 필수 참여 공고" 섹션을 배치하고 가로스크롤 카드 형태로 노출하여 지역 공고 주목도를 높였습니다.</li>
+      <li><strong>천안 맞춤형 푸시 알림 빌더:</strong> 사용자의 지역(충남)과 학년 정보를 동적으로 조합하여, 4시간 간격의 알림 푸시 예약 시 *"불당동 고2 주목! 천안시청소년수련관 활동 내일 마감!"*과 같은 고도화된 타겟팅 카피를 자동 생성합니다.</li>
+    </ul>
+
+    <div class="subsection-title">2.5. Claude AI 기반 프리미엄 개인화 추천 피드</div>
+    <p>
+      Supabase Edge Functions와 Claude API를 결합하여, 단순 카테고리 매칭을 넘어선 고도의 유저 취향 분석 추천 멘트를 제공합니다.
+    </p>
+    <ul>
+      <li><strong>프리미엄 AI 추천 카드:</strong> 은은한 사이언 그라데이션 카드 내부에서 AI 분석 로딩이 돌아간 뒤, 사용자의 관심사 목록과 학년을 실시간으로 인지하여 1:1 구어체 형태의 맞춤 진로 안내 조언을 띄워 줍니다.</li>
+      <li><strong>오프라인 대응 로컬 생성 가드:</strong> Edge Function 통신 지연 혹은 네트워크 오프라인 시, 즉석에서 프로필 데이터를 조합해 아름다운 권장 멘트를 로컬에서 연산해 표출함으로써 UI 프리징을 완벽히 방지합니다.</li>
+    </ul>
+
+    <div class="section-title">3. 기관/기업 대상(B2B) 호스트 기능</div>
+    
+    <div class="subsection-title">3.1. 공모 등록 시 맞춤 학생 실시간 타겟 알림 및 매칭 조회</div>
+    <p>
+      공고를 등록하는 주최사(B2B)에게 즉각적인 광고 도달 효과를 납득시키기 위해 실시간 매칭 알림 대시보드를 제공합니다.
+    </p>
+    <ul>
+      <li>호스트가 신규 공모전을 등록 완료하는 순간, 해당 공고의 태그 분야와 일치하는 실존 학생 수(예: 김민지, 박서준 등 최대 5명의 대표 학생 이름 추출)를 DB에서 역동적으로 계산합니다.</li>
+      <li>*"내 맞춤 조건 학생 142명(김민지, 박서준 등)에게 실시간 푸시가 발송되었습니다!"*와 같은 동적 리포팅 토스트를 즉시 띄워 마케팅 효율을 시각적으로 입증합니다.</li>
+    </ul>
+
+    <div class="subsection-title">3.2. 토스 스타일 분야 선택 카드 그리드 인터페이스</div>
+    <p>
+      호스트의 공모 등록 편의성을 극대화하기 위해, 기존의 복잡한 드롭다운 UI를 완전 탈피한 카드 그리드형 인터페이스를 도입하였습니다.
+    </p>
+    <ul>
+      <li>카테고리를 최대 2개까지만 복수 선택할 수 있도록 로직을 제어하고, 초과 선택 시 직관적인 경고 알림을 제공합니다.</li>
+      <li>선택된 다중 카테고리는 쉼표 분할 방식으로 DB에 저장되며, B2C 피드 필터링 시 학생의 두 가지 성향에 모두 노출될 수 있는 멀티 맵 인덱싱을 지원합니다.</li>
+    </ul>
+  </div>
+
+  <!-- 5. 본문 3: 네이티브 브릿지 및 마케팅 요약 -->
+  <div>
+    <div class="section-title">4. 네이티브 모바일 및 하이브리드 연동 기술</div>
+
+    <div class="subsection-title">4.1. 모바일 내장 캘린더 동기화 연동</div>
+    <p>
+      상세 정보창에서 <strong>[달력에 마감일 저장하기]</strong> 버튼을 누르면 기기의 삼성 캘린더, 구글 캘린더 등과 양방향으로 동기화됩니다.
+    </p>
+    <ul>
+      <li>`cordova-plugin-calendar`를 연동하여 Android 런타임 권한 동의 절차(`READ_CALENDAR`, `WRITE_CALENDAR`)를 실행하고, 승인 시 기기 기본 캘린더에 일정 등록 화면을 직접 띄워 줍니다.</li>
+      <li>네이티브 플러그인이 미지원되는 모바일 웹뷰나 데스크톱 브라우저 환경에서는 즉시 구글 캘린더 웹(Web Calendar Insert) 일정 등록 페이지로 안전하게 우회 처리(Fallback)합니다.</li>
+    </ul>
+
+    <div class="subsection-title">4.2. Local Notifications 알림 예약 스케줄러</div>
+    <p>
+      사용자가 로그인하거나 온보딩을 완수하는 순간, 백그라운드 환경에서도 동작 가능한 알림을 스케줄링합니다.
+    </p>
+    <ul>
+      <li>4시간 단위로 총 6개의 로컬 알림을 기기에 사전 등록하여, 사용자가 앱을 켜두지 않아도 마감일 및 맞춤형 로컬 알림을 수신할 수 있도록 설계했습니다.</li>
+      <li>Android OS 규격에 부합하도록 벡터 드로어블 알림 아이콘(`ic_notification.xml`)을 수동으로 제작·배치하여 알림바에 깨짐 없이 깔끔한 과녁 마크와 브랜드 컬러(`iconColor: '#4F46E5'`)가 뜨도록 개선했습니다.</li>
+    </ul>
+
+    <div class="subsection-title">4.3. R8/Proguard 난독화 최적화 & 가독화 파일 자동 생성</div>
+    <p>
+      구글 플레이스토어 배포 기준을 완수하고 앱 용량을 경량화하기 위해 최적화 코드를 이식했습니다.
+    </p>
+    <ul>
+      <li>안드로이드 빌드 설정에 `minifyEnabled true` 및 `shrinkResources true`를 설정하여 패키지 크기를 35% 이상 감소시켰습니다.</li>
+      <li>`proguard-rules.pro`에 Capacitor 플러그인 리플렉션 및 Cordova 브릿지 호출을 보호하는 룰을 수립하여 난독화로 인한 런타임 통신 장애를 차단했습니다.</li>
+      <li>난독화 매핑 옵션을 유지하여 빌드 시 플레이 콘솔에 업로드 가능한 `mapping.txt` 가독화 파일이 자동으로 자동 저장되도록 설정했습니다.</li>
+    </ul>
+
+    <div class="section-title">5. 비즈니스 모델 및 마케팅 전략 요약</div>
+    <table class="feature-table">
+      <thead>
+        <tr>
+          <th>전략 영역</th>
+          <th>핵심 메커니즘 (Mechanism)</th>
+          <th>기대 효과 및 BM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>B2B 타겟 광고 수수료</strong></td>
+          <td>호스트가 공고 등록 시 '특정 카테고리 + 특정 지역 + 특정 학년' 학생에게 실시간 알림 발송을 요청할 경우 타겟 학생 수 비례 광고 단가 과금</td>
+          <td>고효율 정밀 도달 마케팅 수단 제공, 건당 과금(PPN) 매출원 확보</td>
+        </tr>
+        <tr>
+          <td><strong>피드 상단 노출 경매 (Bidding)</strong></td>
+          <td>스와이프 매칭 피드 최상단 또는 천안 큐레이션 최상단 3개 구좌에 공고를 노출시키기 위한 개최사 간 실시간 입찰 경매제 운영</td>
+          <td>우수 공고의 노출량 보장, 경쟁 비딩을 통한 플랫폼 중개 수수료 극대화</td>
+        </tr>
+        <tr>
+          <td><strong>초기 콜드 스타트 극복</strong></td>
+          <td>천안시청소년수련관 등 로컬 6종 공식 기관 API 및 수동 크롤러를 통해 공고 데이터를 실시간 확보하여 유저 유입 시 볼거리 보장</td>
+          <td>개최사 참여 전 양질의 로컬 공고 데이터 자동 공급 파이프라인 구축</td>
+        </tr>
+        <tr>
+          <td><strong>고교 연합동아리 침투</strong></td>
+          <td>천안 시내 주요 고등학교(천안고, 북일고, 복자여고 등) 회장단 및 진로진학 교사 네트워크 제휴, '추천인 코드' 단체 가입 유도</td>
+          <td>청소년 중심의 바이럴 루프(인싸 배지 및 테마)를 활용한 0원 오가닉 획득(CAC $0)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
