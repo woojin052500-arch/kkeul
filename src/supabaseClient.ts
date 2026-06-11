@@ -816,17 +816,8 @@ export const db = {
       if (error) throw error;
       return { user: data.user, error: null };
     } catch (err: any) {
-      console.warn('Supabase Auth SignUp 실패, 로컬 백업을 사용합니다.', err);
-      useLocalFallback = true;
-      const localAccounts = localStorage.getItem('kkeul_mock_accounts');
-      const accounts = localAccounts ? JSON.parse(localAccounts) : [];
-      if (accounts.some((acc: any) => acc.email === email)) {
-        return { user: null, error: { message: '이미 가입된 이메일입니다.' } };
-      }
-      const newUserId = crypto.randomUUID();
-      accounts.push({ id: newUserId, email, password, name });
-      localStorage.setItem('kkeul_mock_accounts', JSON.stringify(accounts));
-      return { user: { id: newUserId, email, name }, error: null };
+      console.error('Supabase Auth SignUp Error:', err);
+      return { user: null, error: err };
     }
   },
 
@@ -839,15 +830,8 @@ export const db = {
       if (error) throw error;
       return { user: data.user, error: null };
     } catch (err: any) {
-      console.warn('Supabase Auth SignIn 실패, 로컬 백업을 사용합니다.', err);
-      useLocalFallback = true;
-      const localAccounts = localStorage.getItem('kkeul_mock_accounts');
-      const accounts = localAccounts ? JSON.parse(localAccounts) : [];
-      const account = accounts.find((acc: any) => acc.email === email && acc.password === password);
-      if (account) {
-        return { user: { id: account.id, email: account.email, name: account.name }, error: null };
-      }
-      return { user: null, error: { message: '이메일 또는 비밀번호가 일치하지 않습니다.' } };
+      console.error('Supabase Auth SignIn Error:', err);
+      return { user: null, error: err };
     }
   },
 
