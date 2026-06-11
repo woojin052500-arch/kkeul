@@ -985,7 +985,7 @@ export const db = {
         if (error) throw error;
       } catch (err: any) {
         console.error('Supabase 프로필 저장 실패:', err);
-        alert('Supabase 프로필 저장 오류: ' + JSON.stringify(err));
+        // alert('Supabase 프로필 저장 오류: ' + JSON.stringify(err));
         useLocalFallback = true;
       }
     }
