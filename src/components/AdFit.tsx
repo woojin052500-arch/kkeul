@@ -110,7 +110,7 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
   );
 });
 
-export const AdFitBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-xDjPylBX9XVfPMUY', width = '100%', className, style }) => {
+export const AdFitBanner100_Second: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-nADIaKSVsknAYWek', width = '100%', className, style }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
 
@@ -125,7 +125,7 @@ export const AdFitBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-xDj
     ins.style.display = 'none';
     ins.setAttribute('data-ad-unit', unit);
     ins.setAttribute('data-ad-width', width === '100%' ? '320' : width.toString());
-    ins.setAttribute('data-ad-height', '50');
+    ins.setAttribute('data-ad-height', '100');
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -137,9 +137,9 @@ export const AdFitBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-xDj
   }, [unit, width]);
 
   return (
-    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '50px', background: '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
+    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
       <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.2)', color: '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
-      <div ref={containerRef} style={{ width: '100%', minHeight: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
+      <div ref={containerRef} style={{ width: '100%', minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}></div>
     </div>
   );
 });
