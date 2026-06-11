@@ -983,8 +983,9 @@ export const db = {
           error = err;
         }
         if (error) throw error;
-      } catch (err) {
-        console.warn('Supabase 프로필 저장 실패, 로컬 백업에 저장합니다.', err);
+      } catch (err: any) {
+        console.error('Supabase 프로필 저장 실패:', err);
+        alert('Supabase 프로필 저장 오류: ' + JSON.stringify(err));
         useLocalFallback = true;
       }
     }
