@@ -28,7 +28,7 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
+    script.src = `https://t1.kakaocdn.net/kas/static/ba.min.js?cb=${Date.now()}`;
     script.async = true;
 
     containerRef.current.appendChild(ins);
@@ -62,7 +62,7 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
+    script.src = `https://t1.kakaocdn.net/kas/static/ba.min.js?cb=${Date.now()}`;
     script.async = true;
 
     containerRef.current.appendChild(ins);
@@ -108,7 +108,7 @@ export const AdFitFixedBanner50: React.FC<AdFitProps> = React.memo(({ unit = 'DA
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
+    script.src = `https://t1.kakaocdn.net/kas/static/ba.min.js?cb=${Date.now()}`;
     script.async = true;
 
     containerRef.current.appendChild(ins);
