@@ -1286,7 +1286,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           >
                             <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none' } : undefined}>
                               {ann.category === 'AD' ? (
-                                <AdFitNativeCard height="100%" />
+                                <AdFitNativeCard height="100%" isActive={isTop} />
                               ) : (
                                 <>
                               {/* 좌우 드래그 상태 반투명 가이드 뱃지 */}

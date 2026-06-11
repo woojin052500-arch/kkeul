@@ -7,36 +7,53 @@ interface AdFitProps {
   height?: string | number;
   className?: string;
   style?: React.CSSProperties;
+  isActive?: boolean;
 }
 
-export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V9hsnH4cMSNICaii', width = '100%', height = '100%', className, style }) => {
+export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V9hsnH4cMSNICaii', width = '100%', height = '100%', className, style, isActive = true }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
 
   useEffect(() => {
-    if (isLoaded.current || !containerRef.current) return;
-    isLoaded.current = true;
+    // Only attempt to load if Capacitor is not Native (it's web)
+    if (Capacitor.isNativePlatform()) {
+      return;
+    }
 
-    containerRef.current.innerHTML = '';
+    if (containerRef.current && !isLoaded.current) {
+      const ins = document.createElement('ins');
+      ins.className = 'kakao_ad_area';
+      ins.style.display = 'none';
+      ins.setAttribute('data-ad-unit', unit);
+      ins.setAttribute('data-ad-width', width.toString());
+      ins.setAttribute('data-ad-height', height.toString());
+      
+      // 대체 스크립트 실행 함수 등록
+      (window as any).kakaoAdFailCallback = () => {
+        if (containerRef.current) {
+          containerRef.current.innerHTML = `
+            <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8B 100%); color: white; border-radius: 12px; font-weight: bold; padding: 20px; box-sizing: border-box; text-align: center;">
+              <span style="font-size: 24px; margin-bottom: 8px;">KKEUL</span>
+              <span style="font-size: 14px; opacity: 0.9;">Sponsored Space</span>
+            </div>
+          `;
+        }
+      };
+      ins.setAttribute('data-ad-onfail', 'kakaoAdFailCallback');
 
-    const ins = document.createElement('ins');
-    ins.className = 'kakao_ad_area';
-    ins.style.display = 'none';
-    ins.setAttribute('data-ad-unit', unit);
-    ins.setAttribute('data-ad-width', width === '100%' ? '250' : width.toString());
-    ins.setAttribute('data-ad-height', height === '100%' ? '250' : height.toString());
+      containerRef.current.appendChild(ins);
 
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = `https://t1.kakaocdn.net/kas/static/ba.min.js?cb=${Date.now()}`;
-    script.async = true;
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
+      containerRef.current.appendChild(script);
 
-    containerRef.current.appendChild(ins);
-    containerRef.current.appendChild(script);
+      isLoaded.current = true;
+    }
   }, [unit, width, height]);
 
   return (
-    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: 'linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 100%)', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255, 182, 193, 0.15)', overflow: 'hidden', padding: '20px' }}>
+    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: 'linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 100%)', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255, 182, 193, 0.15)', overflow: 'hidden', padding: '20px', opacity: isActive ? 1 : 0, transition: 'opacity 0.3s ease-in-out', pointerEvents: isActive ? 'auto' : 'none' }}>
       <div style={{ position: 'absolute', top: 16, right: 16, backgroundColor: 'rgba(0,0,0,0.5)', color: '#FFF', fontSize: '10px', fontWeight: 800, padding: '3px 8px', borderRadius: '6px', zIndex: 10, letterSpacing: '0.5px' }}>AD</div>
       
       {/* 귀여운 문구 영역 */}
