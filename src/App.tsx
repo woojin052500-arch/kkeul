@@ -370,7 +370,7 @@ function App() {
             }
             // 모의 계정(id가 'u'로 시작하거나 로컬 계정 목록에 있는 경우)이면 초기화하지 않고 리턴
             const mockAccounts = JSON.parse(localStorage.getItem('kkeul_mock_accounts') || '[]');
-            const isMock = mockAccounts.some((acc) => acc.email === prof.email);
+            const isMock = mockAccounts.some((acc: any) => acc.email === prof.email);
             if (isMock || (prof && prof.id && prof.id.startsWith('u'))) {
               return;
             }
