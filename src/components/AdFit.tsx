@@ -12,8 +12,8 @@ interface AdFitProps {
 
 export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V9hsnH4cMSNICaii', width = '100%', height = '100%', className, style, isActive = true }) => {
   return (
-    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: 'linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 100%)', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255, 182, 193, 0.15)', overflow: 'hidden', padding: '20px', opacity: isActive ? 1 : 0, transition: 'opacity 0.3s ease-in-out', pointerEvents: isActive ? 'auto' : 'none' }}>
-      <div style={{ position: 'absolute', top: 16, right: 16, backgroundColor: 'rgba(0,0,0,0.5)', color: '#FFF', fontSize: '10px', fontWeight: 800, padding: '3px 8px', borderRadius: '6px', zIndex: 10, letterSpacing: '0.5px' }}>AD</div>
+    <div className={className} style={{ ...style, position: 'relative', width: width === '100%' ? '100%' : `${width}px`, height: height === '100%' ? '100%' : `${height}px`, background: 'linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 100%)',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255, 182, 193, 0.15)',  padding: '20px', opacity: isActive ? 1 : 0, transition: 'opacity 0.3s ease-in-out', pointerEvents: isActive ? 'auto' : 'none' }}>
+      
       
       {/* 귀여운 문구 영역 */}
       <div style={{ marginBottom: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -28,7 +28,7 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
       </div>
 
       {/* 250x250 카카오 광고 컨테이너 - 시각적 분리감 부여 */}
-      <div style={{ width: '250px', height: '250px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.04)', position: 'relative' }}>
+      <div style={{ width: '250px', height: '250px',   boxShadow: '0 4px 20px rgba(0,0,0,0.08)', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.04)', position: 'relative' }}>
         {isActive && !Capacitor.isNativePlatform() && (
           <iframe 
             src={`/adfit.html?unit=${unit}&width=250&height=250`} 
@@ -39,19 +39,19 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
         )}
       </div>
 
-      {/* 드래그를 가능하게 하는 투명 오버레이 (가장자리 40px) */}
-      <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: '40px', zIndex: 20 }} />
-      <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '40px', zIndex: 20 }} />
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40px', zIndex: 20 }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40px', zIndex: 20 }} />
+      
+      
+      
+      
+      
     </div>
   );
 });
 
 export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-EdZGhdPNNZvANVdn', width = '100%', className, style }) => {
   return (
-    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.2)', color: '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
+    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6',  display: 'flex', alignItems: 'center', justifyContent: 'center',  margin: '16px 0', position: 'relative' }}>
+      
       {!Capacitor.isNativePlatform() && (
         <iframe 
           src={`/adfit.html?unit=${unit}&width=${width === '100%' ? '320' : width.toString()}&height=100`} 
@@ -66,8 +66,8 @@ export const AdFitBanner100: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-Ed
 
 export const AdFitBanner100_Second: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-nADIaKSVsknAYWek', width = '100%', className, style }) => {
   return (
-    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '16px 0', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.2)', color: '#FFF', fontSize: '9px', fontWeight: 700, padding: '2px 4px', borderRadius: '4px', zIndex: 10 }}>AD</div>
+    <div className={className} style={{ ...style, width: width === '100%' ? '100%' : `${width}px`, minHeight: '100px', background: '#F2F4F6',  display: 'flex', alignItems: 'center', justifyContent: 'center',  margin: '16px 0', position: 'relative' }}>
+      
       {!Capacitor.isNativePlatform() && (
         <iframe 
           src={`/adfit.html?unit=${unit}&width=${width === '100%' ? '320' : width.toString()}&height=100`} 
