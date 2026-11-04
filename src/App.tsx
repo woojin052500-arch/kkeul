@@ -606,7 +606,7 @@ function App() {
     if (success) {
       setAnnouncements(prev => prev.map(ann => ann.id === id ? { ...ann, ...updatedFields } : ann));
       setSelectedAnnouncement(prev => prev && prev.id === id ? { ...prev, ...updatedFields } : prev);
-      triggerMockPush('✏️ 공고 수정 완료', '공고 정보가 정상적으로 수정되었습니다.');
+      triggerMockPush('공고 수정 완료', '공고 정보가 정상적으로 수정되었습니다.');
     }
   };
 

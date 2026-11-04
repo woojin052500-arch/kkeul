@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Announcement, Profile, TeamPost } from '../types';
-import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Users, Check, Plus, Sparkles, Copy } from 'lucide-react';
+import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Users, Check, Plus, Sparkles, Copy, Zap } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { Calendar } from '@awesome-cordova-plugins/calendar';
@@ -824,7 +824,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   gap: '4px'
                 }}
               >
-                🏆 Kkeul 합격 족보
+                Kkeul 합격 족보
               </button>
             </div>
 
@@ -1076,7 +1076,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                                   }}
                                 >
                                   {hasRequested ? <Check size={12} /> : null}
-                                  {hasRequested ? '합류 요청 완료' : '🤝 팀 합류 요청 보내기'}
+                                  {hasRequested ? '합류 요청 완료' : '팀 합류 요청 보내기'}
                                 </button>
                               )}
                             </div>
@@ -1094,7 +1094,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }} className="animate-fade-in">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <h2 style={{ fontSize: '16px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    🏆 선배들의 합격 족보 & 역설계
+                    선배들의 합격 족보 & 역설계
                   </h2>
                   <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4 }}>
                     이전 대회에서 우수한 성적을 거둔 선배들의 프로젝트 요약과 핵심 기법 분석입니다.
@@ -1161,7 +1161,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       {/* Key point */}
                       <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          💡 수상 선배의 합격 치트키
+                          수상 선배의 합격 치트키
                         </span>
                         <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55, wordBreak: 'keep-all' }}>
                           {successPoint}
@@ -1238,7 +1238,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
           <span style={{ fontSize: '9px', fontWeight: 600 }}>공유</span>
         </button>
 
-        {/* ⚡ 1초 서류 자동 완성 버튼 */}
+        {/* 1초 서류 자동 완성 버튼 */}
         {!isHostUser && (
           <button
             onClick={() => {
@@ -1266,7 +1266,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               flexShrink: 0
             }}
           >
-            ⚡ Kkeul 프로필로 지원
+            Kkeul 프로필로 지원
           </button>
         )}
 
@@ -1427,7 +1427,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '18px' }}>⚡</span>
+                  <Zap size={16} color="var(--color-indigo)" />
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                     1초 서류 자동 완성
                   </h3>
@@ -1512,7 +1512,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)'
                     }}
                   >
-                    ⚡ 서류 자동 제출
+                    서류 자동 제출
                   </button>
                 </div>
               </div>
@@ -1526,7 +1526,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
         <div className="calendar-success-overlay" onClick={() => setShowTeamPostModal(false)} style={{ zIndex: 130, backdropFilter: 'blur(5px)' }}>
           <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
             <h3 style={{ fontSize: '17px', fontWeight: 800, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              🤝 팀원 구인글 올리기
+              팀원 구인글 올리기
             </h3>
             
             <form onSubmit={handleCreateTeamPost} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
