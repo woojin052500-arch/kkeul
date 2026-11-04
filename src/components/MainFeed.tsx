@@ -2509,7 +2509,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       transition: 'all 0.15s'
                     }}
                   >
-                    {tab === 'portfolio' ? '✨ 포트폴리오' : tab === 'edit' ? '📝 스펙 편집' : '⚙️ 설정'}
+                    {tab === 'portfolio' ? '포트폴리오' : tab === 'edit' ? '스펙 편집' : '설정'}
                   </button>
                 ))}
               </div>
@@ -2518,161 +2518,113 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               {profileSubTab === 'portfolio' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '20px' }}>
                   
-                                    {/* INTERACTIVE 3D BUSINESS CARD */}
-                  <div style={{ perspective: '1000px', width: '100%', minHeight: '230px', position: 'relative' }}>
-                    <div 
-                      className="business-card-container" 
-                      style={{
-                        position: 'absolute',
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        transition: 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)',
-                        transformStyle: 'preserve-3d',
-                        transform: isCardFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
-                      }}
-                      onMouseMove={(e) => {
-                        if (!Capacitor.isNativePlatform() && !isCardFlipped) {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          const x = e.clientX - rect.left;
-                          const y = e.clientY - rect.top;
-                          const centerX = rect.width / 2;
-                          const centerY = rect.height / 2;
-                          const rotateX = ((y - centerY) / centerY) * -10;
-                          const rotateY = ((x - centerX) / centerX) * 10;
-                          e.currentTarget.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                          
-                          const glare = e.currentTarget.querySelector('.glare') as HTMLElement;
-                          if (glare) {
-                            glare.style.transform = `translate(${(x/rect.width)*100}%, ${(y/rect.height)*100}%)`;
-                            glare.style.opacity = '1';
-                          }
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!Capacitor.isNativePlatform() && !isCardFlipped) {
-                          e.currentTarget.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-                          const glare = e.currentTarget.querySelector('.glare') as HTMLElement;
-                          if (glare) {
-                            glare.style.opacity = '0';
-                          }
-                        }
-                      }}
-                    >
-                      {/* FRONT OF CARD */}
-                      <div style={{
-                        backfaceVisibility: 'hidden',
-                        position: 'absolute',
-                        top: 0, left: 0, width: '100%', height: '100%',
-                        background: 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)',
-                        borderRadius: '24px',
-                        padding: '24px',
-                        overflow: 'hidden',
-                        boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        color: 'white'
-                      }}>
-                        <div className="glare" style={{
-                          position: 'absolute',
-                          top: '-100%', left: '-100%',
-                          width: '300%', height: '300%',
-                          background: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 50%)',
-                          opacity: 0,
-                          pointerEvents: 'none',
-                          transition: 'opacity 0.3s ease',
-                          zIndex: 1
-                        }}></div>
-                        
-                        <button onClick={(e) => { e.stopPropagation(); setIsCardFlipped(true); }} style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#FFF', backdropFilter: 'blur(4px)' }}>
-                          <QrCode size={18} />
-                        </button>
+                  {/* BUSINESS CARD (paper style, flips to QR) */}
+                  {(() => {
+                    const shortId = profile.id.split('-')[0];
+                    const profileUrl = `https://kkeul.vercel.app/p/${shortId}`;
+                    const ink = '#1F1D1A';
+                    const muted = '#7A7368';
+                    const rule = '#E6E0D6';
+                    const paper: React.CSSProperties = {
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      position: 'absolute',
+                      inset: 0,
+                      background: '#FBF9F5',
+                      borderRadius: '14px',
+                      border: `1px solid ${rule}`,
+                      boxShadow: '0 1px 2px rgba(31,29,26,0.04), 0 12px 28px -16px rgba(31,29,26,0.28)',
+                      padding: '20px 22px',
+                      color: ink,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      overflow: 'hidden'
+                    };
+                    const iconBtn: React.CSSProperties = {
+                      position: 'absolute', top: '14px', right: '14px', zIndex: 2,
+                      width: '30px', height: '30px', borderRadius: '8px',
+                      border: `1px solid ${rule}`, background: 'transparent', color: muted,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+                    };
+                    const interests = (profile.interests && profile.interests.length > 0 ? profile.interests : []).slice(0, 4);
+                    const meta = [profile.school, profile.grade].filter(Boolean).join(' ');
+                    return (
+                      <div style={{ perspective: '1200px', width: '100%', aspectRatio: '1.72 / 1', minHeight: '196px', position: 'relative' }}>
+                        <div
+                          className="business-card-container"
+                          style={{
+                            position: 'absolute', inset: 0,
+                            transition: 'transform 0.55s cubic-bezier(0.4, 0.0, 0.2, 1)',
+                            transformStyle: 'preserve-3d',
+                            transform: isCardFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                          }}
+                        >
+                          {/* FRONT */}
+                          <div style={paper}>
+                            <button aria-label="QR 코드 보기" onClick={(e) => { e.stopPropagation(); setIsCardFlipped(true); }} style={iconBtn}>
+                              <QrCode size={15} strokeWidth={1.75} />
+                            </button>
 
-                        <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                          <div>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, marginBottom: '12px', backdropFilter: 'blur(10px)' }}>
-                              <Building2 size={12} />
-                              {profile.school || 'Kkeul High School'} {profile.grade}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.16em', color: muted }}>
+                              <span style={{ width: '6px', height: '6px', borderRadius: '1px', background: 'var(--color-indigo)' }} />
+                              KKEUL
                             </div>
-                            <h2 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-                              {profile.name}
-                            </h2>
-                            <p 
-                              style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', margin: 0, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-                              onClick={async (e) => {
-                                e.stopPropagation();
-                                const newBio = await showPrompt("나만의 멋진 한 줄 소개를 입력해주세요:", profile.bio || '세상을 바꿀 기획자 지망생');
-                                if (newBio !== null && newBio.trim() !== '') {
-                                  onUpdateProfile({ ...profile, bio: newBio });
-                                }
-                              }}
-                              title="클릭하여 한 줄 소개 수정하기"
-                            >
-                              {profile.bio || '세상을 바꿀 기획자 지망생'} <span style={{ fontSize: '12px', opacity: 0.5 }}>✏️</span>
-                            </p>
-                          </div>
-                          <div style={{ textAlign: 'right', marginTop: '46px' }}>
-                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Kkeul ID</div>
-                            <div style={{ fontSize: '14px', fontWeight: 700, fontFamily: 'monospace' }}>#{profile.id.split('-')[0]}</div>
-                          </div>
-                        </div>
 
-                        <div style={{ position: 'relative', zIndex: 2, marginTop: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', maxWidth: '100%', maxHeight: '60px', overflowY: 'auto', paddingRight: '4px' }}>
-                            {(profile.interests || ['IT/기획', '스타트업']).map(int => (
-                              <span key={int} style={{ fontSize: '10px', fontWeight: 600, color: '#3182F6', backgroundColor: '#FFFFFF', padding: '3px 8px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                {int}
-                              </span>
-                            ))}
-                            {profile.play_style?.team_size && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#059669', backgroundColor: '#D1FAE5', padding: '3px 8px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                👥 {profile.play_style.team_size.split('(')[0]}
-                              </span>
-                            )}
-                            {profile.play_style?.duration && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#D97706', backgroundColor: '#FEF3C7', padding: '3px 8px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                ⏳ {profile.play_style.duration.split('(')[0]}
-                              </span>
-                            )}
-                            {profile.play_style?.type && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#7C3AED', backgroundColor: '#EDE9FE', padding: '3px 8px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                📍 {profile.play_style.type.split(' ')[1] || profile.play_style.type}
-                              </span>
-                            )}
+                            <div style={{ marginTop: 'auto' }}>
+                              <h2 style={{ fontSize: '22px', fontWeight: 700, margin: 0, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                                {profile.name}
+                              </h2>
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  const newBio = await showPrompt('한 줄 소개를 입력해주세요', profile.bio || '');
+                                  if (newBio !== null && newBio.trim() !== '') {
+                                    onUpdateProfile({ ...profile, bio: newBio.trim() });
+                                  }
+                                }}
+                                title="한 줄 소개 수정"
+                                style={{ all: 'unset', cursor: 'pointer', display: 'block', marginTop: '4px', fontSize: '12.5px', lineHeight: 1.45, color: profile.bio ? '#4A453E' : '#A39C90', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                              >
+                                {profile.bio || '한 줄 소개를 적어보세요'}
+                              </button>
+                            </div>
+
+                            <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: `1px solid ${rule}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '12px' }}>
+                              <div style={{ minWidth: 0, fontSize: '11px', lineHeight: 1.55, color: muted }}>
+                                {meta && <div style={{ color: ink, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{meta}</div>}
+                                {interests.length > 0 && (
+                                  <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{interests.join(' · ')}</div>
+                                )}
+                              </div>
+                              <div style={{ textAlign: 'right', flexShrink: 0, fontSize: '11px', lineHeight: 1.55, color: muted, fontVariantNumeric: 'tabular-nums' }}>
+                                <div style={{ color: ink, fontWeight: 500 }}>{profile.xp.toLocaleString()} XP</div>
+                                <div style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', letterSpacing: '0.04em' }}>No. {shortId}</div>
+                              </div>
+                            </div>
                           </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Total XP</span>
-                            <strong style={{ display: 'block', fontSize: '22px', fontWeight: 800, color: '#FFFFFF', marginTop: '2px', textShadow: '0 2px 10px rgba(255,255,255,0.3)' }}>
-                              {profile.xp.toLocaleString()}
-                            </strong>
+
+                          {/* BACK (QR) */}
+                          <div style={{ ...paper, transform: 'rotateY(180deg)', flexDirection: 'row', alignItems: 'center', gap: '18px' }}>
+                            <button aria-label="앞면으로" onClick={(e) => { e.stopPropagation(); setIsCardFlipped(false); }} style={iconBtn}>
+                              <X size={15} strokeWidth={1.75} />
+                            </button>
+                            <div style={{ flexShrink: 0, padding: '8px', background: '#FFFFFF', borderRadius: '8px', border: `1px solid ${rule}` }}>
+                              <QRCodeSVG value={profileUrl} size={104} level="M" fgColor={ink} bgColor="#FFFFFF" />
+                            </div>
+                            <div style={{ minWidth: 0 }}>
+                              <div style={{ fontSize: '14px', fontWeight: 700, letterSpacing: '-0.01em' }}>{profile.name}</div>
+                              <p style={{ margin: '6px 0 10px', fontSize: '12px', lineHeight: 1.5, color: muted }}>
+                                카메라로 스캔하면<br />포트폴리오가 열려요.
+                              </p>
+                              <div style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', color: muted, wordBreak: 'break-all' }}>
+                                kkeul.vercel.app/p/{shortId}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-
-                      {/* BACK OF CARD (QR CODE) */}
-                      <div style={{
-                        backfaceVisibility: 'hidden',
-                        position: 'absolute',
-                        top: 0, left: 0, width: '100%', height: '100%',
-                        background: '#FFFFFF',
-                        borderRadius: '24px',
-                        padding: '24px',
-                        boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                        border: '1px solid #E5E8EB',
-                        transform: 'rotateY(180deg)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#191F28'
-                      }}>
-                        <button onClick={(e) => { e.stopPropagation(); setIsCardFlipped(false); }} style={{ position: 'absolute', top: '20px', right: '20px', background: '#F1F5F9', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748B' }}>
-                          <X size={18} />
-                        </button>
-                        <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#1E293B', margin: '0 0 16px 0' }}>제 명함을 스캔해주세요!</h3>
-                        <div style={{ background: '#FFF', padding: '10px', borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                          <QRCodeSVG value={`https://kkeul.vercel.app/p/${profile.id.split('-')[0]}`} size={110} level="M" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                   {/* CONNECT WITH CONTACTS BUTTON */}
                   <button 
