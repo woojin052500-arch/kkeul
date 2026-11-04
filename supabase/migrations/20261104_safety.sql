@@ -73,6 +73,28 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 
 -- --------------------------------------------------------------------------
+-- 0-1. 앱이 쓰는 profiles 컬럼 보충 (없을 때만 추가, 있는 컬럼은 건드리지 않음)
+--      이 컬럼들이 없어서 지금까지 프로필 저장이 실패하고 기기에만 남던 문제도 함께 해결됩니다.
+-- --------------------------------------------------------------------------
+alter table public.profiles
+  add column if not exists name           text,
+  add column if not exists location       text,
+  add column if not exists grade          text,
+  add column if not exists school         text,
+  add column if not exists major          text,
+  add column if not exists interests      jsonb not null default '[]'::jsonb,
+  add column if not exists xp             integer not null default 0,
+  add column if not exists badges         jsonb not null default '[]'::jsonb,
+  add column if not exists role           text not null default 'student',
+  add column if not exists bio            text,
+  add column if not exists custom_theme   text default 'default',
+  add column if not exists social_links   jsonb not null default '{}'::jsonb,
+  add column if not exists awards         jsonb not null default '[]'::jsonb,
+  add column if not exists portfolio_urls jsonb not null default '[]'::jsonb,
+  add column if not exists play_style     jsonb not null default '{}'::jsonb,
+  add column if not exists created_at     timestamptz not null default now();
+
+-- --------------------------------------------------------------------------
 -- 1. 연령 확인 기록
 --    생년월일은 앱에서 나이 계산에만 쓰고 버립니다. 여기에는 체크 여부와 시각만 남깁니다.
 -- --------------------------------------------------------------------------
@@ -405,10 +427,13 @@ revoke all on public.profiles from anon;
 create or replace function public.matching_profiles()
 returns table (role text, location text, grade text, interests jsonb)
 language sql stable security definer set search_path = public as $$
-  select p.role::text,
-         p.location::text,
-         p.grade::text,
-         coalesce(to_jsonb(p) -> 'interests', '[]'::jsonb)
+  select to_jsonb(p) ->> 'role',
+         to_jsonb(p) ->> 'location',
+         to_jsonb(p) ->> 'grade',
+         case jsonb_typeof(to_jsonb(p) -> 'interests')
+           when 'array' then to_jsonb(p) -> 'interests'
+           else '[]'::jsonb
+         end
   from public.profiles p;
 $$;
 revoke all on function public.matching_profiles() from public, anon;
