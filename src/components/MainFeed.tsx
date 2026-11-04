@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useTossModal } from '../hooks/useTossModal';
 import type { Announcement, Profile, ClubAnnouncement, ClubApplicant } from '../types';
-import { Home, Bookmark, Users, User, Star, MapPin, Calendar as CalendarIcon, Compass, Award, PlusCircle, BarChart3, CheckCircle2, Lock, Share2, Sparkles, RefreshCw, Plus, Check, Building2, Milestone, Phone, Activity, QrCode, X } from 'lucide-react';
+import { Home, Bookmark, Users, User, Star, MapPin, Calendar as CalendarIcon, Compass, Award, PlusCircle, BarChart3, CheckCircle2, Lock, Share2, Sparkles, RefreshCw, Plus, Check, Building2, Milestone, Phone, Activity, QrCode, X, Megaphone, Handshake, Crown, School, Globe, BookOpen, Zap } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import logoImg from '../assets/logo.png';
 import partnerBsbrbo from '../assets/partner_bsbrbo.jpg';
@@ -22,27 +22,27 @@ import { Contacts } from '@capacitor-community/contacts';
 import { AdFitNativeCard, AdFitBanner100, AdFitBanner100_Second } from './AdFit';
 
 
-const BADGE_DETAILS: Record<string, { emoji: string; color: string; neonColor: string; criteria: string }> = {
+const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
   '정보 공유왕': {
-    emoji: '📢',
+    emoji: <Megaphone size={16} strokeWidth={1.75} />,
     color: '#3B82F6',
     neonColor: '0 0 10px rgba(59, 130, 246, 0.4)',
     criteria: '공모전 상세 정보에서 [너한테 딱이다] 링크 공유를 보내면 획득!'
   },
   '캘린더 마스터': {
-    emoji: '📅',
+    emoji: <CalendarIcon size={16} strokeWidth={1.75} />,
     color: '#8B5CF6',
     neonColor: '0 0 10px rgba(139, 92, 246, 0.4)',
     criteria: '공모전 상세 정보의 달력 버튼을 눌러 내 기본 캘린더에 일정을 저장하면 획득!'
   },
   '인싸의 탄생': {
-    emoji: '🤝',
+    emoji: <Handshake size={16} strokeWidth={1.75} />,
     color: '#FF007F',
     neonColor: '0 0 10px rgba(255, 0, 127, 0.4)',
     criteria: '마이페이지의 설정에서 친구 초대 적용 완료 시 획득!'
   },
   '끌 마스터': {
-    emoji: '👑',
+    emoji: <Crown size={16} strokeWidth={1.75} />,
     color: '#F59E0B',
     neonColor: '0 0 10px rgba(245, 158, 11, 0.4)',
     criteria: '메인 홈 탭에서 카드를 스와이프하여 넘기는 것을 5회 이상 성공하면 획득!'
@@ -623,10 +623,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     const annCategories = ann.category ? ann.category.split(',').map(s => s.trim()) : [];
     const matchesInterest = (profile.interests || []).some(interest => annCategories.includes(interest));
     if (matchesInterest) {
-      return `🎯 내 관심사(${ann.category})에 쏙 맞는 공고예요!`;
+      return `내 관심사(${ann.category})에 쏙 맞는 공고예요!`;
     }
 
-    return `🚀 진로 역량을 든든하게 채우는 맞춤 공고예요!`;
+    return `진로 역량을 든든하게 채우는 맞춤 공고예요!`;
   }, [profile]);
 
   useEffect(() => {
@@ -1216,7 +1216,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   marginBottom: '-10px',
                   animation: 'fade-in 0.3s ease'
                 }}>
-                  <span>💡</span> 카드를 <strong>좌우로 스와이프</strong>하거나 아래 버튼을 클릭해 보세요!
+                  카드를 <strong>좌우로 스와이프</strong>하거나 아래 버튼을 클릭해 보세요!
                 </div>
 
                 {/* 겹쳐진 스와이프 카드 덱 컨테이너 */}
@@ -1342,7 +1342,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                       alignItems: 'center',
                                       gap: '2px'
                                     }}>
-                                      🎯 관심사 맞춤
+                                      관심사 맞춤
                                     </span>
                                   )}
                                 </div>
@@ -1801,7 +1801,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                     alignItems: 'center',
                                     gap: '2px'
                                   }}>
-                                    🎯 관심사 맞춤
+                                    관심사 맞춤
                                   </span>
                                 )}
                                 <span style={{
@@ -2005,7 +2005,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         {activeTab === 'bookmarks' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내가 찜한 기회 ⭐</h1>
+              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내가 찜한 기회</h1>
               <p>마감 시간이 촉박할 때 족집게 리마인드 푸시가 날아갑니다.</p>
             </div>
 
@@ -2095,7 +2095,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         {activeTab === 'club' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
             <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>교내 동아리 리크루팅 SaaS 🏫</h1>
+              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>교내 동아리 리크루팅 SaaS</h1>
               <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-secondary)' }}>
                 내 학교인 <strong style={{ color: 'var(--color-indigo)' }}>{profile.school || '하나고등학교'}</strong>의 동아리 리스트를 조회하고 기장과 매칭됩니다.
               </p>
@@ -2214,7 +2214,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               transition: 'all 0.2s ease'
                             }}
                           >
-                            {hasApplied ? <Check size={14} /> : '⚡'}
+                            {hasApplied ? <Check size={14} /> : <Zap size={14} />}
                             {hasApplied ? 'Kkeul 프로필로 지원 완료' : 'Kkeul 프로필로 1초 지원하기'}
                           </button>
                         </div>
@@ -2276,7 +2276,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
 
                     <h4 style={{ fontSize: '14px', fontWeight: 800, margin: '8px 0 0 0', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
-                      📩 접수된 지원 서류 리스트 ({clubApplicants.length}건)
+                      접수된 지원 서류 리스트 ({clubApplicants.length}건)
                     </h4>
 
                     {/* Applicants card list */}
@@ -2372,7 +2372,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                     cursor: 'pointer'
                                   }}
                                 >
-                                  ✓ 서류 합격 승인
+                                  서류 합격 승인
                                 </button>
                               </div>
                             )}
@@ -2718,7 +2718,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                   display: 'flex', alignItems: 'center', gap: '10px',
                                   opacity: isUnlocked ? 1 : 0.5
                                 }}>
-                                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: isUnlocked ? `${details.color}15` : '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>
+                                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: isUnlocked ? `${details.color}15` : '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', color: isUnlocked ? details.color : '#94A3B8' }}>
                                     {details.emoji}
                                   </div>
                                   <div style={{ flex: 1 }}>
@@ -2767,7 +2767,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           {/* 수상 실적 리스트 */}
                           {profile.awards && profile.awards.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B' }}>🏆 활동 및 수상 내역</div>
+                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B' }}>활동 및 수상 내역</div>
                               {profile.awards.map((award, i) => (
                                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#F8FAFC', padding: '10px 12px', borderRadius: '8px', border: '1px solid #F1F5F9' }}>
                                   <span style={{ fontSize: '13px', fontWeight: 700, color: '#1E293B' }}>{award.title}</span>
@@ -2780,7 +2780,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           {/* 포폴 링크 리스트 */}
                           {profile.portfolio_urls && profile.portfolio_urls.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B' }}>🔗 첨부 링크</div>
+                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B' }}>첨부 링크</div>
                               {profile.portfolio_urls.map((url, i) => (
                                 <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#F8FAFC', padding: '10px 12px', borderRadius: '8px', border: '1px solid #F1F5F9', textDecoration: 'none', color: '#3182F6', fontSize: '13px', fontWeight: 600 }}>
                                   <Share2 size={14} /> {url}
@@ -2976,7 +2976,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   className="btn btn-primary"
                   style={{ padding: '14px', fontSize: '14.5px', fontWeight: 800, borderRadius: '12px', marginTop: '8px', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)' }}
                 >
-                  포트폴리오 저장하기 💾
+                  포트폴리오 저장하기
                 </button>
               </div>
             )}
@@ -3024,7 +3024,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               setSelectedBadgeToShare(badge);
                             } else {
                               const criteria = BADGE_DETAILS[badge]?.criteria || '';
-                              await showAlert(`🔒 [${badge}] 획득 방법:\n${criteria}`);
+                              await showAlert(`[${badge}] 획득 방법:\n${criteria}`);
                             }
                           }}
                           className="spring-active"
@@ -3039,7 +3039,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             cursor: 'pointer'
                           }}
                         >
-                          {badge} ({isUnlocked ? '획득 완료 ✈️' : '잠김 🔒'})
+                          {badge} ({isUnlocked ? '획득 완료' : '잠김'})
                         </div>
                       );
                     })}
@@ -3165,7 +3165,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '22px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', border: '1px solid #F0F0F5' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
                 <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <span style={{ fontSize: '22px' }}>🏫</span>
+                  <School size={22} strokeWidth={1.75} color="#4E5968" />
                 </div>
                 <div>
                   <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>WJedulab</h3>
@@ -3175,11 +3175,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               <p style={{ fontSize: '14px', color: '#4E5968', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌(Kkeul)을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <a href="https://wjedulab.vercel.app" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
-                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>🌐</span>
+                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
                   wjedulab.vercel.app
                 </a>
                 <a href="https://namu.wiki/w/WJedulab" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
-                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>📖</span>
+                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><BookOpen size={13} /></span>
                   나무위키 · WJedulab
                 </a>
               </div>
@@ -3354,11 +3354,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '4px', fontWeight: 500 }}>
-                {profile.name} 호스트 관리자님 👋
+                {profile.name} 호스트 관리자님
               </p>
               <h1 style={{ fontSize: '24px', fontWeight: 800 }}>
                 현재 진행 중인 공고가<br />
-                <span style={{ color: 'var(--color-indigo)' }}>{hostAnnouncements.length}건</span> 있어요 📢
+                <span style={{ color: 'var(--color-indigo)' }}>{hostAnnouncements.length}건</span> 있어요
               </h1>
             </div>
 
@@ -3423,7 +3423,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   justifyContent: 'center',
                   fontSize: '24px'
                 }}>
-                  📢
+                  <Megaphone size={22} strokeWidth={1.75} />
                 </div>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
@@ -3442,7 +3442,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   className="btn btn-primary"
                   style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600 }}
                 >
-                  첫 공고 등록하기 ➕
+                  첫 공고 등록하기
                 </button>
               </div>
             )}
@@ -3731,13 +3731,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   margin: '6px 0'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, color: '#7C3AED' }}>
-                    <span>🎯</span> 실시간 타겟팅 시뮬레이터
+                    실시간 타겟팅 시뮬레이터
                   </div>
                   <div style={{ fontSize: '32px', fontWeight: 900, color: 'var(--color-indigo)', letterSpacing: '-0.5px' }}>
                     {simulatedStudentsCount.toLocaleString()} <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>명</span>
                   </div>
                   <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
-                    설정하신 조건(<strong>{regRegion} {regGrade}</strong>)과 일치하며, <strong>{regCategory}</strong> 관심사를 선택한 학생 수입니다. 지금 공고를 올리시면 이 학생들의 휴대전화로 즉시 타겟팅 알림이 쏘아집니다! 🚀
+                    설정하신 조건(<strong>{regRegion} {regGrade}</strong>)과 일치하며, <strong>{regCategory}</strong> 관심사를 선택한 학생 수입니다. 지금 공고를 올리시면 이 학생들의 휴대전화로 즉시 타겟팅 알림이 쏘아집니다!
                   </p>
                 </div>
 
@@ -3777,7 +3777,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   lineHeight: 1.5,
                   fontWeight: 600
                 }}>
-                  ✨ 설정하신 타겟({regRegion} {regGrade}) 학생들에게 실시간 푸시 알림을 보낼 준비가 끝났어요.
+                  설정하신 타겟({regRegion} {regGrade}) 학생들에게 실시간 푸시 알림을 보낼 준비가 끝났어요.
                 </div>
 
                 {/* Free vs Premium Option Selector */}
@@ -3808,7 +3808,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         transition: 'all 0.2s'
                       }}
                     >
-                      기본 무료 등록 🌱
+                      기본 무료 등록
                     </button>
                     <button
                       type="button"
@@ -3829,7 +3829,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       }}
                     >
                       {isBidding && <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#FF4747', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '10px', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(255,71,71,0.3)' }}>HOT</span>}
-                      🚀 프리미엄 최상단 고정 (추천)
+                      프리미엄 최상단 고정 (추천)
                     </button>
                   </div>
                 </div>
@@ -3849,7 +3849,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div>
                         <label style={{ fontSize: '15px', fontWeight: 800, color: '#191F28', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontSize: '18px' }}>💎</span> VVIP 최상단 노출 패키지
+                          VVIP 최상단 노출 패키지
                         </label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
                           <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>상품ID: 공고 상위노출 하기 (nochul)</span>
@@ -3896,13 +3896,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     gap: '6px'
                   }}>
                     <div style={{ fontWeight: 700, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      🏦 무통장 입금 안내 계좌
+                      무통장 입금 안내 계좌
                     </div>
                     <div style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>
                       NH농협 3516-3767-60453 <span style={{ fontWeight: 500, fontSize: '12px', color: 'var(--text-secondary)' }}>(예금주: 염우진)</span>
                     </div>
                     <p style={{ margin: 0, fontSize: '11.5px', color: '#6B4F00' }}>
-                      💡 입금자명과 회원가입 시 적으신 기관명/담당자명(<strong>{profile.name}</strong>)을 동일하게 입금해 주세요. 입금 확인 완료 후 10분 이내에 끌올 알고리즘이 적용됩니다.
+                      입금자명과 회원가입 시 적으신 기관명/담당자명(<strong>{profile.name}</strong>)을 동일하게 입금해 주세요. 입금 확인 완료 후 10분 이내에 끌올 알고리즘이 적용됩니다.
                     </p>
                   </div>
                 )}
@@ -3974,7 +3974,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       boxShadow: '0 6px 16px rgba(79, 70, 229, 0.2)'
                     }}
                   >
-                    {isBidding ? `${regBidAmount.toLocaleString()}원 입찰 신청 및 알림 등록 🚀` : '무료로 공고 등록하고 알림 쏘기 🚀'}
+                    {isBidding ? `${regBidAmount.toLocaleString()}원 입찰 신청 및 알림 등록` : '무료로 공고 등록하고 알림 쏘기'}
                   </button>
                 </div>
               </div>
@@ -3987,7 +3987,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           if (hostAnnouncements.length === 0) {
             return (
               <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'center', padding: '40px 20px' }}>
-                <div style={{ fontSize: '48px' }}>📊</div>
+                <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--text-tertiary)' }}><BarChart3 size={40} strokeWidth={1.5} /></div>
                 <h2 style={{ fontSize: '18px', fontWeight: 800 }}>분석할 발송 성과가 없습니다</h2>
                 <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 12px 0' }}>
                   현재 등록하신 공고가 없거나 발송 이력이 없습니다.<br />
@@ -4001,7 +4001,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   className="btn btn-primary"
                   style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, width: 'auto', alignSelf: 'center' }}
                 >
-                  첫 공고 등록하러 가기 ➕
+                  첫 공고 등록하러 가기
                 </button>
               </div>
             );
@@ -4041,7 +4041,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           return (
             <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div>
-                <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>발송 성과 통계 📊</h1>
+                <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>발송 성과 통계</h1>
                 <p>발송한 타겟 푸시 알림의 도달 및 클릭률 리포트입니다.</p>
               </div>
 
@@ -4432,7 +4432,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               }}
             >
               <PlusCircle size={20} />
-              등록 ➕
+              등록
             </button>
 
             <button
@@ -4512,7 +4512,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           </h2>
           <p style={{ fontSize: '14px', color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.5 }}>
             설정하신 타겟({regRegion} {regGrade}) 학생들에게<br />
-            실시간 푸시 알림을 즉시 발송합니다 🚀
+            실시간 푸시 알림을 즉시 발송합니다
           </p>
         </div>
       )}
@@ -4655,7 +4655,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               fontSize: '24px',
               margin: '0 auto 16px auto'
             }}>
-              📅
+              <CalendarIcon size={22} strokeWidth={1.75} />
             </div>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
               '끌(Kkeul)'이 달력에<br />접근하려고 합니다
@@ -4796,7 +4796,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         <div className="calendar-success-overlay" onClick={() => setShowClubRegModal(false)} style={{ zIndex: 140, backdropFilter: 'blur(5px)' }}>
           <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
             <h3 style={{ fontSize: '17px', fontWeight: 800, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              🏫 새 동아리 모집 공고 등록
+              새 동아리 모집 공고 등록
             </h3>
             
             <form onSubmit={handleCreateClubAnnouncement} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -4915,7 +4915,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 color: 'var(--text-secondary)',
                 fontWeight: 500
               }}>
-                🔒 {window.location.origin}/school-dashboard/manage
+                {window.location.origin}/school-dashboard/manage
               </div>
               {/* Right spacer */}
               <div style={{ width: '50px' }} />
@@ -5019,7 +5019,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       {/* SVG Bar Chart for Categories */}
                       <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                         <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#0F172A' }}>
-                          📊 학생 대외 성과 전공 카테고리 분포
+                          학생 대외 성과 전공 카테고리 분포
                         </h3>
                         
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
@@ -5049,7 +5049,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       {/* Active Contests Monitor */}
                       <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#0F172A' }}>
-                          📢 실시간 학생 참가 집중 외부 대회 (Top 3)
+                          실시간 학생 참가 집중 외부 대회 (Top 3)
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
                           {[
@@ -5069,7 +5069,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     {/* Bottom Row: Detailed student performance table */}
                     <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                       <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#0F172A' }}>
-                        🏆 교내 대외 실적 및 세특 추천 항목 모니터
+                        교내 대외 실적 및 세특 추천 항목 모니터
                       </h3>
                       
                       <div style={{ overflowX: 'auto' }}>
@@ -5114,7 +5114,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     }}>
                       <div style={{ flex: 1, minWidth: '240px' }}>
                         <span style={{ fontSize: '12.5px', color: '#1E1B4B', lineHeight: 1.5, fontWeight: 700 }}>
-                          💡 <strong>진로지도 선생님을 위한 원클릭 보고서 추출:</strong> 끌(Kkeul) B2B 정식 계약 학교는 학생들이 제출한 실적과 AI 자동 요약 세특 문장을 한 번에 모아 생활기록부 기재 양식 엑셀 파일로 바로 출력할 수 있습니다.
+                          <strong>진로지도 선생님을 위한 원클릭 보고서 추출:</strong> 끌(Kkeul) B2B 정식 계약 학교는 학생들이 제출한 실적과 AI 자동 요약 세특 문장을 한 번에 모아 생활기록부 기재 양식 엑셀 파일로 바로 출력할 수 있습니다.
                         </span>
                       </div>
                       <button
@@ -5136,7 +5136,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           gap: '6px'
                         }}
                       >
-                        📥 엑셀 실적 데이터 출력
+                        엑셀 실적 데이터 출력
                       </button>
                     </div>
                   </div>
@@ -5194,7 +5194,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
-                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 800 }}>인스타그램 스토리 프리뷰 📱</span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 800 }}>인스타그램 스토리 프리뷰</span>
                 <button
                   onClick={() => setSelectedBadgeToShare(null)}
                   style={{
@@ -5306,9 +5306,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 0 20px rgba(255,255,255,0.4)'
+                      boxShadow: '0 0 20px rgba(255,255,255,0.4)',
+                      color: '#FFFFFF'
                     }}>
-                      {details.emoji}
+                      <span style={{ display: 'flex', transform: 'scale(1.75)' }}>{details.emoji}</span>
                     </div>
 
                     <div style={{ textAlign: 'center' }}>
@@ -5392,9 +5393,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           xp: newXp
                         });
                         
-                        onTriggerMockPush('🏆 배지 스토리 공유 보상', `인스타그램 스토리에 [${selectedBadgeToShare}] 배지를 자랑하여 50 XP가 지급되었습니다!`);
+                        onTriggerMockPush('배지 스토리 공유 보상', `인스타그램 스토리에 [${selectedBadgeToShare}] 배지를 자랑하여 50 XP가 지급되었습니다!`);
                       } else {
-                        onTriggerMockPush('✏️ 배지 스토리 공유', `인스타그램 스토리에 [${selectedBadgeToShare}] 배지를 자랑했습니다! (중복 공유로 XP는 지급되지 않습니다.)`);
+                        onTriggerMockPush('배지 스토리 공유', `인스타그램 스토리에 [${selectedBadgeToShare}] 배지를 자랑했습니다! (중복 공유로 XP는 지급되지 않습니다.)`);
                       }
                     }, 1500);
                   }}
@@ -5423,7 +5424,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </>
                   ) : (
                     <>
-                      <span>스토리 공유하고 50 XP 받기 🚀</span>
+                      <span>스토리 공유하고 50 XP 받기</span>
                     </>
                   )}
                 </button>

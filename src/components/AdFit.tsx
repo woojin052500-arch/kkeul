@@ -18,12 +18,10 @@ export const AdFitNativeCard: React.FC<AdFitProps> = React.memo(({ unit = 'DAN-V
       {/* 귀여운 문구 영역 */}
       <div style={{ marginBottom: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '8px' }}>
-          <span style={{ fontSize: '20px' }}>💖</span>
           <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#FF6B6B', margin: 0, letterSpacing: '-0.5px' }}>서버비에 큰 도움이 됩니다!</h3>
-          <span style={{ fontSize: '20px' }}>💖</span>
         </div>
         <p style={{ fontSize: '14px', fontWeight: 600, color: '#495057', margin: 0, background: 'rgba(255,255,255,0.6)', padding: '4px 12px', borderRadius: '12px' }}>
-          개발자를 위해 한 번씩만 눌러주세요 🥺
+          개발자를 위해 한 번씩만 눌러주세요
         </p>
       </div>
 
