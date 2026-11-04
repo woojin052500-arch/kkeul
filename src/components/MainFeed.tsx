@@ -533,7 +533,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       ? `[${userLocation} 추천] '${card.title}' 공고가 접수 진행 중입니다. 관심사 매칭 공고 공유.`
       : `'${card.title}' 접수 진행 중. 추천 대외활동 공고 공유.`;
       
-    const shareUrl = `${card.apply_url || 'https://kkeul.wjedulab.co.kr'}?ref=${profile.id}&annId=${card.id}`;
+    const shareUrl = `${card.apply_url || 'https://kkeul.vercel.app'}?ref=${profile.id}&annId=${card.id}`;
 
     try {
       await Share.share({
@@ -3174,9 +3174,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               </div>
               <p style={{ fontSize: '14px', color: '#4E5968', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌(Kkeul)을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <a href="https://wjedulab.vercel.app" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
+                <a href="https://telosix.co.kr" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
-                  wjedulab.vercel.app
+                  telosix.co.kr
                 </a>
                 <a href="https://namu.wiki/w/WJedulab" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><BookOpen size={13} /></span>
