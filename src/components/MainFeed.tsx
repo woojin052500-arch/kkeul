@@ -3178,9 +3178,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
                   telosix.co.kr
                 </a>
-                <a href="https://namu.wiki/w/WJedulab" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
+                <a href="https://namu.wiki/w/telosix" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><BookOpen size={13} /></span>
-                  나무위키 · WJedulab
+                  나무위키 · Telosix
                 </a>
               </div>
             </div>
