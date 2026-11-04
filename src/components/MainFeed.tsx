@@ -155,6 +155,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   // 동아리 SaaS 관련 데이터 조회
   useEffect(() => {
     const fetchClubs = async () => {
+     try {
       const schoolName = profile.school || '하나고등학교';
       const anns = await db.getClubAnnouncements(schoolName);
       setClubAnnouncements(anns);
@@ -169,6 +170,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       }
       const networking = await db.getClubNetworking();
       setClubNetworkingEvents(networking);
+     } catch (err) {
+      console.error('동아리 데이터 조회 실패:', err);
+     }
     };
     if (activeTab === 'club') {
       fetchClubs();
@@ -215,6 +219,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const handleApplyToClub = async (club: ClubAnnouncement) => {
     if (!profile) return;
     
+    try {
     await db.applyToClub({
       club_id: club.id,
       user_id: profile.id,
@@ -226,6 +231,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       user_awards: [],
       introduction_summary: `우수한 역량과 열정으로 ${club.club_name} 동아리에 꼭 합류하여 시너지를 내고 싶습니다.`
     });
+    } catch (err: any) {
+      await showAlert(err?.message || '동아리 지원에 실패했어요.');
+      return;
+    }
 
     const updatedApplied = [...appliedClubIds, club.id];
     setAppliedClubIds(updatedApplied);
@@ -251,7 +260,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     }
 
     const tags = clubRegTags ? clubRegTags.split(',').map(t => t.trim()) : ['기획', '개발'];
-    const newAnn = await db.createClubAnnouncement({
+    let newAnn: ClubAnnouncement;
+    try {
+    newAnn = await db.createClubAnnouncement({
       school: profile.school || '하나고등학교',
       club_name: clubRegName,
       title: clubRegTitle,
@@ -260,6 +271,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
       image_url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=600&auto=format&fit=crop'
     });
+    } catch (err: any) {
+      await showAlert(err?.message || '동아리 공고 등록에 실패했어요.');
+      return;
+    }
 
     setClubAnnouncements(prev => [newAnn, ...prev]);
     setClubRegName('');
@@ -273,7 +288,17 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
   // 동아리 지원자 심사 결과 업데이트 (기장)
   const handleUpdateApplicantStatus = async (appId: string, applicantName: string, status: 'approved' | 'rejected') => {
-    const success = await db.updateClubApplicantStatus(appId, status);
+    let success = false;
+    try {
+      success = await db.updateClubApplicantStatus(appId, status);
+    } catch (err: any) {
+      await showAlert(err?.message || '심사 결과를 저장하지 못했어요.');
+      return;
+    }
+    if (!success) {
+      await showAlert('이 동아리의 기장만 심사 결과를 바꿀 수 있어요.');
+      return;
+    }
     if (success) {
       setClubApplicants(prev =>
         prev.map(app => app.id === appId ? { ...app, status } : app)
@@ -533,7 +558,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       ? `[${userLocation} 추천] '${card.title}' 공고가 접수 진행 중입니다. 관심사 매칭 공고 공유.`
       : `'${card.title}' 접수 진행 중. 추천 대외활동 공고 공유.`;
       
-    const shareUrl = `${card.apply_url || 'https://kkeul.wjedulab.co.kr'}?ref=${profile.id}&annId=${card.id}`;
+    const shareUrl = `${card.apply_url || 'https://kkeul.vercel.app'}?ref=${profile.id}&annId=${card.id}`;
 
     try {
       await Share.share({
@@ -795,7 +820,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const premiumLockedAnnouncement = useMemo<Announcement>(() => ({
     id: 'ann-premium-locked',
     title: '[비공개 독점] 대기업 연계 청소년 IT 엘리트 특별 멘토링 1기',
-    host: 'WJedulab (삼성/네이버 후원)',
+    host: 'Telosix (삼성/네이버 후원)',
     category: 'IT/개발',
     deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     location: '서울',
@@ -2261,8 +2286,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           const found = clubAnnouncements.find(c => c.id === e.target.value);
                           if (found) {
                             setSelectedClub(found);
-                            const apps = await db.getClubApplicants(found.id);
-                            setClubApplicants(apps);
+                            try {
+                              setClubApplicants(await db.getClubApplicants(found.id));
+                            } catch (err) {
+                              console.error('지원자 목록 조회 실패:', err);
+                              setClubApplicants([]);
+                            }
                           }
                         }}
                         style={{ padding: '10px 12px', fontSize: '13.5px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF', outline: 'none', fontWeight: 700 }}
@@ -3157,7 +3186,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             </p>
           </div>
 
-          {/* 개발 기관 WJedulab */}
+          {/* 개발 기관 Telosix */}
           <div>
             <div style={{ padding: '0 8px', marginBottom: '12px' }}>
               <span style={{ fontSize: '15px', fontWeight: 700, color: '#333D4B', letterSpacing: '-0.3px' }}>개발 기관</span>
@@ -3168,19 +3197,19 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   <School size={22} strokeWidth={1.75} color="#4E5968" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>WJedulab</h3>
+                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>Telosix</h3>
                   <span style={{ fontSize: '12px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '4px 8px' }}>Kkeul 개발 기관</span>
                 </div>
               </div>
               <p style={{ fontSize: '14px', color: '#4E5968', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌(Kkeul)을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <a href="https://wjedulab.vercel.app" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
+                <a href="https://telosix.co.kr" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
-                  wjedulab.vercel.app
+                  telosix.co.kr
                 </a>
-                <a href="https://namu.wiki/w/WJedulab" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
+                <a href="https://namu.wiki/w/telosix" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><BookOpen size={13} /></span>
-                  나무위키 · WJedulab
+                  나무위키 · Telosix
                 </a>
               </div>
             </div>
@@ -3491,7 +3520,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       outline: 'none',
                       backgroundColor: '#FAFBFC'
                     }}
-                    placeholder="예: WJedulab 주최 기획팀"
+                    placeholder="예: Telosix 주최 기획팀"
                   />
                 </div>
                 <button
@@ -4229,7 +4258,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         marginBottom: '64px'
       }}>
         <div style={{ fontWeight: 600, color: 'var(--text-secondary)', fontSize: '12px' }}>
-          WJedulab (더블유제이에듀랩)
+          Telosix
         </div>
         <div>
           대표자: 염우진 | 이메일: <a href="mailto:woojin052501@gmail.com" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>woojin052501@gmail.com</a>
@@ -4238,7 +4267,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           사업자등록번호: 243-09-03290
         </div>
         <div style={{ marginTop: '4px' }}>
-          기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 WJedulab. All rights reserved.
+          기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 Telosix. All rights reserved.
         </div>
       </footer>
 

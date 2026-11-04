@@ -800,6 +800,57 @@ if (!localStorage.getItem('kkeul_join_requests')) {
   localStorage.setItem('kkeul_join_requests', JSON.stringify([]));
 }
 
+// ------------------------------------------------------------------
+// 안전 기능용 헬퍼
+// ------------------------------------------------------------------
+const LOCAL_KEYS = {
+  BLOCKS: 'kkeul_blocked_user_ids'
+};
+
+const readLocal = <T,>(key: string, fallback: T): T => {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const writeLocal = (key: string, value: unknown) => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
+const localId = (prefix: string) =>
+  `${prefix}-${Math.random().toString(36).substring(2, 9)}-${Date.now().toString(36)}`;
+
+// 체험용 예시 데이터나 로컬 계정이 만든 항목은 UUID가 아니므로 DB로 보내지 않는다.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isLocalOnlyId = (id: string) => !UUID_RE.test(id);
+
+// Supabase 로그인 세션의 사용자 ID (없으면 로컬/체험 모드)
+export const getSessionUserId = async (): Promise<string | null> => {
+  try {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.user.id ?? null;
+  } catch {
+    return null;
+  }
+};
+
+// DB가 쓰기를 거절했을 때 이용 정지 여부를 확인해 알아듣기 쉬운 오류로 바꾼다.
+const explainWriteError = async (error: { code?: string; message: string }): Promise<Error> => {
+  if (error.code === '42501') {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data } = await supabase.from('suspended_users').select('user_id').eq('user_id', uid).maybeSingle();
+      if (data) return new Error('이용이 정지된 계정이라 글을 올리거나 요청을 보낼 수 없어요.');
+    }
+    return new Error('권한이 없어 저장하지 못했어요.');
+  }
+  if (error.code === '23505') return new Error('이미 처리된 요청이에요.');
+  return new Error(error.message);
+};
+
 const ensurePortfolioDefaults = (profile: Profile): Profile => profile;
 
 export const db = {
@@ -898,6 +949,13 @@ export const db = {
         if (error && error.code !== 'PGRST116') throw error;
         if (data) {
           const profileWithDefaults = ensurePortfolioDefaults(data as Profile);
+          // 연락처는 별도 테이블. 본인 것만(또는 수락된 상대만) DB가 돌려준다.
+          try {
+            const ownContact = await db.getContact(profileWithDefaults.id);
+            if (ownContact) profileWithDefaults.contact = ownContact;
+          } catch (contactErr) {
+            console.warn('연락처 조회 실패:', contactErr);
+          }
           const localProfiles = localStorage.getItem('kkeul_mock_profiles');
           const profiles = localProfiles ? JSON.parse(localProfiles) : [];
           const idx = profiles.findIndex((p: any) => p.email === email);
@@ -971,18 +1029,27 @@ export const db = {
               xp: profileWithDefaults.xp,
               badges: profileWithDefaults.badges,
               role: profileWithDefaults.role,
-              contact: profileWithDefaults.contact
+              ...(profileWithDefaults.age_over14_confirmed
+                ? {
+                    age_over14_confirmed: true,
+                    age_over14_confirmed_at: profileWithDefaults.age_over14_confirmed_at
+                  }
+                : {})
             })
             .eq('id', profileWithDefaults.id);
           error = err;
         } else {
-          const { major, ...remoteProfile } = profileWithDefaults;
+          // 연락처는 profiles 가 아니라 user_contacts 에 저장한다. agreeDisclaimer 는 DB 컬럼이 아니다.
+          const { major, contact, phone_number, agreeDisclaimer, ...remoteProfile } = profileWithDefaults;
           const { error: err } = await supabase
             .from('profiles')
             .insert(remoteProfile);
           error = err;
         }
         if (error) throw error;
+        if (profileWithDefaults.contact !== undefined) {
+          await db.saveMyContact(profileWithDefaults.contact || '');
+        }
       } catch (err: any) {
         console.error('Supabase 프로필 저장 실패:', err);
         // alert('Supabase 프로필 저장 오류: ' + JSON.stringify(err));
@@ -1237,116 +1304,250 @@ export const db = {
       }));
   },
 
-  // 12. 팀 빌딩 구인글 목록 조회
+  // ------------------------------------------------------------------
+  // 팀 빌딩 · 신고 · 차단 · 연락처 · 동아리
+  // Supabase 로그인 세션이 있으면 DB(RLS 적용)를 쓰고,
+  // 세션이 없는 로컬/체험 계정이면 기존처럼 이 기기의 localStorage 를 씁니다.
+  // ------------------------------------------------------------------
+
+  // 12. 팀 빌딩 구인글 목록 조회 (신고로 숨겨진 글·내가 차단한 사람의 글 제외)
   async getTeamPosts(announcementId: string): Promise<TeamPost[]> {
-    const local = localStorage.getItem('kkeul_team_posts');
-    const posts: TeamPost[] = local ? JSON.parse(local) : [];
-    return posts.filter(p => p.announcement_id === announcementId);
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('team_posts')
+        .select('*')
+        .eq('announcement_id', announcementId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []) as TeamPost[];
+    }
+    const blocked = readLocal<string[]>(LOCAL_KEYS.BLOCKS, []);
+    return readLocal<TeamPost[]>('kkeul_team_posts', [])
+      .filter(p => p.announcement_id === announcementId)
+      .filter(p => !p.is_hidden && !blocked.includes(p.user_id));
   },
 
   // 13. 팀 빌딩 구인글 작성
-  async createTeamPost(post: Omit<TeamPost, 'id' | 'created_at'>): Promise<TeamPost> {
-    const newId = 'team-post-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
-    const fullPost: TeamPost = {
-      ...post,
-      id: newId,
-      created_at: new Date().toISOString()
-    };
-    const local = localStorage.getItem('kkeul_team_posts');
-    const posts: TeamPost[] = local ? JSON.parse(local) : [];
-    posts.unshift(fullPost);
-    localStorage.setItem('kkeul_team_posts', JSON.stringify(posts));
+  async createTeamPost(post: Pick<TeamPost, 'announcement_id' | 'user_id' | 'user_name' | 'role_wanted' | 'my_role' | 'comment'>): Promise<TeamPost> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('team_posts')
+        .insert({ ...post, user_id: uid })
+        .select('*')
+        .single();
+      if (error) throw await explainWriteError(error);
+      return data as TeamPost;
+    }
+    const fullPost: TeamPost = { ...post, id: localId('team-post'), created_at: new Date().toISOString() };
+    writeLocal('kkeul_team_posts', [fullPost, ...readLocal<TeamPost[]>('kkeul_team_posts', [])]);
     return fullPost;
   },
 
   // 14. 팀 합류 요청 보내기
-  async sendJoinRequest(req: Omit<JoinRequest, 'id' | 'created_at'>): Promise<JoinRequest> {
-    const newId = 'join-req-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
-    const fullReq: JoinRequest = {
-      ...req,
-      id: newId,
-      created_at: new Date().toISOString()
-    };
-    const local = localStorage.getItem('kkeul_join_requests');
-    const requests: JoinRequest[] = local ? JSON.parse(local) : [];
-    requests.push(fullReq);
-    localStorage.setItem('kkeul_join_requests', JSON.stringify(requests));
+  async sendJoinRequest(req: Pick<JoinRequest, 'post_id' | 'user_id' | 'user_name' | 'user_role' | 'message'>): Promise<JoinRequest> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('join_requests')
+        .insert({ ...req, user_id: uid })
+        .select('*')
+        .single();
+      if (error) throw await explainWriteError(error);
+      return data as JoinRequest;
+    }
+    const fullReq: JoinRequest = { ...req, id: localId('join-req'), status: 'pending', created_at: new Date().toISOString() };
+    writeLocal('kkeul_join_requests', [...readLocal<JoinRequest[]>('kkeul_join_requests', []), fullReq]);
     return fullReq;
   },
 
-  // 15. 팀 합류 요청 조회
+  // 15. 내 구인글에 들어온 합류 요청 (신고로 숨겨진 요청·차단한 사람의 요청 제외)
   async getJoinRequests(postId: string): Promise<JoinRequest[]> {
-    const local = localStorage.getItem('kkeul_join_requests');
-    const requests: JoinRequest[] = local ? JSON.parse(local) : [];
-    return requests.filter(r => r.post_id === postId);
-  },
-
-  // 16. 교내 동아리 공고 목록 조회
-  async getClubAnnouncements(schoolName: string): Promise<ClubAnnouncement[]> {
-    const local = localStorage.getItem('kkeul_club_announcements');
-    const anns: ClubAnnouncement[] = local ? JSON.parse(local) : [];
-    // 만약 학교명이 빈값이거나 전국/전체인 경우 모두 노출하고, 아니면 해당 학교 공고만 필터
-    if (!schoolName || schoolName === '전국' || schoolName === '전체') {
-      return anns;
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('join_requests')
+        .select('*')
+        .eq('post_id', postId)
+        .neq('user_id', uid)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return (data || []) as JoinRequest[];
     }
-    return anns.filter(a => a.school === schoolName);
+    const blocked = readLocal<string[]>(LOCAL_KEYS.BLOCKS, []);
+    return readLocal<JoinRequest[]>('kkeul_join_requests', [])
+      .filter(r => r.post_id === postId && !r.is_hidden && !blocked.includes(r.user_id));
   },
 
-  // 17. 교내 동아리 공고 작성
+  // 15-1. 내가 보낸 합류 요청들 (상태 확인용)
+  async getMyJoinRequests(userId: string): Promise<JoinRequest[]> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase.from('join_requests').select('*').eq('user_id', uid);
+      if (error) throw error;
+      return (data || []) as JoinRequest[];
+    }
+    return readLocal<JoinRequest[]>('kkeul_join_requests', []).filter(r => r.user_id === userId);
+  },
+
+  // 15-2. 합류 요청 수락 / 거절 (구인글 작성자만 가능 — DB에서 강제)
+  async updateJoinRequestStatus(requestId: string, status: 'accepted' | 'rejected'): Promise<void> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('join_requests')
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq('id', requestId)
+        .select('id');
+      if (error) throw error;
+      if (!data || data.length === 0) throw new Error('이 요청의 상태를 바꿀 권한이 없어요.');
+      return;
+    }
+    const all = readLocal<JoinRequest[]>('kkeul_join_requests', []);
+    writeLocal('kkeul_join_requests', all.map(r => (r.id === requestId ? { ...r, status } : r)));
+  },
+
+  // 15-3. 신고 → DB 트리거가 대상을 즉시 숨김
+  async reportContent(targetType: 'team_post' | 'join_request', targetId: string, reason: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { error } = await supabase
+        .from('reports')
+        .insert({ reporter_id: uid, target_type: targetType, target_id: targetId, reason: reason || null });
+      // 같은 대상을 이미 신고했다면(unique 위반) 이미 숨겨진 상태이므로 성공으로 처리
+      if (error && error.code !== '23505') throw error;
+      return;
+    }
+    const key = targetType === 'team_post' ? 'kkeul_team_posts' : 'kkeul_join_requests';
+    const items = readLocal<Array<{ id: string; is_hidden?: boolean }>>(key, []);
+    writeLocal(key, items.map(it => (it.id === targetId ? { ...it, is_hidden: true } : it)));
+  },
+
+  // 15-4. 차단 (상대에게 알리지 않음)
+  async blockUser(targetUserId: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      if (uid === targetUserId) return;
+      const { error } = await supabase.from('user_blocks').insert({ blocker_id: uid, blocked_id: targetUserId });
+      if (error && error.code !== '23505') throw error;
+      return;
+    }
+    const blocked = readLocal<string[]>(LOCAL_KEYS.BLOCKS, []);
+    if (!blocked.includes(targetUserId)) writeLocal(LOCAL_KEYS.BLOCKS, [...blocked, targetUserId]);
+  },
+
+  // 15-5. 연락처 조회 — 본인 또는 합류 요청이 수락된 상대만 DB가 돌려줌
+  async getContact(userId: string): Promise<string | null> {
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('user_contacts')
+        .select('contact, phone_number')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? (data.contact || data.phone_number || null) : null;
+    }
+    const mine = readLocal<Profile | null>(STORAGE_KEYS.PROFILE, null);
+    return mine && mine.id === userId ? mine.contact || null : null;
+  },
+
+  // 15-6. 내 연락처 저장 (프로필과 분리된 테이블)
+  async saveMyContact(contact: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) return; // 로컬 계정은 프로필(localStorage)에만 저장
+    const { error } = await supabase
+      .from('user_contacts')
+      .upsert({ user_id: uid, contact: contact || null, updated_at: new Date().toISOString() });
+    if (error) throw error;
+  },
+
+  // 16. 교내 동아리 공고 목록 조회 (DB 공고 + 체험용 예시 공고)
+  async getClubAnnouncements(schoolName: string): Promise<ClubAnnouncement[]> {
+    const showAll = !schoolName || schoolName === '전국' || schoolName === '전체';
+    let remote: ClubAnnouncement[] = [];
+    if (await getSessionUserId()) {
+      let query = supabase.from('club_announcements').select('*').order('created_at', { ascending: false });
+      if (!showAll) query = query.eq('school', schoolName);
+      const { data, error } = await query;
+      if (error) console.warn('동아리 공고 조회 실패:', error);
+      else remote = (data || []) as ClubAnnouncement[];
+    }
+    const local = readLocal<ClubAnnouncement[]>('kkeul_club_announcements', [])
+      .filter(a => showAll || a.school === schoolName)
+      .filter(a => !remote.some(r => r.id === a.id));
+    return [...remote, ...local];
+  },
+
+  // 17. 교내 동아리 공고 작성 (작성자가 그 동아리의 기장이 됨)
   async createClubAnnouncement(ann: Omit<ClubAnnouncement, 'id' | 'created_at'>): Promise<ClubAnnouncement> {
-    const newId = 'club-ann-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
-    const fullAnn: ClubAnnouncement = {
-      ...ann,
-      id: newId,
-      created_at: new Date().toISOString()
-    };
-    const local = localStorage.getItem('kkeul_club_announcements');
-    const anns: ClubAnnouncement[] = local ? JSON.parse(local) : [];
-    anns.unshift(fullAnn);
-    localStorage.setItem('kkeul_club_announcements', JSON.stringify(anns));
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { data, error } = await supabase
+        .from('club_announcements')
+        .insert({ ...ann, leader_id: uid })
+        .select('*')
+        .single();
+      if (error) throw await explainWriteError(error);
+      return data as ClubAnnouncement;
+    }
+    const fullAnn: ClubAnnouncement = { ...ann, id: localId('club-ann'), created_at: new Date().toISOString() };
+    writeLocal('kkeul_club_announcements', [fullAnn, ...readLocal<ClubAnnouncement[]>('kkeul_club_announcements', [])]);
     return fullAnn;
   },
 
   // 18. 동아리 지원 신청
   async applyToClub(app: Omit<ClubApplicant, 'id' | 'created_at' | 'status'>): Promise<ClubApplicant> {
-    const newId = 'club-app-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
-    const fullApp: ClubApplicant = {
-      ...app,
-      id: newId,
-      status: 'pending',
-      created_at: new Date().toISOString()
-    };
-    const local = localStorage.getItem('kkeul_club_applicants');
-    const applicants: ClubApplicant[] = local ? JSON.parse(local) : [];
-    applicants.push(fullApp);
-    localStorage.setItem('kkeul_club_applicants', JSON.stringify(applicants));
+    const uid = await getSessionUserId();
+    if (uid && !isLocalOnlyId(app.club_id)) {
+      const { data, error } = await supabase
+        .from('club_applications')
+        .insert({ ...app, user_id: uid })
+        .select('*')
+        .single();
+      if (error) throw await explainWriteError(error);
+      return data as ClubApplicant;
+    }
+    const fullApp: ClubApplicant = { ...app, id: localId('club-app'), status: 'pending', created_at: new Date().toISOString() };
+    writeLocal('kkeul_club_applicants', [...readLocal<ClubApplicant[]>('kkeul_club_applicants', []), fullApp]);
     return fullApp;
   },
 
-  // 19. 동아리별 지원자 목록 조회
-    async getClubNetworking(): Promise<ClubNetworking[]> {
-    const raw = localStorage.getItem('kkeul_club_networking');
-    return raw ? JSON.parse(raw) : [];
+  async getClubNetworking(): Promise<ClubNetworking[]> {
+    return readLocal<ClubNetworking[]>('kkeul_club_networking', []);
   },
 
+  // 19. 동아리별 지원자 목록 — DB 동아리는 기장만 받아볼 수 있음(지원자는 자기 것만)
   async getClubApplicants(clubId: string): Promise<ClubApplicant[]> {
-    const local = localStorage.getItem('kkeul_club_applicants');
-    const applicants: ClubApplicant[] = local ? JSON.parse(local) : [];
-    return applicants.filter(a => a.club_id === clubId);
+    if (!isLocalOnlyId(clubId) && (await getSessionUserId())) {
+      const { data, error } = await supabase
+        .from('club_applications')
+        .select('*')
+        .eq('club_id', clubId)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return (data || []) as ClubApplicant[];
+    }
+    return readLocal<ClubApplicant[]>('kkeul_club_applicants', []).filter(a => a.club_id === clubId);
   },
 
-  // 20. 동아리 지원 심사 상태 업데이트
+  // 20. 동아리 지원 심사 상태 업데이트 (기장만 가능 — DB에서 강제)
   async updateClubApplicantStatus(appId: string, status: 'approved' | 'rejected'): Promise<boolean> {
-    const local = localStorage.getItem('kkeul_club_applicants');
-    if (local) {
-      const applicants: ClubApplicant[] = JSON.parse(local);
-      const idx = applicants.findIndex(a => a.id === appId);
-      if (idx >= 0) {
-        applicants[idx].status = status;
-        localStorage.setItem('kkeul_club_applicants', JSON.stringify(applicants));
-        return true;
-      }
+    if (!isLocalOnlyId(appId) && (await getSessionUserId())) {
+      const { data, error } = await supabase
+        .from('club_applications')
+        .update({ status })
+        .eq('id', appId)
+        .select('id');
+      if (error) throw error;
+      return !!data && data.length > 0;
     }
-    return false;
+    const applicants = readLocal<ClubApplicant[]>('kkeul_club_applicants', []);
+    const idx = applicants.findIndex(a => a.id === appId);
+    if (idx < 0) return false;
+    applicants[idx].status = status;
+    writeLocal('kkeul_club_applicants', applicants);
+    return true;
   }
 };

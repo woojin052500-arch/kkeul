@@ -13,6 +13,8 @@ export interface Profile {
   contact?: string;
   created_at?: string;
   agreeDisclaimer?: boolean; // 면책 조항 동의 여부
+  age_over14_confirmed?: boolean; // '만 14세 이상' 확인 체크 여부 (생년월일은 저장하지 않음)
+  age_over14_confirmed_at?: string; // 체크한 시각
   bio?: string;
   custom_theme?: string;
   phone_number?: string;
@@ -62,7 +64,8 @@ export interface TeamPost {
   role_wanted: '기획' | '디자인' | '개발';
   my_role: '기획' | '디자인' | '개발';
   comment: string;
-  contact: string;
+  contact?: string; // 예전 로컬 예시 데이터에만 있음. 연락처는 수락된 상대에게만 user_contacts 로 공개
+  is_hidden?: boolean; // 신고되면 true
   created_at: string;
 }
 
@@ -73,7 +76,10 @@ export interface JoinRequest {
   user_name: string;
   user_role: string;
   message: string;
+  status?: 'pending' | 'accepted' | 'rejected';
+  is_hidden?: boolean; // 신고되면 true
   created_at: string;
+  updated_at?: string;
 }
 
 export interface ClubAnnouncement {
