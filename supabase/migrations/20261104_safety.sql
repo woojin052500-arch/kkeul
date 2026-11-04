@@ -14,6 +14,43 @@
 create extension if not exists pgcrypto;
 
 -- --------------------------------------------------------------------------
+-- 예전에 만들어 둔 같은 이름의 테이블이 있으면(앱에서 쓰지 않던 옛 구조)
+-- 지우지 않고 <이름>_legacy_20261104 로 이름을 바꿔 보관한 뒤 새로 만듭니다.
+-- 필요한 컬럼이 모두 있는 테이블(이 스크립트로 이미 만든 것)은 그대로 둡니다.
+-- --------------------------------------------------------------------------
+do $$
+declare
+  spec record;
+  missing int;
+begin
+  for spec in
+    select * from (values
+      ('suspended_users',    array['user_id','reason','created_at']),
+      ('user_blocks',        array['blocker_id','blocked_id','created_at']),
+      ('team_posts',         array['id','announcement_id','user_id','user_name','my_role','role_wanted','comment','is_hidden','created_at']),
+      ('join_requests',      array['id','post_id','user_id','user_name','user_role','message','status','is_hidden','created_at','updated_at']),
+      ('user_contacts',      array['user_id','contact','phone_number','updated_at']),
+      ('reports',            array['id','reporter_id','target_type','target_id','reason','created_at']),
+      ('club_announcements', array['id','leader_id','school','club_name','title','details','tags','deadline','image_url','created_at']),
+      ('club_applications',  array['id','club_id','user_id','user_name','user_school','user_grade','user_contact','user_skills','user_awards','introduction_summary','status','created_at'])
+    ) as t(tbl, cols)
+  loop
+    if to_regclass('public.' || spec.tbl) is not null then
+      select count(*) into missing
+      from unnest(spec.cols) c
+      where not exists (
+        select 1 from information_schema.columns
+        where table_schema = 'public' and table_name = spec.tbl and column_name = c
+      );
+      if missing > 0 then
+        execute format('alter table public.%I rename to %I', spec.tbl, spec.tbl || '_legacy_20261104');
+        raise notice '옛 구조의 % 테이블을 %_legacy_20261104 로 옮겼습니다.', spec.tbl, spec.tbl;
+      end if;
+    end if;
+  end loop;
+end $$;
+
+-- --------------------------------------------------------------------------
 -- 0. 이용 정지
 --    정지: insert into public.suspended_users (user_id, reason) values ('<uuid>', '사유');
 --    해제: delete from public.suspended_users where user_id = '<uuid>';
