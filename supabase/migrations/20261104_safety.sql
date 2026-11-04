@@ -372,3 +372,69 @@ grant select, insert, update on public.user_contacts to authenticated;
 grant select, insert on public.reports to authenticated;
 grant select, insert, delete on public.club_announcements to authenticated;
 grant select, insert on public.club_applications to authenticated;
+
+-- --------------------------------------------------------------------------
+-- 8. 약관 동의 기록 (선택 동의 포함)
+-- --------------------------------------------------------------------------
+alter table public.profiles
+  add column if not exists terms_version          text,
+  add column if not exists terms_agreed_at        timestamptz,
+  add column if not exists competency_consent     boolean not null default false,
+  add column if not exists competency_consent_at  timestamptz;
+
+-- --------------------------------------------------------------------------
+-- 9. profiles 권한 잠그기
+--    예전 정책(누구나 모든 프로필 읽기/수정)을 모두 지우고, 본인 행만 읽고 쓰게 합니다.
+--    다른 사람 정보가 필요한 곳은 아래 함수로 필요한 항목만 돌려줍니다.
+-- --------------------------------------------------------------------------
+alter table public.profiles enable row level security;
+do $$
+declare pol record;
+begin
+  for pol in select policyname from pg_policies where schemaname = 'public' and tablename = 'profiles' loop
+    execute format('drop policy %I on public.profiles', pol.policyname);
+  end loop;
+end $$;
+create policy "profiles: read own"   on public.profiles for select to authenticated using (id = auth.uid());
+create policy "profiles: insert own" on public.profiles for insert to authenticated with check (id = auth.uid());
+create policy "profiles: update own" on public.profiles for update to authenticated
+  using (id = auth.uid()) with check (id = auth.uid());
+revoke all on public.profiles from anon;
+
+-- 주최 측 "조건에 맞는 학생 수" 계산용. 이름·이메일·ID 없이 매칭에 필요한 항목만.
+create or replace function public.matching_profiles()
+returns table (role text, location text, grade text, interests jsonb)
+language sql stable security definer set search_path = public as $$
+  select p.role::text,
+         p.location::text,
+         p.grade::text,
+         coalesce(to_jsonb(p) -> 'interests', '[]'::jsonb)
+  from public.profiles p;
+$$;
+revoke all on function public.matching_profiles() from public, anon;
+grant execute on function public.matching_profiles() to authenticated;
+
+-- 명함 QR(kkeul.vercel.app/p/<ID 앞 8자리>)로 여는 공개 프로필.
+-- 학교·지역·이메일·연락처는 내보내지 않습니다.
+create or replace function public.public_profile(short_id text)
+returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object(
+    'name',           p.name,
+    'grade',          to_jsonb(p) ->> 'grade',
+    'bio',            to_jsonb(p) ->> 'bio',
+    'interests',      coalesce(to_jsonb(p) -> 'interests', '[]'::jsonb),
+    'badges',         coalesce(to_jsonb(p) -> 'badges', '[]'::jsonb),
+    'awards',         coalesce(to_jsonb(p) -> 'awards', '[]'::jsonb),
+    'portfolio_urls', coalesce(to_jsonb(p) -> 'portfolio_urls', '[]'::jsonb),
+    'xp',             coalesce((to_jsonb(p) ->> 'xp')::int, 0)
+  )
+  from public.profiles p
+  where short_id ~ '^[0-9a-f]{8}$'
+    and p.id::text like short_id || '-%'
+    and coalesce(to_jsonb(p) ->> 'role', 'student') <> 'host'
+    and not public.is_suspended(p.id)
+  limit 1;
+$$;
+revoke all on function public.public_profile(text) from public;
+grant execute on function public.public_profile(text) to anon, authenticated;

@@ -15,6 +15,10 @@ export interface Profile {
   agreeDisclaimer?: boolean; // 면책 조항 동의 여부
   age_over14_confirmed?: boolean; // '만 14세 이상' 확인 체크 여부 (생년월일은 저장하지 않음)
   age_over14_confirmed_at?: string; // 체크한 시각
+  terms_version?: string; // 동의한 이용약관 버전
+  terms_agreed_at?: string;
+  competency_consent?: boolean; // [선택] 역량 진단 정보 이용 동의
+  competency_consent_at?: string;
   bio?: string;
   custom_theme?: string;
   phone_number?: string;
