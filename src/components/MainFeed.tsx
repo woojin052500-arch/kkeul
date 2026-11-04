@@ -795,7 +795,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const premiumLockedAnnouncement = useMemo<Announcement>(() => ({
     id: 'ann-premium-locked',
     title: '[비공개 독점] 대기업 연계 청소년 IT 엘리트 특별 멘토링 1기',
-    host: 'WJedulab (삼성/네이버 후원)',
+    host: 'Telosix (삼성/네이버 후원)',
     category: 'IT/개발',
     deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     location: '서울',
@@ -3157,7 +3157,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             </p>
           </div>
 
-          {/* 개발 기관 WJedulab */}
+          {/* 개발 기관 Telosix */}
           <div>
             <div style={{ padding: '0 8px', marginBottom: '12px' }}>
               <span style={{ fontSize: '15px', fontWeight: 700, color: '#333D4B', letterSpacing: '-0.3px' }}>개발 기관</span>
@@ -3168,7 +3168,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   <School size={22} strokeWidth={1.75} color="#4E5968" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>WJedulab</h3>
+                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>Telosix</h3>
                   <span style={{ fontSize: '12px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '4px 8px' }}>Kkeul 개발 기관</span>
                 </div>
               </div>
@@ -3491,7 +3491,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       outline: 'none',
                       backgroundColor: '#FAFBFC'
                     }}
-                    placeholder="예: WJedulab 주최 기획팀"
+                    placeholder="예: Telosix 주최 기획팀"
                   />
                 </div>
                 <button
@@ -4229,7 +4229,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         marginBottom: '64px'
       }}>
         <div style={{ fontWeight: 600, color: 'var(--text-secondary)', fontSize: '12px' }}>
-          WJedulab (더블유제이에듀랩)
+          Telosix
         </div>
         <div>
           대표자: 염우진 | 이메일: <a href="mailto:woojin052501@gmail.com" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>woojin052501@gmail.com</a>
@@ -4238,7 +4238,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           사업자등록번호: 243-09-03290
         </div>
         <div style={{ marginTop: '4px' }}>
-          기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 WJedulab. All rights reserved.
+          기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 Telosix. All rights reserved.
         </div>
       </footer>
 

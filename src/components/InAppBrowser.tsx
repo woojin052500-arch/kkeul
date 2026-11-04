@@ -84,7 +84,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
               <CheckCircle2 size={64} style={{ color: 'var(--color-indigo)' }} />
               <h2 style={{ color: 'var(--text-primary)', fontWeight: 800 }}>지원서 제출 완료!</h2>
               <p style={{ color: 'var(--text-secondary)', maxWidth: '300px' }}>
-                축하합니다! WJedulab 시스템을 통해 공식 접수 사이트로 지원서가 접수되었습니다.<br />
+                축하합니다! Telosix 시스템을 통해 공식 접수 사이트로 지원서가 접수되었습니다.<br />
                 잠시 후 끌(Kkeul) 메인 화면으로 돌아갑니다.
               </p>
             </div>
