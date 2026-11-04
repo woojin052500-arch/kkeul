@@ -4316,6 +4316,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         <div>
           사업자등록번호: 243-09-03290
         </div>
+        <div style={{ marginTop: '4px', display: 'flex', gap: '12px' }}>
+          <button type="button" onClick={() => setOpenLegalDoc('terms')} style={{ border: 'none', background: 'none', padding: 0, font: 'inherit', color: 'var(--text-secondary)', cursor: 'pointer' }}>이용약관</button>
+          <button type="button" onClick={() => setOpenLegalDoc('policy')} style={{ border: 'none', background: 'none', padding: 0, font: 'inherit', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>개인정보 처리방침</button>
+        </div>
         <div style={{ marginTop: '4px' }}>
           기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 Telosix. All rights reserved.
         </div>

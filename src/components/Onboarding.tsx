@@ -501,6 +501,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
                 가입하면 서비스 제공에 꼭 필요한 개인정보를 처리하고, 데이터 저장을 위해 국외 서버를 이용해요.
                 자세한 내용은 <button type="button" onClick={() => setOpenDoc('privacy')}>개인정보 수집·이용 안내</button>와{' '}
                 <button type="button" onClick={() => setOpenDoc('overseas')}>국외 이전 안내</button>에서 확인할 수 있어요.
+                전체 내용은 <button type="button" onClick={() => setOpenDoc('policy')}>개인정보 처리방침</button>에 있어요.
               </div>
             </div>
 

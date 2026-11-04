@@ -12,6 +12,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Browser } from '@capacitor/browser';
 import { App as CapacitorApp } from '@capacitor/app';
 import { PublicProfile } from './components/PublicProfile';
+import { AppInstallBanner } from './components/AppInstallBanner';
 import {
   parseDeepLink,
   findAnnouncementForLink,
@@ -648,12 +649,18 @@ function App() {
   };
 
   if (initialDeepLink?.kind === 'profile') {
-    return <PublicProfile shortId={initialDeepLink.shortId} />;
+    return (
+      <>
+        <AppInstallBanner />
+        <PublicProfile shortId={initialDeepLink.shortId} />
+      </>
+    );
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', position: 'relative' }}>
-      
+      <AppInstallBanner />
+
       {/* 0. Startup Loading Overlay */}
       {isLoading && (
         <div style={{
