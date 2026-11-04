@@ -41,6 +41,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
   const [contact, setContact] = useState<string>('');
   // Terms Agreement states
   const [agreeAge, setAgreeAge] = useState<boolean>(false);
+  // 생년월일은 나이 계산에만 쓰고 어디에도 저장하지 않는다(상태에도 날짜를 두지 않음).
+  const [ageStatus, setAgeStatus] = useState<'unknown' | 'ok' | 'under'>('unknown');
+  const [ageConfirmedAt, setAgeConfirmedAt] = useState<string | null>(null);
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
   const [agreePrivacy, setAgreePrivacy] = useState<boolean>(false);
   const [agreeOverseas, setAgreeOverseas] = useState<boolean>(false);
@@ -54,9 +57,30 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
 
 
 
+  const setAgeAgreed = (value: boolean) => {
+    setAgreeAge(value);
+    setAgeConfirmedAt(value ? new Date().toISOString() : null);
+  };
+
+  const handleBirthDateChange = (value: string) => {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) {
+      setAgeStatus('unknown');
+      setAgeAgreed(false);
+      return;
+    }
+    const [, y, m, d] = match.map(Number);
+    const today = new Date();
+    let age = today.getFullYear() - y;
+    if (today.getMonth() + 1 < m || (today.getMonth() + 1 === m && today.getDate() < d)) age -= 1;
+    const ok = age >= 14;
+    setAgeStatus(ok ? 'ok' : 'under');
+    if (!ok) setAgeAgreed(false);
+  };
+
   const handleAllAgree = () => {
     const nextVal = !(agreeAge && agreeTerms && agreePrivacy && agreeOverseas && agreeDisclaimer && agreeCompetency);
-    setAgreeAge(nextVal);
+    setAgeAgreed(nextVal && ageStatus === 'ok');
     setAgreeTerms(nextVal);
     setAgreePrivacy(nextVal);
     setAgreeOverseas(nextVal);
@@ -136,7 +160,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
         xp: invitationCode.trim() ? 200 : 100,
         badges: [],
         role: 'student',
-        agreeDisclaimer: true
+        agreeDisclaimer: true,
+        age_over14_confirmed: true,
+        age_over14_confirmed_at: ageConfirmedAt || new Date().toISOString()
       };
 
       const saved = await db.saveProfile(newProfile);
@@ -175,7 +201,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
         badges: [],
         role: 'host',
         contact: contact,
-        agreeDisclaimer: true
+        agreeDisclaimer: true,
+        age_over14_confirmed: true,
+        age_over14_confirmed_at: ageConfirmedAt || new Date().toISOString()
       };
 
       const saved = await db.saveProfile(newProfile);
@@ -393,6 +421,24 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
               맞춤 큐레이션을 위해 아래 약관에 동의해 주세요.
             </p>
             
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
+              <label htmlFor="kkeul-birthdate" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>생년월일</label>
+              <input
+                id="kkeul-birthdate"
+                type="date"
+                max={new Date().toISOString().slice(0, 10)}
+                autoComplete="off"
+                onChange={(e) => handleBirthDateChange(e.target.value)}
+                className="input-field"
+                style={{ padding: '12px', fontSize: '15px', border: '1px solid #E5E8EB', borderRadius: '10px', background: '#FFFFFF' }}
+              />
+              <span style={{ fontSize: '12px', color: ageStatus === 'under' ? 'var(--color-red)' : 'var(--text-tertiary)' }}>
+                {ageStatus === 'under'
+                  ? '끌은 만 14세 이상만 가입할 수 있어요.'
+                  : '나이 확인에만 쓰고 저장하지 않아요.'}
+              </span>
+            </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '16px', backgroundColor: '#FAFBFC', borderRadius: '12px', border: '1px solid #E5E8EB' }}>
                 <div onClick={handleAllAgree} style={{ 
@@ -407,7 +453,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
               
               <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => setAgreeAge(!agreeAge)} style={{ 
+                  <div onClick={() => ageStatus === 'ok' && setAgeAgreed(!agreeAge)} style={{ 
                     width: '24px', height: '24px', borderRadius: '50%', 
                     backgroundColor: agreeAge ? 'var(--color-indigo)' : '#E5E8EB',
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
@@ -816,7 +862,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
           <button 
             onClick={() => setStep(5)} 
             className="btn btn-primary" 
-            disabled={!(agreeAge && agreeTerms && agreePrivacy && agreeOverseas && agreeCompetency && agreeDisclaimer)}
+            disabled={!(ageStatus === 'ok' && agreeAge && agreeTerms && agreePrivacy && agreeOverseas && agreeCompetency && agreeDisclaimer)}
           >
             동의하고 계속하기
           </button>

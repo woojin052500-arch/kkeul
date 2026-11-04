@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import type { Announcement, Profile, TeamPost } from '../types';
-import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Users, Check, Plus, Sparkles, Copy, Zap } from 'lucide-react';
+import React, { useState } from 'react';
+import type { Announcement, Profile } from '../types';
+import { TeamBoard } from './TeamBoard';
+import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Sparkles, Copy, Zap } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { Calendar } from '@awesome-cordova-plugins/calendar';
-import { db } from '../supabaseClient';
 
 interface DetailViewProps {
   announcement: Announcement;
@@ -46,28 +46,6 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
   // 신규 피처 관련 State
   const [activeDetailTab, setActiveDetailTab] = useState<'info' | 'jokbo'>('info');
-  const [teamPosts, setTeamPosts] = useState<TeamPost[]>([]);
-  const [showTeamPostModal, setShowTeamPostModal] = useState<boolean>(false);
-  const [myRole, setMyRole] = useState<'기획' | '디자인' | '개발'>('개발');
-  const [wantedRole, setWantedRole] = useState<'기획' | '디자인' | '개발'>('기획');
-  const [teamComment, setTeamComment] = useState<string>('');
-  const [teamContact, setTeamContact] = useState<string>('');
-  const [requestedPostIds, setRequestedPostIds] = useState<string[]>(() => {
-    const local = localStorage.getItem('kkeul_requested_team_posts');
-    return local ? JSON.parse(local) : [];
-  });
-
-  // 공고별 팀 포스트 조회
-  useEffect(() => {
-    const fetchTeamPosts = async () => {
-      const posts = await db.getTeamPosts(announcement.id);
-      setTeamPosts(posts);
-    };
-    fetchTeamPosts();
-    if (profile) {
-      setTeamContact(profile.contact || profile.email || '');
-    }
-  }, [announcement.id, profile]);
 
   const startAutoApply = () => {
     setIsFillingForm(true);
@@ -95,51 +73,6 @@ export const DetailView: React.FC<DetailViewProps> = ({
         return next;
       });
     }, 70);
-  };
-
-  const handleCreateTeamPost = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!teamComment.trim()) {
-      alert('동아리/대회 한줄 소개 및 각오를 입력해 주세요!');
-      return;
-    }
-    if (!teamContact.trim()) {
-      alert('연락처(전화번호 또는 카카오톡 ID 등)를 입력해 주세요!');
-      return;
-    }
-
-    const newPost = await db.createTeamPost({
-      announcement_id: announcement.id,
-      user_id: profile?.id || 'guest',
-      user_name: profile?.name || '익명 학생',
-      role_wanted: wantedRole,
-      my_role: myRole,
-      comment: teamComment,
-      contact: teamContact
-    });
-
-    setTeamPosts(prev => [newPost, ...prev]);
-    setTeamComment('');
-    setShowTeamPostModal(false);
-    alert('팀원 구인글이 등록되었습니다!');
-  };
-
-  const handleSendJoinRequest = async (post: TeamPost) => {
-    if (!profile) return;
-    
-    const updated = [...requestedPostIds, post.id];
-    setRequestedPostIds(updated);
-    localStorage.setItem('kkeul_requested_team_posts', JSON.stringify(updated));
-
-    await db.sendJoinRequest({
-      post_id: post.id,
-      user_id: profile.id,
-      user_name: profile.name,
-      user_role: '기획/개발/디자인',
-      message: `${profile.name}님이 팀 합류를 신청했습니다.`
-    });
-
-    alert(`'${post.user_name}'님께 합류 요청이 성공적으로 발송되었습니다!`);
   };
 
   const [copied, setCopied] = useState<boolean>(false);
@@ -971,121 +904,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 )}
 
                 {/* 대회 팀원 매칭 (Team-building) */}
-                {!isHostUser && (
-                  <div style={{
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '20px',
-                    padding: '20px',
-                    border: '1px solid #E5E8EB',
-                    boxShadow: '0 4px 14px rgba(0,0,0,0.02)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Users size={16} color="var(--color-indigo)" /> 대회 팀 빌딩 (Team Matching)
-                      </h3>
-                      <button
-                        onClick={() => setShowTeamPostModal(true)}
-                        style={{
-                          border: 'none',
-                          background: 'var(--color-indigo-light)',
-                          color: 'var(--color-indigo)',
-                          fontSize: '11.5px',
-                          fontWeight: 700,
-                          padding: '5px 10px',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '2px'
-                        }}
-                      >
-                        <Plus size={12} /> 구인글 등록
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {teamPosts.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-tertiary)', fontSize: '13px', border: '1.5px dashed #F2F4F6', borderRadius: '12px' }}>
-                          아직 이 대회에 등록된 팀 구인글이 없습니다.<br />
-                          첫 구인글을 올리고 함께할 팀원을 찾아보세요!
-                        </div>
-                      ) : (
-                        teamPosts.map(post => {
-                          const isMyPost = post.user_id === profile?.id;
-                          const hasRequested = requestedPostIds.includes(post.id);
-                          
-                          // Badges mapping colors
-                          const getRoleColor = (role: string) => {
-                            if (role === '개발') return { bg: '#E5F6FF', txt: '#0070F3' };
-                            if (role === '기획') return { bg: '#FFF3E0', txt: '#E65100' };
-                            return { bg: '#E8F5E9', txt: '#2E7D32' };
-                          };
-                          
-                          const myRoleColor = getRoleColor(post.my_role);
-                          const wantedRoleColor = getRoleColor(post.role_wanted);
-
-                          return (
-                            <div key={post.id} style={{
-                              border: '1px solid #E5E8EB',
-                              borderRadius: '14px',
-                              padding: '14px',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '10px',
-                              backgroundColor: '#FFFFFF',
-                              textAlign: 'left'
-                            }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                                  <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>{post.user_name}</span>
-                                  {isMyPost && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: '#F2F4F6', color: 'var(--text-secondary)', padding: '2px 5px', borderRadius: '4px' }}>내 구인글</span>}
-                                </div>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, backgroundColor: myRoleColor.bg, color: myRoleColor.txt, padding: '2px 6px', borderRadius: '4px' }}>
-                                    직무: {post.my_role}
-                                  </span>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 800, backgroundColor: wantedRoleColor.bg, color: wantedRoleColor.txt, padding: '2px 6px', borderRadius: '4px', border: '1px solid currentColor' }}>
-                                    구함: {post.role_wanted}
-                                  </span>
-                                </div>
-                              </div>
-                              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-                                {post.comment}
-                              </p>
-                              {!isMyPost && (
-                                <button
-                                  onClick={() => handleSendJoinRequest(post)}
-                                  disabled={hasRequested}
-                                  style={{
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    height: '36px',
-                                    fontSize: '12px',
-                                    fontWeight: 700,
-                                    cursor: hasRequested ? 'default' : 'pointer',
-                                    backgroundColor: hasRequested ? '#ECFDF5' : 'var(--color-indigo)',
-                                    color: hasRequested ? '#10B981' : '#FFFFFF',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '3px',
-                                    transition: 'all 0.2s ease'
-                                  }}
-                                >
-                                  {hasRequested ? <Check size={12} /> : null}
-                                  {hasRequested ? '합류 요청 완료' : '팀 합류 요청 보내기'}
-                                </button>
-                              )}
-                            </div>
-                          );
-                        })
-                      )}
-                    </div>
-                  </div>
-                )}
+                {!isHostUser && <TeamBoard announcementId={announcement.id} profile={profile} />}
               </div>
             )}
 
@@ -1521,84 +1340,6 @@ export const DetailView: React.FC<DetailViewProps> = ({
         </div>
       )}
 
-      {/* 팀원 구인 등록 모달 */}
-      {showTeamPostModal && (
-        <div className="calendar-success-overlay" onClick={() => setShowTeamPostModal(false)} style={{ zIndex: 130, backdropFilter: 'blur(5px)' }}>
-          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
-            <h3 style={{ fontSize: '17px', fontWeight: 800, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              팀원 구인글 올리기
-            </h3>
-            
-            <form onSubmit={handleCreateTeamPost} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>내 직무 역할</label>
-                <select
-                  value={myRole}
-                  onChange={(e) => setMyRole(e.target.value as any)}
-                  style={{ padding: '10px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF', outline: 'none' }}
-                >
-                  <option value="개발">개발 (Developer)</option>
-                  <option value="기획">기획 (Planner)</option>
-                  <option value="디자인">디자인 (Designer)</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>찾는 팀원 역할</label>
-                <select
-                  value={wantedRole}
-                  onChange={(e) => setWantedRole(e.target.value as any)}
-                  style={{ padding: '10px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF', outline: 'none' }}
-                >
-                  <option value="기획">기획 (Planner)</option>
-                  <option value="디자인">디자인 (Designer)</option>
-                  <option value="개발">개발 (Developer)</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>구인 한줄 소개 및 포부</label>
-                <textarea
-                  value={teamComment}
-                  onChange={(e) => setTeamComment(e.target.value)}
-                  placeholder="예: 경시대회 출전 목표이며, 기획안이 준비되어 있는 figma 웹 디자이너 한 분 모십니다!"
-                  rows={3}
-                  style={{ padding: '10px', fontSize: '13px', border: '1px solid #E5E8EB', borderRadius: '8px', resize: 'none', outline: 'none' }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>연락 정보 (전화번호, 카톡ID 등)</label>
-                <input
-                  type="text"
-                  value={teamContact}
-                  onChange={(e) => setTeamContact(e.target.value)}
-                  placeholder="예: 010-1234-5678 또는 카톡아이디 study12"
-                  style={{ padding: '10px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button
-                  type="button"
-                  onClick={() => setShowTeamPostModal(false)}
-                  className="btn btn-gray"
-                  style={{ flex: 1, height: '44px', borderRadius: '10px', fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  취소
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  style={{ flex: 2, height: '44px', borderRadius: '10px', fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  등록하기
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
     </div>
   );

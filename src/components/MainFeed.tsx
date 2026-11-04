@@ -155,6 +155,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   // 동아리 SaaS 관련 데이터 조회
   useEffect(() => {
     const fetchClubs = async () => {
+     try {
       const schoolName = profile.school || '하나고등학교';
       const anns = await db.getClubAnnouncements(schoolName);
       setClubAnnouncements(anns);
@@ -169,6 +170,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       }
       const networking = await db.getClubNetworking();
       setClubNetworkingEvents(networking);
+     } catch (err) {
+      console.error('동아리 데이터 조회 실패:', err);
+     }
     };
     if (activeTab === 'club') {
       fetchClubs();
@@ -215,6 +219,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const handleApplyToClub = async (club: ClubAnnouncement) => {
     if (!profile) return;
     
+    try {
     await db.applyToClub({
       club_id: club.id,
       user_id: profile.id,
@@ -226,6 +231,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       user_awards: [],
       introduction_summary: `우수한 역량과 열정으로 ${club.club_name} 동아리에 꼭 합류하여 시너지를 내고 싶습니다.`
     });
+    } catch (err: any) {
+      await showAlert(err?.message || '동아리 지원에 실패했어요.');
+      return;
+    }
 
     const updatedApplied = [...appliedClubIds, club.id];
     setAppliedClubIds(updatedApplied);
@@ -251,7 +260,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     }
 
     const tags = clubRegTags ? clubRegTags.split(',').map(t => t.trim()) : ['기획', '개발'];
-    const newAnn = await db.createClubAnnouncement({
+    let newAnn: ClubAnnouncement;
+    try {
+    newAnn = await db.createClubAnnouncement({
       school: profile.school || '하나고등학교',
       club_name: clubRegName,
       title: clubRegTitle,
@@ -260,6 +271,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
       image_url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=600&auto=format&fit=crop'
     });
+    } catch (err: any) {
+      await showAlert(err?.message || '동아리 공고 등록에 실패했어요.');
+      return;
+    }
 
     setClubAnnouncements(prev => [newAnn, ...prev]);
     setClubRegName('');
@@ -273,7 +288,17 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
   // 동아리 지원자 심사 결과 업데이트 (기장)
   const handleUpdateApplicantStatus = async (appId: string, applicantName: string, status: 'approved' | 'rejected') => {
-    const success = await db.updateClubApplicantStatus(appId, status);
+    let success = false;
+    try {
+      success = await db.updateClubApplicantStatus(appId, status);
+    } catch (err: any) {
+      await showAlert(err?.message || '심사 결과를 저장하지 못했어요.');
+      return;
+    }
+    if (!success) {
+      await showAlert('이 동아리의 기장만 심사 결과를 바꿀 수 있어요.');
+      return;
+    }
     if (success) {
       setClubApplicants(prev =>
         prev.map(app => app.id === appId ? { ...app, status } : app)
@@ -2261,8 +2286,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           const found = clubAnnouncements.find(c => c.id === e.target.value);
                           if (found) {
                             setSelectedClub(found);
-                            const apps = await db.getClubApplicants(found.id);
-                            setClubApplicants(apps);
+                            try {
+                              setClubApplicants(await db.getClubApplicants(found.id));
+                            } catch (err) {
+                              console.error('지원자 목록 조회 실패:', err);
+                              setClubApplicants([]);
+                            }
                           }
                         }}
                         style={{ padding: '10px 12px', fontSize: '13.5px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF', outline: 'none', fontWeight: 700 }}
