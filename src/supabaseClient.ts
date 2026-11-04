@@ -983,15 +983,21 @@ export const db = {
     return null;
   },
 
-  // 2.5. 전체 프로필 조회 (매칭 알림용)
-  async getAllProfiles(): Promise<Profile[]> {
-    if (!useLocalFallback) {
+  // 2.5. 매칭 학생 수 계산용 프로필 목록
+  //      다른 사람의 이름·이메일·ID는 받지 않고 역할·지역·학년·관심 분야만 받는다.
+  async getAllProfiles(): Promise<Pick<Profile, 'role' | 'location' | 'grade' | 'interests'>[]> {
+    if (!useLocalFallback && (await getSessionUserId())) {
       try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*');
+        const { data, error } = await supabase.rpc('matching_profiles');
         if (error) throw error;
-        if (data) return (data as Profile[]).map(p => ensurePortfolioDefaults(p));
+        if (data) {
+          return (data as Array<{ role: string; location: string; grade: string; interests: string[] | null }>).map(p => ({
+            role: (p.role as Profile['role']) || 'student',
+            location: p.location || '',
+            grade: p.grade || '',
+            interests: Array.isArray(p.interests) ? p.interests : []
+          }));
+        }
       } catch (err) {
         console.warn('Supabase profiles 조회 실패, 로컬 백업을 사용합니다.', err);
         useLocalFallback = true;
@@ -1033,6 +1039,18 @@ export const db = {
                 ? {
                     age_over14_confirmed: true,
                     age_over14_confirmed_at: profileWithDefaults.age_over14_confirmed_at
+                  }
+                : {}),
+              ...(profileWithDefaults.terms_version
+                ? {
+                    terms_version: profileWithDefaults.terms_version,
+                    terms_agreed_at: profileWithDefaults.terms_agreed_at
+                  }
+                : {}),
+              ...(profileWithDefaults.competency_consent !== undefined
+                ? {
+                    competency_consent: profileWithDefaults.competency_consent,
+                    competency_consent_at: profileWithDefaults.competency_consent_at ?? null
                   }
                 : {})
             })
@@ -1453,6 +1471,13 @@ export const db = {
     return mine && mine.id === userId ? mine.contact || null : null;
   },
 
+  // 15-5b. 명함 QR 공개 프로필 (로그인 없이 조회, 공개해도 되는 항목만 DB 함수가 돌려줌)
+  async getPublicProfile(shortId: string): Promise<Record<string, unknown> | null> {
+    const { data, error } = await supabase.rpc('public_profile', { short_id: shortId });
+    if (error) throw error;
+    return (data as Record<string, unknown> | null) ?? null;
+  },
+
   // 15-6. 내 연락처 저장 (프로필과 분리된 테이블)
   async saveMyContact(contact: string): Promise<void> {
     const uid = await getSessionUserId();
@@ -1512,6 +1537,19 @@ export const db = {
     const fullApp: ClubApplicant = { ...app, id: localId('club-app'), status: 'pending', created_at: new Date().toISOString() };
     writeLocal('kkeul_club_applicants', [...readLocal<ClubApplicant[]>('kkeul_club_applicants', []), fullApp]);
     return fullApp;
+  },
+
+  // 18-1. 내가 낸 동아리 지원서와 심사 결과
+  async getMyClubApplications(userId: string): Promise<ClubApplicant[]> {
+    const local = readLocal<ClubApplicant[]>('kkeul_club_applicants', []).filter(a => a.user_id === userId);
+    const uid = await getSessionUserId();
+    if (!uid) return local;
+    const { data, error } = await supabase.from('club_applications').select('*').eq('user_id', uid);
+    if (error) {
+      console.warn('내 동아리 지원서 조회 실패:', error);
+      return local;
+    }
+    return [...((data || []) as ClubApplicant[]), ...local];
   },
 
   async getClubNetworking(): Promise<ClubNetworking[]> {

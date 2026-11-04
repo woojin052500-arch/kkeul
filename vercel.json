@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/contest/:path*", "destination": "/index.html" },
+    { "source": "/team", "destination": "/index.html" },
+    { "source": "/p/:path*", "destination": "/index.html" }
+  ]
+}

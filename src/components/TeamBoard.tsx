@@ -54,8 +54,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
 
   const load = useCallback(async () => {
     try {
-      setLoadError(null);
       const list = await db.getTeamPosts(announcementId);
+      setLoadError(null);
       setPosts(list);
       if (!profile) return;
 
@@ -89,10 +89,6 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
   useEffect(() => {
     load();
   }, [load]);
-
-  useEffect(() => {
-    setContact(profile?.contact || '');
-  }, [profile?.contact]);
 
   const run = async (action: () => Promise<void>) => {
     if (busy) return;
@@ -198,13 +194,16 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
   };
 
   return (
-    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 14px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div id="team-board" style={{ scrollMarginTop: '72px', backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 14px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Users size={16} color="var(--color-indigo)" /> 대회 팀 빌딩
         </h3>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setContact(profile?.contact || '');
+            setShowModal(true);
+          }}
           style={{ border: 'none', background: 'var(--color-indigo-light)', color: 'var(--color-indigo)', fontSize: '11.5px', fontWeight: 700, padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
         >
           <Plus size={12} /> 구인글 등록

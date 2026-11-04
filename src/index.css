@@ -935,3 +935,336 @@ p {
   animation: pulse-ring-anim 1.5s infinite;
   z-index: 10006;
 }
+
+/* ===== 약관 보기 시트 ===== */
+.legal-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: legal-fade 0.18s ease-out;
+}
+
+.legal-sheet {
+  width: 100%;
+  max-width: 480px;
+  max-height: 86vh;
+  max-height: 86dvh;
+  background: #FFFFFF;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -8px 32px rgba(17, 24, 39, 0.18);
+  animation: legal-slide-up 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.legal-sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: #E5E8EB;
+  margin: 10px auto 0;
+  flex-shrink: 0;
+}
+
+.legal-sheet-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px 14px;
+  border-bottom: 1px solid #F2F4F6;
+  flex-shrink: 0;
+}
+
+.legal-sheet-header h2 {
+  font-size: 17px;
+  font-weight: 800;
+  margin: 0 0 4px;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.legal-sheet-header p {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.legal-sheet-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #F2F4F6;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.legal-sheet-close:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+}
+
+.legal-sheet-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 8px 20px 16px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.legal-sheet-body section {
+  padding: 12px 0;
+}
+
+.legal-sheet-body section + section {
+  border-top: 1px solid #F7F8FA;
+}
+
+.legal-sheet-body h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.legal-sheet-body p {
+  margin: 0 0 6px;
+}
+
+.legal-sheet-body ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.legal-sheet-body li {
+  margin: 2px 0;
+}
+
+.legal-sheet-version {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 8px !important;
+}
+
+.legal-sheet-footer {
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid #F2F4F6;
+  flex-shrink: 0;
+}
+
+.legal-sheet-footer .btn {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .legal-sheet-backdrop {
+    align-items: center;
+  }
+  .legal-sheet {
+    border-radius: 20px;
+    max-height: 80vh;
+  }
+  .legal-sheet-handle {
+    display: none;
+  }
+}
+
+@keyframes legal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes legal-slide-up {
+  from { transform: translateY(24px); opacity: 0.6; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legal-sheet-backdrop,
+  .legal-sheet {
+    animation: none;
+  }
+}
+
+/* 가입 약관 목록 */
+.consent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.consent-row-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.consent-row-toggle:focus-visible .consent-check {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+}
+
+.consent-row-toggle[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.consent-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #E5E8EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.consent-check[data-on="true"] {
+  background: var(--color-indigo);
+}
+
+.consent-label {
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.consent-tag {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.consent-tag[data-kind="required"] {
+  color: var(--color-indigo);
+}
+
+.consent-tag[data-kind="optional"] {
+  color: var(--text-tertiary);
+}
+
+.consent-view {
+  border: none;
+  background: none;
+  padding: 4px 0 4px 8px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.consent-notice {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background: #F7F8FA;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.consent-notice button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--color-indigo);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* ===== 앱 설치 안내 배너 (웹 전용) ===== */
+.install-banner {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 16px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E8EB;
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.04);
+}
+
+.install-banner-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid #E5E8EB;
+  object-fit: contain;
+  background: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.install-banner-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.install-banner-text strong {
+  font-size: 13.5px;
+  color: var(--text-primary);
+}
+
+.install-banner-text span {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.install-banner-cta {
+  flex-shrink: 0;
+  background: var(--color-indigo);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.install-banner-cta:focus-visible,
+.install-banner-close:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+}
+
+.install-banner-close {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

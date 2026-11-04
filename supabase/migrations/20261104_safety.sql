@@ -14,6 +14,43 @@
 create extension if not exists pgcrypto;
 
 -- --------------------------------------------------------------------------
+-- 예전에 만들어 둔 같은 이름의 테이블이 있으면(앱에서 쓰지 않던 옛 구조)
+-- 지우지 않고 <이름>_legacy_20261104 로 이름을 바꿔 보관한 뒤 새로 만듭니다.
+-- 필요한 컬럼이 모두 있는 테이블(이 스크립트로 이미 만든 것)은 그대로 둡니다.
+-- --------------------------------------------------------------------------
+do $$
+declare
+  spec record;
+  missing int;
+begin
+  for spec in
+    select * from (values
+      ('suspended_users',    array['user_id','reason','created_at']),
+      ('user_blocks',        array['blocker_id','blocked_id','created_at']),
+      ('team_posts',         array['id','announcement_id','user_id','user_name','my_role','role_wanted','comment','is_hidden','created_at']),
+      ('join_requests',      array['id','post_id','user_id','user_name','user_role','message','status','is_hidden','created_at','updated_at']),
+      ('user_contacts',      array['user_id','contact','phone_number','updated_at']),
+      ('reports',            array['id','reporter_id','target_type','target_id','reason','created_at']),
+      ('club_announcements', array['id','leader_id','school','club_name','title','details','tags','deadline','image_url','created_at']),
+      ('club_applications',  array['id','club_id','user_id','user_name','user_school','user_grade','user_contact','user_skills','user_awards','introduction_summary','status','created_at'])
+    ) as t(tbl, cols)
+  loop
+    if to_regclass('public.' || spec.tbl) is not null then
+      select count(*) into missing
+      from unnest(spec.cols) c
+      where not exists (
+        select 1 from information_schema.columns
+        where table_schema = 'public' and table_name = spec.tbl and column_name = c
+      );
+      if missing > 0 then
+        execute format('alter table public.%I rename to %I', spec.tbl, spec.tbl || '_legacy_20261104');
+        raise notice '옛 구조의 % 테이블을 %_legacy_20261104 로 옮겼습니다.', spec.tbl, spec.tbl;
+      end if;
+    end if;
+  end loop;
+end $$;
+
+-- --------------------------------------------------------------------------
 -- 0. 이용 정지
 --    정지: insert into public.suspended_users (user_id, reason) values ('<uuid>', '사유');
 --    해제: delete from public.suspended_users where user_id = '<uuid>';
@@ -34,6 +71,28 @@ create or replace function public.is_suspended(uid uuid)
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (select 1 from public.suspended_users where user_id = uid);
 $$;
+
+-- --------------------------------------------------------------------------
+-- 0-1. 앱이 쓰는 profiles 컬럼 보충 (없을 때만 추가, 있는 컬럼은 건드리지 않음)
+--      이 컬럼들이 없어서 지금까지 프로필 저장이 실패하고 기기에만 남던 문제도 함께 해결됩니다.
+-- --------------------------------------------------------------------------
+alter table public.profiles
+  add column if not exists name           text,
+  add column if not exists location       text,
+  add column if not exists grade          text,
+  add column if not exists school         text,
+  add column if not exists major          text,
+  add column if not exists interests      jsonb not null default '[]'::jsonb,
+  add column if not exists xp             integer not null default 0,
+  add column if not exists badges         jsonb not null default '[]'::jsonb,
+  add column if not exists role           text not null default 'student',
+  add column if not exists bio            text,
+  add column if not exists custom_theme   text default 'default',
+  add column if not exists social_links   jsonb not null default '{}'::jsonb,
+  add column if not exists awards         jsonb not null default '[]'::jsonb,
+  add column if not exists portfolio_urls jsonb not null default '[]'::jsonb,
+  add column if not exists play_style     jsonb not null default '{}'::jsonb,
+  add column if not exists created_at     timestamptz not null default now();
 
 -- --------------------------------------------------------------------------
 -- 1. 연령 확인 기록
@@ -335,3 +394,72 @@ grant select, insert, update on public.user_contacts to authenticated;
 grant select, insert on public.reports to authenticated;
 grant select, insert, delete on public.club_announcements to authenticated;
 grant select, insert on public.club_applications to authenticated;
+
+-- --------------------------------------------------------------------------
+-- 8. 약관 동의 기록 (선택 동의 포함)
+-- --------------------------------------------------------------------------
+alter table public.profiles
+  add column if not exists terms_version          text,
+  add column if not exists terms_agreed_at        timestamptz,
+  add column if not exists competency_consent     boolean not null default false,
+  add column if not exists competency_consent_at  timestamptz;
+
+-- --------------------------------------------------------------------------
+-- 9. profiles 권한 잠그기
+--    예전 정책(누구나 모든 프로필 읽기/수정)을 모두 지우고, 본인 행만 읽고 쓰게 합니다.
+--    다른 사람 정보가 필요한 곳은 아래 함수로 필요한 항목만 돌려줍니다.
+-- --------------------------------------------------------------------------
+alter table public.profiles enable row level security;
+do $$
+declare pol record;
+begin
+  for pol in select policyname from pg_policies where schemaname = 'public' and tablename = 'profiles' loop
+    execute format('drop policy %I on public.profiles', pol.policyname);
+  end loop;
+end $$;
+create policy "profiles: read own"   on public.profiles for select to authenticated using (id = auth.uid());
+create policy "profiles: insert own" on public.profiles for insert to authenticated with check (id = auth.uid());
+create policy "profiles: update own" on public.profiles for update to authenticated
+  using (id = auth.uid()) with check (id = auth.uid());
+revoke all on public.profiles from anon;
+
+-- 주최 측 "조건에 맞는 학생 수" 계산용. 이름·이메일·ID 없이 매칭에 필요한 항목만.
+create or replace function public.matching_profiles()
+returns table (role text, location text, grade text, interests jsonb)
+language sql stable security definer set search_path = public as $$
+  select to_jsonb(p) ->> 'role',
+         to_jsonb(p) ->> 'location',
+         to_jsonb(p) ->> 'grade',
+         case jsonb_typeof(to_jsonb(p) -> 'interests')
+           when 'array' then to_jsonb(p) -> 'interests'
+           else '[]'::jsonb
+         end
+  from public.profiles p;
+$$;
+revoke all on function public.matching_profiles() from public, anon;
+grant execute on function public.matching_profiles() to authenticated;
+
+-- 명함 QR(kkeul.vercel.app/p/<ID 앞 8자리>)로 여는 공개 프로필.
+-- 학교·지역·이메일·연락처는 내보내지 않습니다.
+create or replace function public.public_profile(short_id text)
+returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object(
+    'name',           p.name,
+    'grade',          to_jsonb(p) ->> 'grade',
+    'bio',            to_jsonb(p) ->> 'bio',
+    'interests',      coalesce(to_jsonb(p) -> 'interests', '[]'::jsonb),
+    'badges',         coalesce(to_jsonb(p) -> 'badges', '[]'::jsonb),
+    'awards',         coalesce(to_jsonb(p) -> 'awards', '[]'::jsonb),
+    'portfolio_urls', coalesce(to_jsonb(p) -> 'portfolio_urls', '[]'::jsonb),
+    'xp',             coalesce((to_jsonb(p) ->> 'xp')::int, 0)
+  )
+  from public.profiles p
+  where short_id ~ '^[0-9a-f]{8}$'
+    and p.id::text like short_id || '-%'
+    and coalesce(to_jsonb(p) ->> 'role', 'student') <> 'host'
+    and not public.is_suspended(p.id)
+  limit 1;
+$$;
+revoke all on function public.public_profile(text) from public;
+grant execute on function public.public_profile(text) to anon, authenticated;

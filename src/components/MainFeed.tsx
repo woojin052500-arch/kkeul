@@ -3,6 +3,8 @@ import { useTossModal } from '../hooks/useTossModal';
 import type { Announcement, Profile, ClubAnnouncement, ClubApplicant } from '../types';
 import { Home, Bookmark, Users, User, Star, MapPin, Calendar as CalendarIcon, Compass, Award, PlusCircle, BarChart3, CheckCircle2, Lock, Share2, Sparkles, RefreshCw, Plus, Check, Building2, Milestone, Phone, Activity, QrCode, X, Megaphone, Handshake, Crown, School, Globe, BookOpen, Zap } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { LEGAL_DOCS, type LegalDoc } from '../legal/terms';
+import { LegalDocModal } from './LegalDocModal';
 import logoImg from '../assets/logo.png';
 import partnerBsbrbo from '../assets/partner_bsbrbo.jpg';
 import partnerKangceo from '../assets/partner_kangceo.png';
@@ -142,6 +144,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   // Profile sub-tab selection state
   const [profileSubTab, setProfileSubTab] = useState<'portfolio' | 'edit' | 'settings'>('portfolio');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [openLegalDoc, setOpenLegalDoc] = useState<LegalDoc['id'] | null>(null);
+  // 내가 낸 동아리 지원서 (심사 결과 표시용)
+  const [myClubApps, setMyClubApps] = useState<ClubApplicant[]>([]);
 
   // Profile editing state
   const [editName, setEditName] = useState<string>('');
@@ -170,6 +175,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       }
       const networking = await db.getClubNetworking();
       setClubNetworkingEvents(networking);
+      setMyClubApps(await db.getMyClubApplications(profile.id));
      } catch (err) {
       console.error('동아리 데이터 조회 실패:', err);
      }
@@ -220,7 +226,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     if (!profile) return;
     
     try {
-    await db.applyToClub({
+    const createdApp = await db.applyToClub({
       club_id: club.id,
       user_id: profile.id,
       user_name: profile.name,
@@ -231,6 +237,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       user_awards: [],
       introduction_summary: `우수한 역량과 열정으로 ${club.club_name} 동아리에 꼭 합류하여 시너지를 내고 싶습니다.`
     });
+    setMyClubApps(prev => [...prev, createdApp]);
     } catch (err: any) {
       await showAlert(err?.message || '동아리 지원에 실패했어요.');
       return;
@@ -353,7 +360,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   }, [showSimCompleteModal, showCalendarSimModal, showSimulation, backRef]);
 
   // 실제 가입자 수 쿼리를 위한 프로필 목록 상태
-  const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [allProfiles, setAllProfiles] = useState<Pick<Profile, 'role' | 'location' | 'grade' | 'interests'>[]>([]);
 
   useEffect(() => {
     const loadAllProfiles = async () => {
@@ -969,21 +976,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         const matchingStudents = allProfiles.filter(
           p => p.role !== 'host' && (p.interests || []).some(interest => regCategories.includes(interest))
         );
-        const defaultNames = ['김민지', '박서준', '이찬우', '최예원', '정우진'];
-        const matchNames = matchingStudents.slice(0, 5).map(p => p.name);
-        while (matchNames.length < Math.min(5, matchingStudents.length || 5)) {
-          const nextDefault = defaultNames[matchNames.length];
-          if (!matchNames.includes(nextDefault)) {
-            matchNames.push(nextDefault);
-          } else {
-            break;
-          }
-        }
-        const count = Math.max(matchingStudents.length, 5);
-        const namesStr = matchNames.join(', ');
+        // 학생 이름은 주최 측에 보여주지 않는다. 인원수만 안내.
         onTriggerMockPush(
           '신규 공고 알림',
-          `내 맞춤 조건 학생 ${count}명(${namesStr} 등)에게 실시간 푸시가 발송되었습니다!`
+          `내 맞춤 조건 학생 ${matchingStudents.length}명에게 알림이 발송되었습니다.`
         );
       } catch (err) {
         console.warn('Matching notification trigger failed', err);
@@ -2182,7 +2178,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
                   ) : (
                     clubAnnouncements.map(club => {
-                      const hasApplied = appliedClubIds.includes(club.id);
+                      const myApp = myClubApps.find(a => a.club_id === club.id);
+                      const hasApplied = appliedClubIds.includes(club.id) || !!myApp;
                       return (
                         <div key={club.id} style={{
                           backgroundColor: '#FFFFFF',
@@ -2242,6 +2239,22 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             {hasApplied ? <Check size={14} /> : <Zap size={14} />}
                             {hasApplied ? 'Kkeul 프로필로 지원 완료' : 'Kkeul 프로필로 1초 지원하기'}
                           </button>
+                          {myApp && (
+                            <div
+                              style={{
+                                fontSize: '12.5px',
+                                lineHeight: 1.5,
+                                borderRadius: '10px',
+                                padding: '10px 12px',
+                                background: myApp.status === 'approved' ? '#ECFDF5' : myApp.status === 'rejected' ? '#F7F8FA' : '#F7F8FA',
+                                color: myApp.status === 'approved' ? '#047857' : 'var(--text-secondary)'
+                              }}
+                            >
+                              {myApp.status === 'approved' && <><strong>서류 합격</strong> · 동아리 기장이 면접 일정을 알려 줄 거예요.</>}
+                              {myApp.status === 'rejected' && <><strong>불합격</strong> · 이번에는 함께하지 못하게 됐어요.</>}
+                              {myApp.status === 'pending' && <><strong>서류 검토 중</strong> · 결과가 나오면 여기에서 알려 드려요.</>}
+                            </div>
+                          )}
                         </div>
                       );
                     })
@@ -2718,12 +2731,49 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           </div>
                           
 
+                          {profile.competency_consent ? (
+                            <>
                           <div style={{ backgroundColor: '#F8FAFC', borderRadius: '8px', padding: '12px', marginTop: '12px' }}>
                             <p style={{ fontSize: '12px', color: '#475569', margin: 0, lineHeight: 1.5 }}>
                               <Activity size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: '-2px' }} />
                               분석 결과: <strong>기획력</strong>과 <strong>리더십</strong>이 돋보입니다. 프로젝트 매니징이나 해커톤 리더 역할에 적합한 역량을 갖추고 있습니다.
                             </p>
                           </div>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  if (window.confirm('역량 진단 정보 이용 동의를 철회할까요? 진단 결과가 더 이상 표시되지 않아요.')) {
+                                    onUpdateProfile({ ...profile, competency_consent: false, competency_consent_at: undefined });
+                                  }
+                                }}
+                                style={{ marginTop: '8px', border: 'none', background: 'none', padding: 0, fontSize: '11.5px', color: 'var(--text-tertiary)', textDecoration: 'underline', cursor: 'pointer' }}
+                              >
+                                동의 철회
+                              </button>
+                            </>
+                          ) : (
+                            <div style={{ backgroundColor: '#F8FAFC', borderRadius: '8px', padding: '12px', marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              <p style={{ fontSize: '12px', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                                역량 진단은 관심 분야·수상 실적·포트폴리오를 이용해요. [선택] 동의한 경우에만 결과를 보여드려요.
+                              </p>
+                              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => onUpdateProfile({ ...profile, competency_consent: true, competency_consent_at: new Date().toISOString() })}
+                                  style={{ border: 'none', borderRadius: '8px', background: 'var(--color-indigo)', color: '#FFFFFF', fontSize: '12px', fontWeight: 700, padding: '7px 12px', cursor: 'pointer' }}
+                                >
+                                  동의하고 보기
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setOpenLegalDoc('competency')}
+                                  style={{ border: 'none', background: 'none', padding: 0, fontSize: '12px', color: 'var(--text-tertiary)', textDecoration: 'underline', cursor: 'pointer' }}
+                                >
+                                  내용 보기
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -4266,6 +4316,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         <div>
           사업자등록번호: 243-09-03290
         </div>
+        <div style={{ marginTop: '4px', display: 'flex', gap: '12px' }}>
+          <button type="button" onClick={() => setOpenLegalDoc('terms')} style={{ border: 'none', background: 'none', padding: 0, font: 'inherit', color: 'var(--text-secondary)', cursor: 'pointer' }}>이용약관</button>
+          <button type="button" onClick={() => setOpenLegalDoc('policy')} style={{ border: 'none', background: 'none', padding: 0, font: 'inherit', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>개인정보 처리방침</button>
+        </div>
         <div style={{ marginTop: '4px' }}>
           기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 Telosix. All rights reserved.
         </div>
@@ -5465,6 +5519,17 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
       {/* Toss Modal */}
       {TossModal()}
+      {openLegalDoc && (
+        <LegalDocModal
+          doc={LEGAL_DOCS[openLegalDoc]}
+          onClose={() => setOpenLegalDoc(null)}
+          onAgree={
+            openLegalDoc === 'competency'
+              ? () => onUpdateProfile({ ...profile, competency_consent: true, competency_consent_at: new Date().toISOString() })
+              : undefined
+          }
+        />
+      )}
     </div>
   );
 };

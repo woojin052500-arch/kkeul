@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Announcement, Profile } from '../types';
 import { TeamBoard } from './TeamBoard';
 import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Sparkles, Copy, Zap } from 'lucide-react';
@@ -17,6 +17,8 @@ interface DetailViewProps {
   onDelete?: (id: string) => void;
   onUpdate?: (id: string, updatedFields: Partial<Announcement>) => void;
   backRef?: React.MutableRefObject<(() => boolean) | null>;
+  // 외부 링크(끌에서 팀원 찾기)로 들어왔을 때 팀 빌딩 게시판으로 바로 스크롤
+  focusTeamBoard?: boolean;
 }
 
 export const DetailView: React.FC<DetailViewProps> = ({
@@ -29,8 +31,17 @@ export const DetailView: React.FC<DetailViewProps> = ({
   isHostUser,
   onDelete,
   onUpdate,
-  backRef
+  backRef,
+  focusTeamBoard
 }) => {
+  useEffect(() => {
+    if (!focusTeamBoard) return;
+    const t = window.setTimeout(() => {
+      document.getElementById('team-board')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [focusTeamBoard, announcement.id]);
+
   const [showCheckmark, setShowCheckmark] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
   const [showRedirectModal, setShowRedirectModal] = useState<boolean>(false);

@@ -11,6 +11,16 @@ import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Browser } from '@capacitor/browser';
 import { App as CapacitorApp } from '@capacitor/app';
+import { PublicProfile } from './components/PublicProfile';
+import { AppInstallBanner } from './components/AppInstallBanner';
+import {
+  parseDeepLink,
+  findAnnouncementForLink,
+  savePendingDeepLink,
+  takePendingDeepLink,
+  clearDeepLinkFromUrl,
+  type DeepLink
+} from './utils/deepLink';
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -18,6 +28,11 @@ function App() {
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [screen, setScreen] = useState<'onboarding' | 'main' | 'detail'>('onboarding');
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
+  // 외부 링크로 들어온 경우 (웹에서만)
+  const [initialDeepLink] = useState<DeepLink | null>(() =>
+    Capacitor.isNativePlatform() ? null : parseDeepLink(window.location)
+  );
+  const [focusTeamBoard, setFocusTeamBoard] = useState(false);
   
   // Tabs
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -41,6 +56,29 @@ function App() {
   const detailViewBackRef = useRef<(() => boolean) | null>(null);
 
   useEffect(() => { screenRef.current = screen; }, [screen]);
+
+  // 대회 링크(/contest/:id, /team?name=)는 로그인 여부와 관계없이 일단 보관하고 주소창을 정리한다.
+  useEffect(() => {
+    if (initialDeepLink && initialDeepLink.kind !== 'profile') {
+      savePendingDeepLink(initialDeepLink);
+      clearDeepLinkFromUrl();
+    }
+  }, [initialDeepLink]);
+
+  // 로그인해서 메인 화면에 들어오면 보관해 둔 대회의 팀 빌딩 게시판을 연다.
+  useEffect(() => {
+    if (isLoading || !profile || screen !== 'main' || announcements.length === 0) return;
+    const link = takePendingDeepLink();
+    if (!link) return;
+    const ann = findAnnouncementForLink(link, announcements);
+    if (ann) {
+      setSelectedAnnouncement(ann);
+      setFocusTeamBoard(true);
+      setScreen('detail');
+    } else {
+      alert('끌에 아직 등록되지 않은 대회예요. 비슷한 대회를 홈에서 찾아보세요.');
+    }
+  }, [isLoading, profile, screen, announcements]);
   useEffect(() => { browserUrlRef.current = browserUrl; }, [browserUrl]);
   useEffect(() => { activeTabRef.current = activeTab; }, [activeTab]);
 
@@ -610,9 +648,19 @@ function App() {
     }
   };
 
+  if (initialDeepLink?.kind === 'profile') {
+    return (
+      <>
+        <AppInstallBanner />
+        <PublicProfile shortId={initialDeepLink.shortId} />
+      </>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', position: 'relative' }}>
-      
+      <AppInstallBanner />
+
       {/* 0. Startup Loading Overlay */}
       {isLoading && (
         <div style={{
@@ -707,8 +755,10 @@ function App() {
           backRef={detailViewBackRef}
           announcement={selectedAnnouncement}
           profile={profile || undefined}
+          focusTeamBoard={focusTeamBoard}
           onBack={() => {
             setSelectedAnnouncement(null);
+            setFocusTeamBoard(false);
             setScreen('main');
           }}
           onOpenBrowser={(url, title) => {

@@ -3,6 +3,8 @@ import type { Profile } from '../types';
 import { Check, Sparkles, ArrowLeft, Eye, EyeOff, User, ShieldCheck } from 'lucide-react';
 import { PremiumLogo } from './PremiumLogo';
 import { db } from '../supabaseClient';
+import { LEGAL_DOCS, TERMS_VERSION, type LegalDoc } from '../legal/terms';
+import { LegalDocModal } from './LegalDocModal';
 
 interface OnboardingProps {
   onComplete: (profile: Profile) => void;
@@ -45,10 +47,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
   const [ageStatus, setAgeStatus] = useState<'unknown' | 'ok' | 'under'>('unknown');
   const [ageConfirmedAt, setAgeConfirmedAt] = useState<string | null>(null);
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
-  const [agreePrivacy, setAgreePrivacy] = useState<boolean>(false);
-  const [agreeOverseas, setAgreeOverseas] = useState<boolean>(false);
-  const [agreeDisclaimer, setAgreeDisclaimer] = useState<boolean>(false);
+  const [termsAgreedAt, setTermsAgreedAt] = useState<string | null>(null);
+  // [선택] 역량 진단 동의 — 동의하지 않아도 가입 가능
   const [agreeCompetency, setAgreeCompetency] = useState<boolean>(false);
+  const [openDoc, setOpenDoc] = useState<LegalDoc['id'] | null>(null);
   // Loading / Overlay states
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showWelcome, setShowWelcome] = useState<boolean>(false);
@@ -78,14 +80,32 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
     if (!ok) setAgeAgreed(false);
   };
 
+  const setTermsAgreed = (value: boolean) => {
+    setAgreeTerms(value);
+    setTermsAgreedAt(value ? new Date().toISOString() : null);
+  };
+
+  const allAgreed = agreeAge && agreeTerms && agreeCompetency;
+  const requiredAgreed = ageStatus === 'ok' && agreeAge && agreeTerms;
+
   const handleAllAgree = () => {
-    const nextVal = !(agreeAge && agreeTerms && agreePrivacy && agreeOverseas && agreeDisclaimer && agreeCompetency);
+    const nextVal = !allAgreed;
     setAgeAgreed(nextVal && ageStatus === 'ok');
-    setAgreeTerms(nextVal);
-    setAgreePrivacy(nextVal);
-    setAgreeOverseas(nextVal);
-    setAgreeDisclaimer(nextVal);
+    setTermsAgreed(nextVal);
     setAgreeCompetency(nextVal);
+  };
+
+  // 가입 시 저장할 동의 기록 (생년월일은 포함하지 않음)
+  const consentRecord = () => {
+    const now = new Date().toISOString();
+    return {
+      age_over14_confirmed: true,
+      age_over14_confirmed_at: ageConfirmedAt || now,
+      terms_version: TERMS_VERSION,
+      terms_agreed_at: termsAgreedAt || now,
+      competency_consent: agreeCompetency,
+      competency_consent_at: agreeCompetency ? now : undefined
+    };
   };
 
 
@@ -161,8 +181,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
         badges: [],
         role: 'student',
         agreeDisclaimer: true,
-        age_over14_confirmed: true,
-        age_over14_confirmed_at: ageConfirmedAt || new Date().toISOString()
+        ...consentRecord()
       };
 
       const saved = await db.saveProfile(newProfile);
@@ -202,8 +221,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
         role: 'host',
         contact: contact,
         agreeDisclaimer: true,
-        age_over14_confirmed: true,
-        age_over14_confirmed_at: ageConfirmedAt || new Date().toISOString()
+        ...consentRecord()
       };
 
       const saved = await db.saveProfile(newProfile);
@@ -418,7 +436,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
               끌에 오신 것을 환영합니다
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-              맞춤 큐레이션을 위해 아래 약관에 동의해 주세요.
+              가입하려면 아래 내용을 확인해 주세요.
             </p>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
@@ -440,80 +458,66 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '16px', backgroundColor: '#FAFBFC', borderRadius: '12px', border: '1px solid #E5E8EB' }}>
-                <div onClick={handleAllAgree} style={{ 
-                  width: '24px', height: '24px', borderRadius: '50%', 
-                  backgroundColor: (agreeAge && agreeTerms && agreePrivacy && agreeOverseas && agreeCompetency && agreeDisclaimer) ? 'var(--color-indigo)' : '#E5E8EB',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                  <Check size={16} color="#FFFFFF" />
-                </div>
-                <span style={{ fontSize: '16px', fontWeight: 700 }}>전체 동의하기</span>
-              </label>
-              
+              <div className="consent-row" style={{ padding: '16px', backgroundColor: '#FAFBFC', borderRadius: '12px', border: '1px solid #E5E8EB' }}>
+                <button type="button" className="consent-row-toggle" role="checkbox" aria-checked={allAgreed} onClick={handleAllAgree}>
+                  <span className="consent-check" data-on={allAgreed}><Check size={16} color="#FFFFFF" /></span>
+                  <span className="consent-label" style={{ fontSize: '16px', fontWeight: 700 }}>전체 동의하기 <span style={{ fontSize: '12.5px', fontWeight: 400, color: 'var(--text-tertiary)' }}>(선택 항목 포함)</span></span>
+                </button>
+              </div>
+
               <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => ageStatus === 'ok' && setAgeAgreed(!agreeAge)} style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: agreeAge ? 'var(--color-indigo)' : '#E5E8EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    <Check size={16} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '15px', color: 'var(--text-primary)' }}>[필수] 만 14세 이상입니다</span>
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => setAgreeTerms(!agreeTerms)} style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: agreeTerms ? 'var(--color-indigo)' : '#E5E8EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    <Check size={16} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '15px', color: 'var(--text-primary)' }}>[필수] Kkeul 이용약관 동의</span>
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => setAgreePrivacy(!agreePrivacy)} style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: agreePrivacy ? 'var(--color-indigo)' : '#E5E8EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    <Check size={16} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '15px', color: 'var(--text-primary)' }}>[필수] 개인정보 수집 및 이용 동의</span>
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => setAgreeOverseas(!agreeOverseas)} style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: agreeOverseas ? 'var(--color-indigo)' : '#E5E8EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    <Check size={16} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '15px', color: 'var(--text-primary)' }}>[필수] 개인정보 국외 이전 동의</span>
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => setAgreeCompetency(!agreeCompetency)} style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: agreeCompetency ? 'var(--color-indigo)' : '#E5E8EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    <Check size={16} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '15px', color: 'var(--text-primary)' }}>[필수] 역량 데이터 수집 동의</span>
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                  <div onClick={() => setAgreeDisclaimer(!agreeDisclaimer)} style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: agreeDisclaimer ? 'var(--color-indigo)' : '#E5E8EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    <Check size={16} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '15px', color: 'var(--text-primary)' }}>[필수] 면책 조항 동의</span>
-                </label>
+                <div className="consent-row">
+                  <button
+                    type="button"
+                    className="consent-row-toggle"
+                    role="checkbox"
+                    aria-checked={agreeAge}
+                    aria-disabled={ageStatus !== 'ok'}
+                    onClick={() => ageStatus === 'ok' && setAgeAgreed(!agreeAge)}
+                  >
+                    <span className="consent-check" data-on={agreeAge}><Check size={16} color="#FFFFFF" /></span>
+                    <span className="consent-label"><span className="consent-tag" data-kind="required">[필수]</span>만 14세 이상입니다</span>
+                  </button>
+                </div>
+
+                <div className="consent-row">
+                  <button type="button" className="consent-row-toggle" role="checkbox" aria-checked={agreeTerms} onClick={() => setTermsAgreed(!agreeTerms)}>
+                    <span className="consent-check" data-on={agreeTerms}><Check size={16} color="#FFFFFF" /></span>
+                    <span className="consent-label"><span className="consent-tag" data-kind="required">[필수]</span>끌 이용약관 동의</span>
+                  </button>
+                  <button type="button" className="consent-view" onClick={() => setOpenDoc('terms')}>보기</button>
+                </div>
+
+                <div className="consent-row">
+                  <button type="button" className="consent-row-toggle" role="checkbox" aria-checked={agreeCompetency} onClick={() => setAgreeCompetency(!agreeCompetency)}>
+                    <span className="consent-check" data-on={agreeCompetency}><Check size={16} color="#FFFFFF" /></span>
+                    <span className="consent-label"><span className="consent-tag" data-kind="optional">[선택]</span>역량 진단을 위한 정보 이용</span>
+                  </button>
+                  <button type="button" className="consent-view" onClick={() => setOpenDoc('competency')}>보기</button>
+                </div>
+              </div>
+
+              <div className="consent-notice">
+                가입하면 서비스 제공에 꼭 필요한 개인정보를 처리하고, 데이터 저장을 위해 국외 서버를 이용해요.
+                자세한 내용은 <button type="button" onClick={() => setOpenDoc('privacy')}>개인정보 수집·이용 안내</button>와{' '}
+                <button type="button" onClick={() => setOpenDoc('overseas')}>국외 이전 안내</button>에서 확인할 수 있어요.
+                전체 내용은 <button type="button" onClick={() => setOpenDoc('policy')}>개인정보 처리방침</button>에 있어요.
               </div>
             </div>
+
+            {openDoc && (
+              <LegalDocModal
+                doc={LEGAL_DOCS[openDoc]}
+                onClose={() => setOpenDoc(null)}
+                onAgree={
+                  openDoc === 'terms'
+                    ? () => setTermsAgreed(true)
+                    : openDoc === 'competency'
+                      ? () => setAgreeCompetency(true)
+                      : undefined
+                }
+              />
+            )}
           </div>
         )}
 
@@ -862,7 +866,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
           <button 
             onClick={() => setStep(5)} 
             className="btn btn-primary" 
-            disabled={!(ageStatus === 'ok' && agreeAge && agreeTerms && agreePrivacy && agreeOverseas && agreeCompetency && agreeDisclaimer)}
+            disabled={!requiredAgreed}
           >
             동의하고 계속하기
           </button>
