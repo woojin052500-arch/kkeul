@@ -13,6 +13,7 @@ import { Browser } from '@capacitor/browser';
 import { App as CapacitorApp } from '@capacitor/app';
 import { PublicProfile } from './components/PublicProfile';
 import { AppInstallBanner } from './components/AppInstallBanner';
+import { DesktopShell } from './components/DesktopShell';
 import {
   parseDeepLink,
   findAnnouncementForLink,
@@ -56,6 +57,23 @@ function App() {
   const detailViewBackRef = useRef<(() => boolean) | null>(null);
 
   useEffect(() => { screenRef.current = screen; }, [screen]);
+
+  // PC: 가로 슬라이드 위에서 마우스 휠을 돌리면 옆으로 넘긴다 (끝에 닿으면 페이지가 스크롤됨)
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const onWheel = (e: WheelEvent) => {
+      if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const el = (e.target as HTMLElement | null)?.closest('.h-scroll-desktop') as HTMLElement | null;
+      if (!el || el.scrollWidth <= el.clientWidth) return;
+      const atStart = el.scrollLeft <= 0;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+      if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;
+      e.preventDefault();
+      el.scrollBy({ left: e.deltaY, behavior: 'auto' });
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
+  }, []);
 
   // 대회 링크(/contest/:id, /team?name=)는 로그인 여부와 관계없이 일단 보관하고 주소창을 정리한다.
   useEffect(() => {
@@ -660,6 +678,27 @@ function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', position: 'relative' }}>
       <AppInstallBanner />
+      {!Capacitor.isNativePlatform() && !isLoading && (
+        <DesktopShell
+          profile={screen === 'onboarding' ? null : profile}
+          activeTab={activeTab}
+          announcements={announcements}
+          bookmarks={bookmarks}
+          onNavigate={(tab) => {
+            setActiveTab(tab);
+            setSelectedAnnouncement(null);
+            setFocusTeamBoard(false);
+            setScreen('main');
+            window.scrollTo({ top: 0 });
+          }}
+          onOpenAnnouncement={(ann) => {
+            setSelectedAnnouncement(ann);
+            setFocusTeamBoard(false);
+            setScreen('detail');
+            window.scrollTo({ top: 0 });
+          }}
+        />
+      )}
 
       {/* 0. Startup Loading Overlay */}
       {isLoading && (

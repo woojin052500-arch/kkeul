@@ -374,6 +374,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     loadAllProfiles();
   }, []);
 
+  // PC 사이드바에서 '공고 등록'으로 들어와도 탭바와 똑같이 1단계부터 시작
+  useEffect(() => {
+    if (activeTab === 'register') setRegStep(1);
+  }, [activeTab]);
+
   // 드래그 제스처 상태
   const [dragCardId, setDragCardId] = useState<string | null>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
@@ -554,6 +559,29 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       setSwipeDismissedId(null);
     }, 300);
   };
+
+  // PC: 스와이프 카드를 키보드 ←(관심 없음) / →(관심 있음)로 넘기기
+  const keyboardSwipeRef = React.useRef<(dir: 'like' | 'pass') => void>(() => {});
+  keyboardSwipeRef.current = (dir) => {
+    const queue = studentMatchedAnnouncements.filter(
+      ann => !bookmarks.includes(ann.id) && ann.id !== 'ann-premium-locked'
+    );
+    if (queue.length > 0) executeSwipeAction(queue[0], dir);
+  };
+  useEffect(() => {
+    if (profile.role === 'host' || activeTab !== 'home' || viewMode !== 'swipe') return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.closest('input, textarea, select, [contenteditable="true"], [role="dialog"]'))) return;
+      if (document.querySelector('[role="dialog"]')) return;
+      e.preventDefault();
+      keyboardSwipeRef.current(e.key === 'ArrowRight' ? 'like' : 'pass');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [profile.role, activeTab, viewMode]);
 
   // 초대장 마이크로 공유 함수 (Viral Loop)
   const handleMicroShare = async (e: React.MouseEvent, card: Announcement) => {
@@ -1156,7 +1184,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
                   이번 주 {profile.location} 고등학생 필수 참여 공고
                 </h3>
-                <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar">
+                <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar h-scroll-desktop">
                   {announcements
                     .filter(ann => ann.location === profile.location)
                     .map((ann) => {
@@ -1650,7 +1678,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </div>
 
                 {/* Horizontal Category Tag Filters */}
-                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar">
+                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar h-scroll-desktop">
                   {categories.map((cat) => {
                     const isSelected = selectedCategory === cat;
                     return (
@@ -4325,8 +4353,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         </div>
       </footer>
 
-      {/* B2C / B2B Dynamic Tab Bar */}
-      <div style={{
+      {/* B2C / B2B Dynamic Tab Bar (PC에서는 왼쪽 사이드바가 대신함) */}
+      <div className="kkeul-tabbar" style={{
         position: 'fixed',
         bottom: 0,
         left: '50%',

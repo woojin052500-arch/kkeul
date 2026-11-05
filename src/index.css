@@ -1268,3 +1268,387 @@ p {
   justify-content: center;
   cursor: pointer;
 }
+
+/* ===== PC(넓은 화면) 전용 좌우 패널 =====
+   가운데 앱 화면(#root, 480px)은 그대로 두고, 남는 양옆 공간에만 그린다. */
+.desk-left,
+.desk-right {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .desk-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 248px;
+    left: calc(50% - 240px - 248px - 40px);
+    padding: 28px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 40;
+  }
+
+  /* 사이드바가 메뉴를 맡으므로 아래 탭바는 숨기고, 설치 배너 대신 QR 카드를 쓴다 */
+  .kkeul-tabbar,
+  .install-banner {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1320px) {
+  .desk-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 300px;
+    left: calc(50% + 240px + 40px);
+    padding: 28px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 40;
+  }
+}
+
+.desk-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+}
+
+.desk-brand img {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  object-fit: contain;
+}
+
+.desk-brand strong {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.desk-brand span {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+}
+
+.desk-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.desk-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.desk-nav-item:hover {
+  background: rgba(17, 24, 39, 0.05);
+  color: var(--text-primary);
+}
+
+.desk-nav-item[aria-current="page"] {
+  background: #FFFFFF;
+  color: var(--color-indigo);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.06);
+}
+
+.desk-nav-item:focus-visible,
+.desk-me:focus-visible,
+.desk-panel button:focus-visible,
+.desk-install:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+}
+
+.desk-me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #E5E8EB;
+  border-radius: 12px;
+  background: #FFFFFF;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.desk-me-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-indigo-light);
+  color: var(--color-indigo);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.desk-me-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.desk-me-text strong {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.desk-me-text span {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desk-me-xp {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.desk-pitch {
+  padding: 8px 12px 0;
+}
+
+.desk-pitch h2 {
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin: 0 0 14px;
+  color: var(--text-primary);
+}
+
+.desk-pitch ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.desk-left-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.desk-install {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  text-decoration: none;
+  color: inherit;
+}
+
+.desk-install-qr {
+  flex-shrink: 0;
+  padding: 4px;
+  background: #FFFFFF;
+  line-height: 0;
+}
+
+.desk-install strong {
+  display: block;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.desk-install span {
+  display: block;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
+.desk-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.desk-legal button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.desk-legal button:hover {
+  text-decoration: underline;
+}
+
+.desk-panel {
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.desk-panel h3 {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: var(--text-primary);
+}
+
+.desk-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.desk-panel li + li {
+  border-top: 1px solid #F2F4F6;
+}
+
+.desk-panel li button {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 4px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.desk-panel li button:hover {
+  background: #F7F8FA;
+}
+
+.desk-dday {
+  flex-shrink: 0;
+  min-width: 46px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--color-indigo-light);
+  color: var(--color-indigo);
+  font-size: 11.5px;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.desk-item-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.desk-item-text strong {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.desk-item-text span {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.desk-empty {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.desk-more {
+  margin-top: 8px;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-indigo);
+  cursor: pointer;
+}
+
+.desk-tip {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 0;
+  padding: 0 4px;
+}
+
+.desk-tip kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid #D1D5DB;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: #FFFFFF;
+  font-family: inherit;
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* PC에서 가로 슬라이드에 마우스를 올리면 스크롤바를 얇게 보여 준다 */
+@media (hover: hover) and (pointer: fine) {
+  .h-scroll-desktop {
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+  }
+}
