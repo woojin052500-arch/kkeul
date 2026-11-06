@@ -33,6 +33,14 @@ public class MainActivity extends BridgeActivity {
                 rootView.addView(adView, params);
             }
 
+            // 배너가 앱 화면(하단 메뉴)을 가리지 않도록 웹뷰를 배너 높이(50dp)만큼 위로 올린다
+            android.webkit.WebView webView = getBridge().getWebView();
+            if (webView != null && webView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams webParams = (ViewGroup.MarginLayoutParams) webView.getLayoutParams();
+                webParams.bottomMargin = (int) (50 * getResources().getDisplayMetrics().density);
+                webView.setLayoutParams(webParams);
+            }
+
             adView.loadAd();
         } catch (Exception e) {
             e.printStackTrace();

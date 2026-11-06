@@ -1279,7 +1279,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     const swipesDone = sessionSwipes;
                     const adIndices = [5, 11, 17, 23, 29, 35, 41]; // 4~6개 간격으로 광고 노출 (처음 5개는 무조건 일반 카드)
                     let insertedAds = 0;
-                    adIndices.forEach((targetIndex) => {
+                    // 앱(네이티브)에서는 웹 광고를 그릴 수 없으므로 광고 카드를 넣지 않는다
+                    (Capacitor.isNativePlatform() ? [] : adIndices).forEach((targetIndex) => {
                       let relativePos = targetIndex - swipesDone;
                       // 아직 지나치지 않은 광고만 큐에 삽입 (relativePos가 0이면 현재 맨 앞)
                       if (relativePos >= 0 && relativePos <= swipeQueue.length) {
@@ -1348,7 +1349,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             onTouchEnd={isTop ? (e) => handleDragEnd(e, ann) : undefined}
                             onMouseLeave={isTop ? (e) => handleDragEnd(e, ann) : undefined}
                           >
-                            <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none' } : undefined}>
+                            <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none', borderRadius: 0, overflow: 'visible' } : undefined}>
                               {ann.category === 'AD' ? (
                                 <AdFitNativeCard height="100%" isActive={isTop} />
                               ) : (
