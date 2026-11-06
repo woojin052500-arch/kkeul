@@ -861,7 +861,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     location: '서울',
     details: '이 공고는 친구 초대 1명을 완료한 유저에게만 특별 공개되는 비공개 기회입니다. 국내 대기업 현업 시니어 소프트웨어 엔지니어들의 1:1 진로 코칭, 포트폴리오 첨삭, 판교 본사 투어 및 식사권 혜택이 주어집니다.',
     image_url: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=600&auto=format&fit=crop',
-    apply_url: 'https://wjedulab-mock-apply-form.github.io/premium-mentoring',
+    apply_url: 'https://telosix.co.kr/mock-apply/premium-mentoring',
     bid_amount: 0,
     created_at: new Date().toISOString()
   }), []);
@@ -1020,7 +1020,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         // Reset registration fields
         setRegTitle('');
         setRegDetails('');
-        setRegApplyUrl('https://wjedulab-mock-apply-form.github.io/ideathon');
+        setRegApplyUrl('https://telosix.co.kr/mock-apply/ideathon');
         setRegBidAmount(2000);
         setIsBidding(false);
         setRegCategories(['IT/개발']);
