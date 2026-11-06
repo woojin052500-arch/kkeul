@@ -12,7 +12,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Browser } from '@capacitor/browser';
 import { App as CapacitorApp } from '@capacitor/app';
 import { PublicProfile } from './components/PublicProfile';
-import { AppInstallBanner } from './components/AppInstallBanner';
+import { AdScope } from './components/adScope';
 import { DesktopShell } from './components/DesktopShell';
 import {
   parseDeepLink,
@@ -667,17 +667,11 @@ function App() {
   };
 
   if (initialDeepLink?.kind === 'profile') {
-    return (
-      <>
-        <AppInstallBanner />
-        <PublicProfile shortId={initialDeepLink.shortId} />
-      </>
-    );
+    return <PublicProfile shortId={initialDeepLink.shortId} />;
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', position: 'relative' }}>
-      <AppInstallBanner />
       {!Capacitor.isNativePlatform() && !isLoading && (
         <DesktopShell
           profile={screen === 'onboarding' ? null : profile}
@@ -757,6 +751,8 @@ function App() {
 
       {profile && (screen === 'main' || screen === 'detail') && (
         <div style={{ display: screen === 'main' ? 'block' : 'none', height: '100%', width: '100%' }}>
+          {/* 상세 화면이 열려 목록이 숨으면 목록의 광고는 내린다 (같은 광고가 한 화면에 두 번 뜨지 않게) */}
+          <AdScope.Provider value={screen === 'main'}>
           <MainFeed
             backRef={mainFeedBackRef}
             profile={profile}
@@ -786,6 +782,7 @@ function App() {
               />
             }
           />
+          </AdScope.Provider>
         </div>
       )}
 

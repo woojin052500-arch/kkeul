@@ -21,7 +21,7 @@ import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { purchase } from '../utils/billing';
 import { Contacts } from '@capacitor-community/contacts';
-import { AdFitNativeCard, AdFitBanner100, AdFitBanner100_Second } from './AdFit';
+import { AdFitNativeCard, AdSlot } from './AdFit';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -1351,7 +1351,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           >
                             <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none', borderRadius: 0, overflow: 'visible' } : undefined}>
                               {ann.category === 'AD' ? (
-                                <AdFitNativeCard height="100%" isActive={isTop} />
+                                <AdFitNativeCard isActive={isTop} />
                               ) : (
                                 <>
                               {/* 좌우 드래그 상태 반투명 가이드 뱃지 */}
@@ -1648,6 +1648,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
                   );
                 })()}
+                <AdSlot placement="homeSwipeBelow" style={{ marginTop: '28px' }} />
               </div>
             )}
 
@@ -1777,12 +1778,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       .map((ann, idx) => {
                         const isBookmarked = bookmarks.includes(ann.id);
                         const dday = getDDay(ann.deadline);
-                        const showAd100 = idx === 7;
-                        const showAd100_2 = idx === 15;
+                        const showAd100 = idx === 3;
+                        const showAd100_2 = idx === 11;
                         return (
                           <React.Fragment key={ann.id}>
-                          {showAd100 && <AdFitBanner100 />}
-                          {showAd100_2 && <AdFitBanner100_Second />}
+                          {showAd100 && <AdSlot placement="homeListFirst" keep />}
+                          {showAd100_2 && <AdSlot placement="homeListSecond" keep />}
                           <div
                             onClick={() => onSelectAnnouncement(ann)}
                             className="animate-fade-in toss-card-spring"
@@ -2048,6 +2049,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 )}
               </div>
             </div>
+            <AdSlot placement="calendar" />
           </div>
         )}
 
@@ -2138,6 +2140,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </div>
               )}
             </div>
+            <AdSlot placement="bookmarks" />
           </div>
         )}
 
@@ -2525,6 +2528,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </button>
               </div>
             )}
+            <AdSlot placement="club" />
           </div>
         )}
 
@@ -3445,6 +3449,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             </div>
           </div>
 
+          <AdSlot placement="partners" />
         </div>
       )}
 
