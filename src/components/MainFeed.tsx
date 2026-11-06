@@ -145,11 +145,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const [profileSubTab, setProfileSubTab] = useState<'portfolio' | 'edit' | 'settings'>('portfolio');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [openLegalDoc, setOpenLegalDoc] = useState<LegalDoc['id'] | null>(null);
-  // 광고가 오지 않은 스와이프 광고 카드는 덱에서 뺀다
-  const [failedAdIds, setFailedAdIds] = useState<string[]>([]);
-  const markAdFailed = useCallback((id: string) => {
-    setFailedAdIds(prev => (prev.includes(id) ? prev : [...prev, id]));
-  }, []);
   // 내가 낸 동아리 지원서 (심사 결과 표시용)
   const [myClubApps, setMyClubApps] = useState<ClubApplicant[]>([]);
 
@@ -1288,7 +1283,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     (Capacitor.isNativePlatform() ? [] : adIndices).forEach((targetIndex) => {
                       let relativePos = targetIndex - swipesDone;
                       // 아직 지나치지 않은 광고만 큐에 삽입 (relativePos가 0이면 현재 맨 앞)
-                      if (relativePos >= 0 && relativePos <= swipeQueue.length && !failedAdIds.includes(`adfit-native-${targetIndex}`)) {
+                      if (relativePos >= 0 && relativePos <= swipeQueue.length) {
                         swipeQueue.splice(relativePos + insertedAds, 0, {
                           id: `adfit-native-${targetIndex}`,
                           title: 'AD',
@@ -1356,7 +1351,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           >
                             <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none', borderRadius: 0, overflow: 'visible' } : undefined}>
                               {ann.category === 'AD' ? (
-                                <AdFitNativeCard isActive={isTop} onFail={() => markAdFailed(ann.id)} />
+                                <AdFitNativeCard isActive={isTop} />
                               ) : (
                                 <>
                               {/* 좌우 드래그 상태 반투명 가이드 뱃지 */}
@@ -1787,8 +1782,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         const showAd100_2 = idx === 11;
                         return (
                           <React.Fragment key={ann.id}>
-                          {showAd100 && <AdSlot placement="homeListFirst" />}
-                          {showAd100_2 && <AdSlot placement="homeListSecond" />}
+                          {showAd100 && <AdSlot placement="homeListFirst" keep />}
+                          {showAd100_2 && <AdSlot placement="homeListSecond" keep />}
                           <div
                             onClick={() => onSelectAnnouncement(ann)}
                             className="animate-fade-in toss-card-spring"

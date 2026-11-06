@@ -66,11 +66,8 @@
       script.onerror = function () { report('fail'); }; // 광고 차단기 등
       document.body.appendChild(script);
 
-      // 8초 안에 광고가 채워지지 않으면 없는 것으로 본다
-      setTimeout(function () {
-        var filled = ins.querySelector('iframe') || ins.children.length > 0;
-        report(filled ? 'ok' : 'fail');
-      }, 8000);
+      // 광고가 늦게 뜰 수도 있으므로 시간 초과로 판단하지 않는다.
+      // 카카오가 공식 실패 콜백을 부르거나 스크립트가 막혔을 때만 "광고 없음"으로 본다.
     })();
   </script>
 </body>

@@ -38,16 +38,18 @@ interface AdSlotProps {
   width?: number;
   height?: number;
   style?: React.CSSProperties;
+  // true 면 광고가 오지 않아도 자리를 접지 않는다
+  keep?: boolean;
 }
 
 // 콘텐츠 사이에 들어가는 배너 (기본 320x100)
-export const AdSlot: React.FC<AdSlotProps> = ({ placement, width = 320, height = 100, style }) => {
+export const AdSlot: React.FC<AdSlotProps> = ({ placement, width = 320, height = 100, style, keep = false }) => {
   const scopeActive = useContext(AdScope);
   const slot = useId();
   const failed = useAdStatus(slot);
   const unit = ADFIT_UNITS[AD_PLACEMENTS[placement]];
 
-  if (Capacitor.isNativePlatform() || !scopeActive || failed || !unit) return null;
+  if (Capacitor.isNativePlatform() || !scopeActive || (failed && !keep) || !unit) return null;
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0', minHeight: `${height}px`, ...style }}>
@@ -66,14 +68,12 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, width = 320, height =
 
 interface AdFitCardProps {
   isActive?: boolean;
-  onFail?: () => void;
 }
 
-// 스와이프 카드 사이에 들어가는 250x250 광고. 광고가 없으면 onFail 로 알려 덱에서 빠진다.
-export const AdFitNativeCard: React.FC<AdFitCardProps> = React.memo(({ isActive = true, onFail }) => {
+// 스와이프 카드 사이에 들어가는 250x250 광고. 광고가 오지 않아도 카드는 유지한다.
+export const AdFitNativeCard: React.FC<AdFitCardProps> = React.memo(({ isActive = true }) => {
   const scopeActive = useContext(AdScope);
   const slot = useId();
-  useAdStatus(slot, onFail);
   const unit = ADFIT_UNITS[AD_PLACEMENTS.homeSwipeDeck];
 
   if (Capacitor.isNativePlatform() || !unit) return null;
