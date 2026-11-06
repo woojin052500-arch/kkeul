@@ -45,9 +45,6 @@ dependencies {
     // Google Play Billing Library (인앱 결제)
     implementation 'com.android.billingclient:billing:7.1.1'
 
-    // 카카오 애드핏 (Kakao AdFit)
-    implementation 'com.kakao.adfit:ads-it:3.16.1'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 }
 
 apply from: 'capacitor.build.gradle'

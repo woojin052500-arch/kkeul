@@ -805,7 +805,8 @@ function App() {
               alert('접수 사이트 링크가 등록되어 있지 않습니다.');
               return;
             }
-            const isMockUrl = url.includes('wjedulab-mock-apply-form.github.io') || url.includes('ideathon') || url.includes('mock');
+            // 체험용 지원서 화면 (예전에 저장된 옛 주소도 같은 화면으로 연다)
+            const isMockUrl = url.includes('telosix.co.kr/mock-apply') || url.includes('mock-apply-form.github.io') || url.includes('ideathon') || url.includes('mock');
             if (isMockUrl) {
               setBrowserUrl(url);
               setBrowserTitle(title);

@@ -10,7 +10,7 @@
               Kkeul의 맞춤 큐레이션 추천을 받기 위해 아래 약관에 동의해 주세요.
             </p>
 
-            {/* WJedulab Security Badge Card */}
+            {/* Telosix Security Badge Card */}
             <div style={{
               display: 'flex',
               alignItems: 'center',

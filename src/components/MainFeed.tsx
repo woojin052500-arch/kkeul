@@ -593,7 +593,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       ? `[${userLocation} 추천] '${card.title}' 공고가 접수 진행 중입니다. 관심사 매칭 공고 공유.`
       : `'${card.title}' 접수 진행 중. 추천 대외활동 공고 공유.`;
       
-    const shareUrl = `${card.apply_url || 'https://kkeul.vercel.app'}?ref=${profile.id}&annId=${card.id}`;
+    const shareUrl = `${card.apply_url || 'https://kkeul.telosix.co.kr'}?ref=${profile.id}&annId=${card.id}`;
 
     try {
       await Share.share({
@@ -861,7 +861,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     location: '서울',
     details: '이 공고는 친구 초대 1명을 완료한 유저에게만 특별 공개되는 비공개 기회입니다. 국내 대기업 현업 시니어 소프트웨어 엔지니어들의 1:1 진로 코칭, 포트폴리오 첨삭, 판교 본사 투어 및 식사권 혜택이 주어집니다.',
     image_url: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=600&auto=format&fit=crop',
-    apply_url: 'https://wjedulab-mock-apply-form.github.io/premium-mentoring',
+    apply_url: 'https://telosix.co.kr/mock-apply/premium-mentoring',
     bid_amount: 0,
     created_at: new Date().toISOString()
   }), []);
@@ -1020,7 +1020,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         // Reset registration fields
         setRegTitle('');
         setRegDetails('');
-        setRegApplyUrl('https://wjedulab-mock-apply-form.github.io/ideathon');
+        setRegApplyUrl('https://telosix.co.kr/mock-apply/ideathon');
         setRegBidAmount(2000);
         setIsBidding(false);
         setRegCategories(['IT/개발']);
@@ -1279,7 +1279,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     const swipesDone = sessionSwipes;
                     const adIndices = [5, 11, 17, 23, 29, 35, 41]; // 4~6개 간격으로 광고 노출 (처음 5개는 무조건 일반 카드)
                     let insertedAds = 0;
-                    adIndices.forEach((targetIndex) => {
+                    // 앱에는 광고를 넣지 않는다 (광고는 웹 전용)
+                    (Capacitor.isNativePlatform() ? [] : adIndices).forEach((targetIndex) => {
                       let relativePos = targetIndex - swipesDone;
                       // 아직 지나치지 않은 광고만 큐에 삽입 (relativePos가 0이면 현재 맨 앞)
                       if (relativePos >= 0 && relativePos <= swipeQueue.length) {
@@ -1348,7 +1349,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             onTouchEnd={isTop ? (e) => handleDragEnd(e, ann) : undefined}
                             onMouseLeave={isTop ? (e) => handleDragEnd(e, ann) : undefined}
                           >
-                            <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none' } : undefined}>
+                            <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none', borderRadius: 0, overflow: 'visible' } : undefined}>
                               {ann.category === 'AD' ? (
                                 <AdFitNativeCard height="100%" isActive={isTop} />
                               ) : (
@@ -2591,7 +2592,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   {/* BUSINESS CARD (paper style, flips to QR) */}
                   {(() => {
                     const shortId = profile.id.split('-')[0];
-                    const profileUrl = `https://kkeul.vercel.app/p/${shortId}`;
+                    const profileUrl = `https://kkeul.telosix.co.kr/p/${shortId}`;
                     const ink = '#1F1D1A';
                     const muted = '#7A7368';
                     const rule = '#E6E0D6';
@@ -2687,7 +2688,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 카메라로 스캔하면<br />포트폴리오가 열려요.
                               </p>
                               <div style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', color: muted, wordBreak: 'break-all' }}>
-                                kkeul.vercel.app/p/{shortId}
+                                kkeul.telosix.co.kr/p/{shortId}
                               </div>
                             </div>
                           </div>
@@ -2914,7 +2915,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           await Share.share({
                             title: '내 진로 로드맵 공유',
                             text: `[Kkeul] ${profile.name}님의 인터랙티브 진로 로드맵과 스펙을 확인해보세요! #Kkeul #진로로드맵`,
-                            url: 'https://kkeul.vercel.app' + '/p/' + profile.id.split('-')[0],
+                            url: 'https://kkeul.telosix.co.kr' + '/p/' + profile.id.split('-')[0],
                             dialogTitle: '로드맵 공유하기'
                           });
                         } catch (e: any) {
@@ -2929,7 +2930,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             await navigator.share({
                               title: '내 진로 로드맵 공유',
                               text: `[Kkeul] ${profile.name}님의 인터랙티브 진로 로드맵과 스펙을 확인해보세요! #Kkeul #진로로드맵`,
-                              url: 'https://kkeul.vercel.app' + '/p/' + profile.id.split('-')[0],
+                              url: 'https://kkeul.telosix.co.kr' + '/p/' + profile.id.split('-')[0],
                             });
                           } else {
                             await showAlert('[웹 환경] 클립보드에 링크가 복사되었습니다!');

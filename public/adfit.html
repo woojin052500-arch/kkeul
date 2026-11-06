@@ -35,13 +35,9 @@
       ins.setAttribute('data-ad-height', height);
 
       // On fail callback
+      // 광고가 없으면 빈칸으로 둔다 (대체 문구·장식 없음)
       window.kakaoAdFailCallback = () => {
-        document.body.innerHTML = `
-          <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8B 100%); color: white; border-radius: 12px; font-weight: bold; padding: 20px; box-sizing: border-box; text-align: center; font-family: sans-serif;">
-            <span style="font-size: 24px; margin-bottom: 8px;">KKEUL</span>
-            <span style="font-size: 14px; opacity: 0.9;">Sponsored Space</span>
-          </div>
-        `;
+        document.body.innerHTML = '';
       };
       ins.setAttribute('data-ad-onfail', 'kakaoAdFailCallback');
 
