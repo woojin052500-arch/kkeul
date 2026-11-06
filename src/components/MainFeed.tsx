@@ -21,7 +21,7 @@ import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { purchase } from '../utils/billing';
 import { Contacts } from '@capacitor-community/contacts';
-import { AdFitNativeCard, AdFitBanner100, AdFitBanner100_Second } from './AdFit';
+import { AdFitNativeCard, AdSlot } from './AdFit';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -145,6 +145,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const [profileSubTab, setProfileSubTab] = useState<'portfolio' | 'edit' | 'settings'>('portfolio');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [openLegalDoc, setOpenLegalDoc] = useState<LegalDoc['id'] | null>(null);
+  // 광고가 오지 않은 스와이프 광고 카드는 덱에서 뺀다
+  const [failedAdIds, setFailedAdIds] = useState<string[]>([]);
+  const markAdFailed = useCallback((id: string) => {
+    setFailedAdIds(prev => (prev.includes(id) ? prev : [...prev, id]));
+  }, []);
   // 내가 낸 동아리 지원서 (심사 결과 표시용)
   const [myClubApps, setMyClubApps] = useState<ClubApplicant[]>([]);
 
@@ -1283,7 +1288,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     (Capacitor.isNativePlatform() ? [] : adIndices).forEach((targetIndex) => {
                       let relativePos = targetIndex - swipesDone;
                       // 아직 지나치지 않은 광고만 큐에 삽입 (relativePos가 0이면 현재 맨 앞)
-                      if (relativePos >= 0 && relativePos <= swipeQueue.length) {
+                      if (relativePos >= 0 && relativePos <= swipeQueue.length && !failedAdIds.includes(`adfit-native-${targetIndex}`)) {
                         swipeQueue.splice(relativePos + insertedAds, 0, {
                           id: `adfit-native-${targetIndex}`,
                           title: 'AD',
@@ -1351,7 +1356,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           >
                             <div className={`swipe-card ${isNeonThemeUnlocked ? 'theme-neon-pink' : ''}`} style={ann.category === 'AD' ? { padding: 0, border: 'none', background: 'transparent', boxShadow: 'none', borderRadius: 0, overflow: 'visible' } : undefined}>
                               {ann.category === 'AD' ? (
-                                <AdFitNativeCard height="100%" isActive={isTop} />
+                                <AdFitNativeCard isActive={isTop} onFail={() => markAdFailed(ann.id)} />
                               ) : (
                                 <>
                               {/* 좌우 드래그 상태 반투명 가이드 뱃지 */}
@@ -1648,6 +1653,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
                   );
                 })()}
+                <AdSlot placement="homeSwipeBelow" style={{ marginTop: '28px' }} />
               </div>
             )}
 
@@ -1777,12 +1783,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       .map((ann, idx) => {
                         const isBookmarked = bookmarks.includes(ann.id);
                         const dday = getDDay(ann.deadline);
-                        const showAd100 = idx === 7;
-                        const showAd100_2 = idx === 15;
+                        const showAd100 = idx === 3;
+                        const showAd100_2 = idx === 11;
                         return (
                           <React.Fragment key={ann.id}>
-                          {showAd100 && <AdFitBanner100 />}
-                          {showAd100_2 && <AdFitBanner100_Second />}
+                          {showAd100 && <AdSlot placement="homeListFirst" />}
+                          {showAd100_2 && <AdSlot placement="homeListSecond" />}
                           <div
                             onClick={() => onSelectAnnouncement(ann)}
                             className="animate-fade-in toss-card-spring"
@@ -2048,6 +2054,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 )}
               </div>
             </div>
+            <AdSlot placement="calendar" />
           </div>
         )}
 
@@ -2138,6 +2145,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </div>
               )}
             </div>
+            <AdSlot placement="bookmarks" />
           </div>
         )}
 
@@ -2525,6 +2533,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </button>
               </div>
             )}
+            <AdSlot placement="club" />
           </div>
         )}
 
@@ -3445,6 +3454,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             </div>
           </div>
 
+          <AdSlot placement="partners" />
         </div>
       )}
 
