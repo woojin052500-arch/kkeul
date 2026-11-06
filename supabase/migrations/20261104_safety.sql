@@ -439,7 +439,7 @@ $$;
 revoke all on function public.matching_profiles() from public, anon;
 grant execute on function public.matching_profiles() to authenticated;
 
--- 명함 QR(kkeul.vercel.app/p/<ID 앞 8자리>)로 여는 공개 프로필.
+-- 명함 QR(kkeul.telosix.co.kr/p/<ID 앞 8자리>)로 여는 공개 프로필.
 -- 학교·지역·이메일·연락처는 내보내지 않습니다.
 create or replace function public.public_profile(short_id text)
 returns jsonb

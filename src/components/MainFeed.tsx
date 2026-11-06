@@ -593,7 +593,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       ? `[${userLocation} 추천] '${card.title}' 공고가 접수 진행 중입니다. 관심사 매칭 공고 공유.`
       : `'${card.title}' 접수 진행 중. 추천 대외활동 공고 공유.`;
       
-    const shareUrl = `${card.apply_url || 'https://kkeul.vercel.app'}?ref=${profile.id}&annId=${card.id}`;
+    const shareUrl = `${card.apply_url || 'https://kkeul.telosix.co.kr'}?ref=${profile.id}&annId=${card.id}`;
 
     try {
       await Share.share({
@@ -2592,7 +2592,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   {/* BUSINESS CARD (paper style, flips to QR) */}
                   {(() => {
                     const shortId = profile.id.split('-')[0];
-                    const profileUrl = `https://kkeul.vercel.app/p/${shortId}`;
+                    const profileUrl = `https://kkeul.telosix.co.kr/p/${shortId}`;
                     const ink = '#1F1D1A';
                     const muted = '#7A7368';
                     const rule = '#E6E0D6';
@@ -2688,7 +2688,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 카메라로 스캔하면<br />포트폴리오가 열려요.
                               </p>
                               <div style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', color: muted, wordBreak: 'break-all' }}>
-                                kkeul.vercel.app/p/{shortId}
+                                kkeul.telosix.co.kr/p/{shortId}
                               </div>
                             </div>
                           </div>
@@ -2915,7 +2915,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           await Share.share({
                             title: '내 진로 로드맵 공유',
                             text: `[Kkeul] ${profile.name}님의 인터랙티브 진로 로드맵과 스펙을 확인해보세요! #Kkeul #진로로드맵`,
-                            url: 'https://kkeul.vercel.app' + '/p/' + profile.id.split('-')[0],
+                            url: 'https://kkeul.telosix.co.kr' + '/p/' + profile.id.split('-')[0],
                             dialogTitle: '로드맵 공유하기'
                           });
                         } catch (e: any) {
@@ -2930,7 +2930,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             await navigator.share({
                               title: '내 진로 로드맵 공유',
                               text: `[Kkeul] ${profile.name}님의 인터랙티브 진로 로드맵과 스펙을 확인해보세요! #Kkeul #진로로드맵`,
-                              url: 'https://kkeul.vercel.app' + '/p/' + profile.id.split('-')[0],
+                              url: 'https://kkeul.telosix.co.kr' + '/p/' + profile.id.split('-')[0],
                             });
                           } else {
                             await showAlert('[웹 환경] 클립보드에 링크가 복사되었습니다!');
