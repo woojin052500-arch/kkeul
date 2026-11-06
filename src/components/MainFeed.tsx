@@ -1279,7 +1279,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     const swipesDone = sessionSwipes;
                     const adIndices = [5, 11, 17, 23, 29, 35, 41]; // 4~6개 간격으로 광고 노출 (처음 5개는 무조건 일반 카드)
                     let insertedAds = 0;
-                    // 앱(네이티브)에서는 웹 광고를 그릴 수 없으므로 광고 카드를 넣지 않는다
+                    // 앱에는 광고를 넣지 않는다 (광고는 웹 전용)
                     (Capacitor.isNativePlatform() ? [] : adIndices).forEach((targetIndex) => {
                       let relativePos = targetIndex - swipesDone;
                       // 아직 지나치지 않은 광고만 큐에 삽입 (relativePos가 0이면 현재 맨 앞)
