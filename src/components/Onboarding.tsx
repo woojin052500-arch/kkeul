@@ -5,6 +5,7 @@ import { PremiumLogo } from './PremiumLogo';
 import { db } from '../supabaseClient';
 import { LEGAL_DOCS, TERMS_VERSION, type LegalDoc } from '../legal/terms';
 import { LegalDocModal } from './LegalDocModal';
+import { SchoolPicker } from './SchoolPicker';
 
 interface OnboardingProps {
   onComplete: (profile: Profile) => void;
@@ -616,20 +617,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
         {step === 8 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
-              재학 중인 학교/소속을<br />입력해 주세요
+              재학 중인 학교를<br />찾아서 골라 주세요
             </h1>
-            <div className="toss-input-group">
-              <input
-                type="text"
-                value={school}
-                onChange={(e) => setSchool(e.target.value)}
-                onKeyDown={(e) => handleKeyDown(e, school.trim().length > 0, () => setStep(9))}
-                className="toss-input"
-                placeholder=" "
-                autoFocus
-              />
-              <label className="toss-input-placeholder">소속명</label>
-            </div>
+            <SchoolPicker value={school} onChange={setSchool} autoFocus />
           </div>
         )}
 

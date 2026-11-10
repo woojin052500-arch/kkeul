@@ -23,6 +23,7 @@ import { purchase } from '../utils/billing';
 import { Contacts } from '@capacitor-community/contacts';
 import { AdFitNativeCard, AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
+import { SchoolPicker } from './SchoolPicker';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -212,7 +213,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     const updatedProfile: Profile = {
       ...profile,
       name: editName,
-      school: editSchool,
+      school: editSchool || profile.school, // 검색만 하고 고르지 않았으면 기존 학교 유지
       grade: editGrade,
       location: editLocation,
       major: editMajor,
@@ -2947,13 +2948,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>학교명</label>
-                      <input
-                        type="text"
-                        value={editSchool}
-                        onChange={(e) => setEditSchool(e.target.value)}
-                        placeholder="예: 서울고등학교"
-                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
-                      />
+                      <SchoolPicker value={editSchool} onChange={setEditSchool} placeholder="학교 이름으로 검색" />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
