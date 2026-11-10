@@ -14,6 +14,7 @@ import type { Announcement, Profile } from '../types';
 import logoImg from '../assets/logo.png';
 import { LEGAL_DOCS, type LegalDoc } from '../legal/terms';
 import { LegalDocModal } from './LegalDocModal';
+import { getDDay, isClosed } from '../utils/dday';
 
 const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.wjedulab.kkeul';
 
@@ -42,11 +43,6 @@ const HOST_TABS = [
   { id: 'profile', label: '마이페이지', icon: User }
 ];
 
-const dDay = (deadline: string) => {
-  const ms = new Date(deadline).getTime() - Date.now();
-  const days = Math.ceil(ms / (24 * 60 * 60 * 1000));
-  return days <= 0 ? 'D-DAY' : `D-${days}`;
-};
 
 // PC(넓은 화면)에서만 보이는 좌우 패널. 가운데 앱 화면(480px)은 그대로 둔다.
 export const DesktopShell: React.FC<DesktopShellProps> = ({
@@ -64,7 +60,7 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
   const upcoming = useMemo(() => {
     const now = Date.now();
     return announcements
-      .filter(a => a.deadline && new Date(a.deadline).getTime() > now)
+      .filter(a => a.deadline && !isClosed(a.deadline) && new Date(a.deadline).getTime() > now - 24 * 60 * 60 * 1000)
       .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
       .slice(0, 5);
   }, [announcements]);
@@ -159,7 +155,7 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
                 {upcoming.map(a => (
                   <li key={a.id}>
                     <button type="button" onClick={() => onOpenAnnouncement(a)}>
-                      <span className="desk-dday">{dDay(a.deadline)}</span>
+                      <span className="desk-dday">{getDDay(a.deadline)}</span>
                       <span className="desk-item-text">
                         <strong>{a.title}</strong>
                         <span>{a.host}</span>
@@ -180,7 +176,7 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
                 {saved.map(a => (
                   <li key={a.id}>
                     <button type="button" onClick={() => onOpenAnnouncement(a)}>
-                      <span className="desk-dday">{dDay(a.deadline)}</span>
+                      <span className="desk-dday">{getDDay(a.deadline)}</span>
                       <span className="desk-item-text">
                         <strong>{a.title}</strong>
                         <span>{a.host}</span>

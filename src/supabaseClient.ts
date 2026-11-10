@@ -908,7 +908,13 @@ export const db = {
     }
 
     const local = localStorage.getItem(STORAGE_KEYS.ANNOUNCEMENTS);
-    const localList: Announcement[] = local ? JSON.parse(local) : [];
+    let localList: Announcement[] = local ? JSON.parse(local) : [];
+
+    // 실제 공고가 DB에서 내려오면, 앱에 내장된 예시 공고(마감일이 가짜)는 섞지 않는다
+    if (remoteAnnouncements.length > 0) {
+      const sampleIds = new Set(MOCK_ANNOUNCEMENTS.map(a => a.id));
+      localList = localList.filter(a => !sampleIds.has(a.id));
+    }
 
     // 원격 및 로컬 데이터를 ID 기준 중복 없이 병합
     const mergedMap = new Map<string, Announcement>();

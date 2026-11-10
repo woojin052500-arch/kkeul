@@ -22,6 +22,7 @@ import { Capacitor } from '@capacitor/core';
 import { purchase } from '../utils/billing';
 import { Contacts } from '@capacitor-community/contacts';
 import { AdFitNativeCard, AdSlot } from './AdFit';
+import { getDDay, isClosed } from '../utils/dday';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -804,52 +805,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     return profile.interests.some(interest => annCategories.includes(interest));
   };
 
-  // Calculate D-Day safely across timezones and cross-browser environments
-  const getDDay = (deadlineStr: string) => {
-    if (!deadlineStr) return 'D-Day';
-    let deadlineDate: Date;
-    try {
-      const formattedStr = deadlineStr.replace(/-/g, '/');
-      deadlineDate = new Date(formattedStr);
-      if (isNaN(deadlineDate.getTime())) {
-        deadlineDate = new Date(deadlineStr);
-      }
-    } catch (e) {
-      return 'D-Day';
-    }
-
-    if (isNaN(deadlineDate.getTime())) {
-      return '기한 있음';
-    }
-
-    // Set the deadline to the end of the day (23:59:59)
-    const deadlineTime = new Date(
-      deadlineDate.getFullYear(),
-      deadlineDate.getMonth(),
-      deadlineDate.getDate(),
-      23,
-      59,
-      59
-    ).getTime();
-
-    // Set today to the beginning of the day (00:00:00)
-    const today = new Date();
-    const todayTime = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      0,
-      0,
-      0
-    ).getTime();
-
-    const diff = deadlineTime - todayTime;
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (days === 0) return 'D-Day';
-    if (days < 0) return '마감됨';
-    return `D-${days}`;
-  };
 
   // 비공개 프리미엄 공고 정의 (친구 초대 게이미피케이션 연동용)
   const premiumLockedAnnouncement = useMemo<Announcement>(() => ({
@@ -873,12 +828,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
     return baseList
       .filter(ann => {
-        const isOver = new Date(ann.deadline).getTime() < Date.now();
-        if (isOver) return false;
-
+        // 보관함에서는 마감된 공고도 '마감'으로 보여 준다. 그 밖의 목록에서는 뺀다.
         if (activeTab === 'bookmarks') {
           return bookmarks.includes(ann.id);
         }
+        if (isClosed(ann.deadline)) return false;
 
         // 스와이프 Pass(제외)한 공고 영구 제외
         if (passedIds.includes(ann.id)) return false;
@@ -2078,7 +2032,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         flexDirection: 'column',
                         gap: '10px',
                         cursor: 'pointer',
-                        border: '1px solid #E5E8EB'
+                        border: '1px solid #E5E8EB',
+                        opacity: isClosed(ann.deadline) ? 0.6 : 1
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -2095,8 +2050,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           </span>
                         ) : (
                           <span style={{
-                            color: 'var(--color-red)',
-                            backgroundColor: 'var(--color-red-light)',
+                            color: isClosed(ann.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)',
+                            backgroundColor: isClosed(ann.deadline) ? '#F2F4F6' : 'var(--color-red-light)',
                             fontSize: '11px',
                             fontWeight: 700,
                             padding: '3px 6px',

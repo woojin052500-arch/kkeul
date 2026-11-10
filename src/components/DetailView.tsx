@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Announcement, Profile } from '../types';
 import { TeamBoard } from './TeamBoard';
 import { AdSlot } from './AdFit';
+import { getDDay, isClosed } from '../utils/dday';
 import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Sparkles, Copy, Zap } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
@@ -341,7 +342,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
   const getFormattedDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
+    if (isNaN(date.getTime())) return '공고 확인';
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
   };
 
   return (
@@ -719,14 +721,29 @@ export const DetailView: React.FC<DetailViewProps> = ({
               </div>
               <div style={{ display: 'flex', fontSize: '14px' }}>
                 <span style={{ width: '80px', color: 'var(--text-tertiary)', fontWeight: 600 }}>접수 마감</span>
-                <span style={{ color: 'var(--color-red)', fontWeight: 700 }}>
+                <span style={{ color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', fontWeight: 700 }}>
                   {getFormattedDate(announcement.deadline)}
                 </span>
+                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 800, padding: '1px 8px', borderRadius: '6px', color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', backgroundColor: isClosed(announcement.deadline) ? '#F2F4F6' : 'var(--color-red-light)' }}>
+                  {getDDay(announcement.deadline)}
+                </span>
               </div>
+              {announcement.target && (
+                <div style={{ display: 'flex', fontSize: '14px' }}>
+                  <span style={{ width: '80px', flexShrink: 0, color: 'var(--text-tertiary)', fontWeight: 600 }}>참가 대상</span>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{announcement.target}</span>
+                </div>
+              )}
               <div style={{ display: 'flex', fontSize: '14px' }}>
                 <span style={{ width: '80px', color: 'var(--text-tertiary)', fontWeight: 600 }}>모집 지역</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{announcement.location}</span>
               </div>
+              {announcement.source === 'contestkorea' && (
+                <div style={{ display: 'flex', fontSize: '14px' }}>
+                  <span style={{ width: '80px', flexShrink: 0, color: 'var(--text-tertiary)', fontWeight: 600 }}>출처</span>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>콘테스트코리아</span>
+                </div>
+              )}
             </div>
 
             {/* Tab Switcher: 모집 요강 vs 합격 족보 */}
