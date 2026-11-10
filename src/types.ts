@@ -33,6 +33,9 @@ export interface Profile {
 }
 
 export interface Announcement {
+  source?: string | null; // 'contestkorea' 면 콘테스트코리아에서 받아온 공고
+  source_id?: string | null;
+  target?: string | null; // 참가 대상
   id: string;
   title: string;
   host: string;

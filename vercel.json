@@ -3,5 +3,8 @@
     { "source": "/contest/:path*", "destination": "/index.html" },
     { "source": "/team", "destination": "/index.html" },
     { "source": "/p/:path*", "destination": "/index.html" }
+  ],
+  "crons": [
+    { "path": "/api/sync-contests", "schedule": "0 20 * * *" }
   ]
 }
