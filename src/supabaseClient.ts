@@ -817,6 +817,19 @@ export interface AdminReport {
   author_suspended: boolean;
 }
 
+export interface AdminUser {
+  id: string;
+  name: string | null;
+  role: string | null;
+  school: string | null;
+  grade: string | null;
+  location: string | null;
+  created_at: string | null;
+  suspended: boolean;
+  suspend_reason: string | null;
+  is_admin: boolean;
+}
+
 export interface AdminSuspendedUser {
   user_id: string;
   name: string | null;
@@ -1542,6 +1555,19 @@ export const db = {
   async adminSetSuspension(userId: string, suspend: boolean, reason = ''): Promise<void> {
     const { error } = await supabase.rpc('admin_set_suspension', { p_user_id: userId, p_suspend: suspend, p_reason: reason });
     if (error) throw new Error(error.message);
+  },
+
+  // 전체 회원 목록 (이름·학교로 검색, 최근 가입 순). 이메일·연락처는 받지 않는다.
+  async adminListUsers(query = '', onlySuspended = false, limit = 50, offset = 0): Promise<{ total: number; users: AdminUser[] }> {
+    const { data, error } = await supabase.rpc('admin_list_users', {
+      p_query: query,
+      p_only_suspended: onlySuspended,
+      p_limit: limit,
+      p_offset: offset
+    });
+    if (error) throw new Error(error.message);
+    const res = (data || {}) as { total?: number; users?: AdminUser[] };
+    return { total: res.total || 0, users: res.users || [] };
   },
 
   async adminListSuspended(): Promise<AdminSuspendedUser[]> {
