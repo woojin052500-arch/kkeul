@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { Announcement, ClubAnnouncement } from '../types';
-import { db, type AdminReport, type AdminSuspendedUser } from '../supabaseClient';
+import { db, type AdminReport, type AdminSuspendedUser, type AdminUser } from '../supabaseClient';
 import { getDDay } from '../utils/dday';
 
 interface AdminPanelProps {
@@ -11,10 +11,13 @@ interface AdminPanelProps {
   onClose: () => void;
 }
 
-type Tab = 'reports' | 'suspended' | 'announcements' | 'clubs';
+type Tab = 'reports' | 'users' | 'suspended' | 'announcements' | 'clubs';
+
+const USERS_PAGE = 50;
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'reports', label: '신고' },
+  { id: 'users', label: '회원' },
   { id: 'suspended', label: '이용 정지' },
   { id: 'announcements', label: '대회 공고' },
   { id: 'clubs', label: '동아리 공고' }
@@ -39,6 +42,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
   const [clubs, setClubs] = useState<ClubAnnouncement[]>([]);
   const [query, setQuery] = useState('');
 
+  // 회원 탭
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [userTotal, setUserTotal] = useState(0);
+  const [userInput, setUserInput] = useState('');
+  const [userQuery, setUserQuery] = useState('');
+  const [userLimit, setUserLimit] = useState(USERS_PAGE);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [usersError, setUsersError] = useState<string | null>(null);
+
   // 값이 바뀌면 목록을 다시 불러온다
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -58,6 +70,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
       alive = false;
     };
   }, [showResolved, reloadKey]);
+
+  // 검색어 입력이 멈추면 조회한다
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      setUserQuery(userInput.trim());
+      setUserLimit(USERS_PAGE);
+    }, 300);
+    return () => window.clearTimeout(t);
+  }, [userInput]);
+
+  useEffect(() => {
+    if (tab !== 'users') return;
+    let alive = true;
+    Promise.resolve().then(() => alive && setUsersLoading(true));
+    db.adminListUsers(userQuery, false, userLimit, 0)
+      .then((res) => {
+        if (!alive) return;
+        setUsers(res.users);
+        setUserTotal(res.total);
+        setUsersError(null);
+      })
+      .catch((err) => alive && setUsersError(errorText(err)))
+      .finally(() => alive && setUsersLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, [tab, userQuery, userLimit, reloadKey]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -167,9 +206,51 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
             </>
           )}
 
+          {!loading && !error && tab === 'users' && (
+            <>
+              <input className="admin-search" type="search" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder="이름이나 학교로 찾기" aria-label="회원 검색" />
+              {usersError && <p className="admin-error">불러오지 못했어요: {usersError}</p>}
+              {!usersError && (
+                <p className="admin-hint">
+                  {userQuery ? `'${userQuery}' 검색 결과 ` : '전체 회원 '}{userTotal.toLocaleString()}명 · 최근 가입 순{usersLoading ? ' · 불러오는 중…' : ''}
+                </p>
+              )}
+              {!usersError && !usersLoading && users.length === 0 && <p className="admin-empty">찾는 회원이 없어요.</p>}
+              {users.map(u => (
+                <article key={u.id} className="admin-card" data-compact="true">
+                  <div className="admin-row">
+                    <div className="admin-row-text">
+                      <strong>
+                        {u.name || '이름 없음'}
+                        {u.is_admin && <span className="admin-tag" style={{ marginLeft: '6px' }}>관리자</span>}
+                        {u.suspended && <span className="admin-tag" data-kind="warn">정지됨</span>}
+                      </strong>
+                      <span className="admin-meta">
+                        {[u.role === 'host' ? '주최 회원' : '학생 회원', [u.school, u.grade].filter(Boolean).join(' '), u.location, u.created_at ? `${formatDate(u.created_at)} 가입` : '']
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </span>
+                      {u.suspended && u.suspend_reason && <span className="admin-meta">정지 사유: {u.suspend_reason}</span>}
+                    </div>
+                    {u.suspended ? (
+                      <button type="button" disabled={busy} onClick={() => { if (window.confirm(`${u.name || '이 사용자'}님의 이용 정지를 풀까요?`)) run(() => db.adminSetSuspension(u.id, false)); }}>정지 해제</button>
+                    ) : !u.is_admin ? (
+                      <button type="button" data-kind="danger" disabled={busy} onClick={() => suspend(u.id, u.name)}>이용 정지</button>
+                    ) : null}
+                  </div>
+                </article>
+              ))}
+              {!usersError && users.length < userTotal && (
+                <div className="admin-actions" style={{ justifyContent: 'center' }}>
+                  <button type="button" disabled={usersLoading} onClick={() => setUserLimit(l => l + USERS_PAGE)}>더 보기 ({users.length}/{userTotal.toLocaleString()})</button>
+                </div>
+              )}
+            </>
+          )}
+
           {!loading && !error && tab === 'suspended' && (
             <>
-              <p className="admin-hint">이용 정지는 신고 탭에서 작성자를 정지하면 여기에 나타나요.</p>
+              <p className="admin-hint">회원 탭이나 신고 탭에서 정지한 사용자가 여기에 나타나요.</p>
               {suspended.length === 0 && <p className="admin-empty">정지된 사용자가 없어요.</p>}
               {suspended.map(s => (
                 <article key={s.user_id} className="admin-card">
