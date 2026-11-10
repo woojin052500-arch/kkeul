@@ -8,6 +8,7 @@ import {
   Compass,
   Home,
   PlusCircle,
+  ShieldCheck,
   User
 } from 'lucide-react';
 import type { Announcement, Profile } from '../types';
@@ -25,6 +26,8 @@ interface DesktopShellProps {
   bookmarks: string[];
   onNavigate: (tab: string) => void;
   onOpenAnnouncement: (ann: Announcement) => void;
+  // 관리자 계정일 때만 전달됨
+  onOpenAdmin?: () => void;
 }
 
 const STUDENT_TABS = [
@@ -51,7 +54,8 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
   announcements,
   bookmarks,
   onNavigate,
-  onOpenAnnouncement
+  onOpenAnnouncement,
+  onOpenAdmin
 }) => {
   const [openDoc, setOpenDoc] = useState<LegalDoc['id'] | null>(null);
   const isHost = profile?.role === 'host';
@@ -116,6 +120,12 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
                   {label}
                 </button>
               ))}
+              {onOpenAdmin && (
+                <button type="button" className="desk-nav-item" onClick={onOpenAdmin}>
+                  <ShieldCheck size={18} strokeWidth={1.8} />
+                  관리자
+                </button>
+              )}
             </nav>
 
             <button type="button" className="desk-me" onClick={() => onNavigate('profile')}>

@@ -14,6 +14,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { PublicProfile } from './components/PublicProfile';
 import { AdScope } from './components/adScope';
 import { DesktopShell } from './components/DesktopShell';
+import { AdminPanel } from './components/AdminPanel';
 import {
   parseDeepLink,
   findAnnouncementForLink,
@@ -34,6 +35,19 @@ function App() {
     Capacitor.isNativePlatform() ? null : parseDeepLink(window.location)
   );
   const [focusTeamBoard, setFocusTeamBoard] = useState(false);
+  // 관리자 계정이면 관리 화면 버튼을 보여 준다 (권한은 DB가 다시 확인)
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const profileId = profile?.id;
+  useEffect(() => {
+    let alive = true;
+    if (!profileId) {
+      Promise.resolve().then(() => alive && setIsAdmin(false));
+    } else {
+      db.isAdmin().then(v => alive && setIsAdmin(v)).catch(() => alive && setIsAdmin(false));
+    }
+    return () => { alive = false; };
+  }, [profileId]);
   
   // Tabs
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -678,6 +692,7 @@ function App() {
           activeTab={activeTab}
           announcements={announcements}
           bookmarks={bookmarks}
+          onOpenAdmin={isAdmin ? () => setShowAdmin(true) : undefined}
           onNavigate={(tab) => {
             setActiveTab(tab);
             setSelectedAnnouncement(null);
@@ -774,6 +789,7 @@ function App() {
               setSelectedAnnouncement(null);
             }}
             onUpdateProfile={handleUpdateProfile}
+            onOpenAdmin={isAdmin ? () => setShowAdmin(true) : undefined}
             notificationPanel={
               <NotificationPanel
                 announcements={announcements}
@@ -784,6 +800,21 @@ function App() {
           />
           </AdScope.Provider>
         </div>
+      )}
+
+      {showAdmin && isAdmin && (
+        <AdminPanel
+          announcements={announcements}
+          onAnnouncementDeleted={(id) => {
+            setAnnouncements(prev => prev.filter(a => a.id !== id));
+            setBookmarks(prev => prev.filter(b => b !== id));
+            if (selectedAnnouncement?.id === id) {
+              setSelectedAnnouncement(null);
+              setScreen('main');
+            }
+          }}
+          onClose={() => setShowAdmin(false)}
+        />
       )}
 
       {screen === 'detail' && selectedAnnouncement && (
