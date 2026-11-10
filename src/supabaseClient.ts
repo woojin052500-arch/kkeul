@@ -800,6 +800,30 @@ if (!localStorage.getItem('kkeul_join_requests')) {
   localStorage.setItem('kkeul_join_requests', JSON.stringify([]));
 }
 
+export interface AdminReport {
+  target_type: 'team_post' | 'join_request';
+  target_id: string;
+  report_count: number;
+  last_reported_at: string;
+  reasons: string[];
+  resolved: boolean;
+  resolution: string | null;
+  author_id: string | null;
+  author_name: string | null;
+  content: string | null;
+  is_hidden: boolean | null;
+  target_exists: boolean;
+  announcement_id: string | null;
+  author_suspended: boolean;
+}
+
+export interface AdminSuspendedUser {
+  user_id: string;
+  name: string | null;
+  reason: string | null;
+  created_at: string;
+}
+
 // ------------------------------------------------------------------
 // 안전 기능용 헬퍼
 // ------------------------------------------------------------------
@@ -1492,6 +1516,54 @@ export const db = {
       .from('user_contacts')
       .upsert({ user_id: uid, contact: contact || null, updated_at: new Date().toISOString() });
     if (error) throw error;
+  },
+
+  // ------------------------------------------------------------------
+  // 관리자 기능. 권한은 DB 함수가 다시 확인하므로, 관리자가 아니면 모두 거부된다.
+  // ------------------------------------------------------------------
+  async isAdmin(): Promise<boolean> {
+    const uid = await getSessionUserId();
+    if (!uid) return false;
+    const { data, error } = await supabase.from('admins').select('user_id').eq('user_id', uid).maybeSingle();
+    return !error && !!data;
+  },
+
+  async adminListReports(includeResolved = false): Promise<AdminReport[]> {
+    const { data, error } = await supabase.rpc('admin_list_reports', { include_resolved: includeResolved });
+    if (error) throw new Error(error.message);
+    return (data || []) as AdminReport[];
+  },
+
+  async adminResolveReport(targetType: AdminReport['target_type'], targetId: string, action: 'restore' | 'delete'): Promise<void> {
+    const { error } = await supabase.rpc('admin_resolve_report', { p_target_type: targetType, p_target_id: targetId, p_action: action });
+    if (error) throw new Error(error.message);
+  },
+
+  async adminSetSuspension(userId: string, suspend: boolean, reason = ''): Promise<void> {
+    const { error } = await supabase.rpc('admin_set_suspension', { p_user_id: userId, p_suspend: suspend, p_reason: reason });
+    if (error) throw new Error(error.message);
+  },
+
+  async adminListSuspended(): Promise<AdminSuspendedUser[]> {
+    const { data, error } = await supabase.rpc('admin_list_suspended');
+    if (error) throw new Error(error.message);
+    return (data || []) as AdminSuspendedUser[];
+  },
+
+  async adminDeleteAnnouncement(id: string): Promise<void> {
+    const { error } = await supabase.rpc('admin_delete_announcement', { p_id: id });
+    if (error) throw new Error(error.message);
+  },
+
+  async adminListClubAnnouncements(): Promise<ClubAnnouncement[]> {
+    const { data, error } = await supabase.from('club_announcements').select('*').order('created_at', { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data || []) as ClubAnnouncement[];
+  },
+
+  async adminDeleteClubAnnouncement(id: string): Promise<void> {
+    const { error } = await supabase.rpc('admin_delete_club_announcement', { p_id: id });
+    if (error) throw new Error(error.message);
   },
 
   // 16. 교내 동아리 공고 목록 조회 (DB 공고 + 체험용 예시 공고)

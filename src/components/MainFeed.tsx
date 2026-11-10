@@ -65,6 +65,8 @@ interface MainFeedProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onUpdateProfile: (profile: Profile) => Promise<void>;
+  // 관리자 계정일 때만 전달됨
+  onOpenAdmin?: () => void;
   notificationPanel: React.ReactNode;
   backRef?: React.MutableRefObject<(() => boolean) | null>;
 }
@@ -83,6 +85,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   activeTab,
   setActiveTab,
   onUpdateProfile,
+  onOpenAdmin,
   notificationPanel: _notificationPanel,
   backRef
 }) => {
@@ -2508,7 +2511,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           return (
             <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div>
-                <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내 정보 및 스펙</h1>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                  <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내 정보 및 스펙</h1>
+                  {onOpenAdmin && <button type="button" className="admin-entry" onClick={onOpenAdmin}>관리자</button>}
+                </div>
                 <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)' }}>역량 진단 분석과 포트폴리오를 관리합니다.</p>
               </div>
 
