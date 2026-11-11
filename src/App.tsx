@@ -24,17 +24,52 @@ import {
   type DeepLink
 } from './utils/deepLink';
 
+// 가입하지 않은 방문자용 프로필. 서버에는 저장하지 않는다.
+const GUEST_PROFILE: Profile = {
+  id: 'guest',
+  email: '',
+  name: '손님',
+  location: '전국',
+  grade: '',
+  interests: [],
+  xp: 0,
+  badges: [],
+  role: 'student'
+};
+// 비회원도 볼 수 있는 탭
+const GUEST_TABS = ['home', 'partners'];
+const GUEST_TAB_REASON: Record<string, string> = {
+  calendar: '찜한 공고의 마감일을 달력으로 모아 볼 수 있어요.',
+  bookmarks: '찜한 공고는 보관함에 모이고, 마감 전에 알려 드려요.',
+  club: '우리 학교 동아리 모집을 보고 끌 프로필로 지원할 수 있어요.',
+  profile: '가입하면 포트폴리오와 명함을 만들 수 있어요.'
+};
+
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [screen, setScreen] = useState<'onboarding' | 'main' | 'detail'>('onboarding');
+  const [screen, setScreen] = useState<'onboarding' | 'main' | 'detail'>('main');
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
   // 외부 링크로 들어온 경우 (웹에서만)
   const [initialDeepLink] = useState<DeepLink | null>(() =>
     Capacitor.isNativePlatform() ? null : parseDeepLink(window.location)
   );
   const [focusTeamBoard, setFocusTeamBoard] = useState(false);
+  // 가입하지 않은 방문자는 둘러보기(비회원) 모드로 본다
+  const isGuest = !profile;
+  const viewProfile = profile ?? GUEST_PROFILE;
+  // 회원 전용 기능을 눌렀을 때 띄우는 가입 안내 (null 이면 닫힘)
+  const [loginPrompt, setLoginPrompt] = useState<string | null>(null);
+  const requireLogin = (reason: string) => setLoginPrompt(reason);
+  const goToSignup = () => {
+    // 보던 대회가 있으면 가입 후 그 대회로 돌아온다
+    if (selectedAnnouncement) savePendingDeepLink({ kind: 'contest', id: selectedAnnouncement.id });
+    setLoginPrompt(null);
+    setSelectedAnnouncement(null);
+    setScreen('onboarding');
+    window.scrollTo({ top: 0 });
+  };
   // 관리자 계정이면 관리 화면 버튼을 보여 준다 (권한은 DB가 다시 확인)
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
@@ -99,7 +134,7 @@ function App() {
 
   // 로그인해서 메인 화면에 들어오면 보관해 둔 대회의 팀 빌딩 게시판을 연다.
   useEffect(() => {
-    if (isLoading || !profile || screen !== 'main' || announcements.length === 0) return;
+    if (isLoading || screen !== 'main' || announcements.length === 0) return;
     const link = takePendingDeepLink();
     if (!link) return;
     const ann = findAnnouncementForLink(link, announcements);
@@ -110,7 +145,7 @@ function App() {
     } else {
       alert('끌에 아직 등록되지 않은 대회예요. 비슷한 대회를 홈에서 찾아보세요.');
     }
-  }, [isLoading, profile, screen, announcements]);
+  }, [isLoading, screen, announcements]);
   useEffect(() => { browserUrlRef.current = browserUrl; }, [browserUrl]);
   useEffect(() => { activeTabRef.current = activeTab; }, [activeTab]);
 
@@ -455,7 +490,8 @@ function App() {
         localStorage.removeItem('kkeul_bookmarks');
         setProfile(null);
         setBookmarks([]);
-        setScreen('onboarding');
+        setActiveTab('home');
+        setScreen('main');
       }
     });
 
@@ -507,7 +543,9 @@ function App() {
     localStorage.removeItem('kkeul_bookmarks');
     setProfile(null);
     setBookmarks([]);
-    setScreen('onboarding');
+    setActiveTab('home');
+    setSelectedAnnouncement(null);
+    setScreen('main');
     triggerMockPush('로그아웃', '로그아웃 되었습니다. 다시 만나요!');
   };
 
@@ -524,14 +562,19 @@ function App() {
       localStorage.removeItem('kkeul_bookmarks');
       setProfile(null);
       setBookmarks([]);
-      setScreen('onboarding');
+      setActiveTab('home');
+      setSelectedAnnouncement(null);
+      setScreen('main');
       triggerMockPush('회원 탈퇴 완료', '회원 탈퇴 처리가 정상적으로 완료되었습니다.');
     }
   };
 
   // 3. 북마크 추가/삭제 토글
   const handleToggleBookmark = async (announcementId: string) => {
-    if (!profile) return;
+    if (!profile) {
+      requireLogin('찜한 공고는 보관함에 모이고, 마감 전에 알려 드려요.');
+      return;
+    }
     const isBookmarked = bookmarks.includes(announcementId);
     const announcement = announcements.find(a => a.id === announcementId);
 
@@ -600,6 +643,7 @@ function App() {
   };
 
   const handleUpdateProfile = async (updated: Profile) => {
+    if (!profile) return; // 비회원은 저장할 프로필이 없다
     const saved = await db.saveProfile(updated);
     setProfile(saved);
   };
@@ -689,6 +733,7 @@ function App() {
       {!Capacitor.isNativePlatform() && !isLoading && (
         <DesktopShell
           profile={screen === 'onboarding' ? null : profile}
+          onLogin={isGuest && screen !== 'onboarding' ? () => requireLogin('') : undefined}
           activeTab={activeTab}
           announcements={announcements}
           bookmarks={bookmarks}
@@ -761,16 +806,25 @@ function App() {
 
       {/* 2. Primary Screens Routing */}
       {screen === 'onboarding' && (
-        <Onboarding onComplete={handleOnboardingComplete} backRef={onboardingBackRef} />
+        <Onboarding
+          onComplete={handleOnboardingComplete}
+          backRef={onboardingBackRef}
+          onBrowse={() => {
+            setActiveTab('home');
+            setScreen('main');
+          }}
+        />
       )}
 
-      {profile && (screen === 'main' || screen === 'detail') && (
+      {(screen === 'main' || screen === 'detail') && (
         <div style={{ display: screen === 'main' ? 'block' : 'none', height: '100%', width: '100%' }}>
           {/* 상세 화면이 열려 목록이 숨으면 목록의 광고는 내린다 (같은 광고가 한 화면에 두 번 뜨지 않게) */}
           <AdScope.Provider value={screen === 'main'}>
           <MainFeed
             backRef={mainFeedBackRef}
-            profile={profile}
+            profile={viewProfile}
+            isGuest={isGuest}
+            onRequireLogin={requireLogin}
             announcements={announcements}
             bookmarks={bookmarks}
             onSelectAnnouncement={(ann) => {
@@ -784,6 +838,10 @@ function App() {
             onTriggerMockPush={triggerMockPush}
             activeTab={activeTab}
             setActiveTab={(tab) => {
+              if (isGuest && !GUEST_TABS.includes(tab)) {
+                requireLogin(GUEST_TAB_REASON[tab] || '');
+                return;
+              }
               setActiveTab(tab);
               // 다른 탭으로 갈 때 혹은 남아있는 상세 페이지 닫기
               setSelectedAnnouncement(null);
@@ -799,6 +857,17 @@ function App() {
             }
           />
           </AdScope.Provider>
+        </div>
+      )}
+
+      {loginPrompt !== null && screen !== 'onboarding' && (
+        <div className="login-prompt-backdrop" onClick={() => setLoginPrompt(null)}>
+          <div className="login-prompt" role="dialog" aria-modal="true" aria-labelledby="login-prompt-title" onClick={(e) => e.stopPropagation()}>
+            <h2 id="login-prompt-title">가입하고 이어서 하기</h2>
+            <p>{loginPrompt || '가입하면 전체 공고, 관심 분야 맞춤 스와이프, 대회별 팀원 찾기를 쓸 수 있어요.'}</p>
+            <button type="button" className="btn btn-primary" onClick={goToSignup}>가입 · 로그인</button>
+            <button type="button" className="login-prompt-later" onClick={() => setLoginPrompt(null)}>계속 둘러보기</button>
+          </div>
         </div>
       )}
 
@@ -823,6 +892,8 @@ function App() {
           announcement={selectedAnnouncement}
           profile={profile || undefined}
           focusTeamBoard={focusTeamBoard}
+          isGuest={isGuest}
+          onRequireLogin={requireLogin}
           onBack={() => {
             setSelectedAnnouncement(null);
             setFocusTeamBoard(false);

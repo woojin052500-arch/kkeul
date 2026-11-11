@@ -1843,3 +1843,83 @@ p {
 .school-picker-list .school-picker-manual strong { font-size: 13px; }
 
 .school-picker-note { padding: 11px 10px; font-size: 13px; color: var(--text-tertiary); }
+
+/* ===== 비회원 둘러보기 ===== */
+.guest-join,
+.guest-swipe-locked {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.guest-join { background: var(--color-indigo); color: #FFFFFF; }
+.guest-swipe-locked { background: #E8EBF0; color: var(--text-secondary); }
+
+.guest-gate,
+.guest-team {
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.guest-gate { text-align: center; align-items: center; }
+.guest-gate strong { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+.guest-gate p,
+.guest-team p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--text-secondary); }
+.guest-gate .btn { width: 100%; }
+
+.guest-team { scroll-margin-top: 72px; }
+.guest-team h3 { margin: 0; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: var(--text-primary); }
+.guest-team .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+
+.login-prompt-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.login-prompt {
+  width: 100%;
+  max-width: 480px;
+  background: #FFFFFF;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-prompt h2 { margin: 0; font-size: 18px; font-weight: 800; color: var(--text-primary); }
+.login-prompt p { margin: 0 0 6px; font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+.login-prompt .btn { width: 100%; }
+
+.login-prompt-later {
+  border: none;
+  background: none;
+  padding: 8px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+@media (min-width: 600px) {
+  .login-prompt-backdrop { align-items: center; }
+  .login-prompt { border-radius: 20px; max-width: 400px; padding-bottom: 16px; }
+}

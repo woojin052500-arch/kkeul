@@ -10,9 +10,11 @@ import { SchoolPicker } from './SchoolPicker';
 interface OnboardingProps {
   onComplete: (profile: Profile) => void;
   backRef?: React.MutableRefObject<(() => boolean) | null>;
+  // 가입하지 않고 둘러보기로 돌아가기
+  onBrowse?: () => void;
 }
 
-export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) => {
+export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onBrowse }) => {
   // Mode: signup or login
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
 
@@ -354,6 +356,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef }) =
               <button onClick={() => { setMode('login'); setStep(1); }} className="btn btn-secondary" style={{ width: '100%' }}>
                 기존 계정으로 로그인
               </button>
+              {onBrowse && (
+                <button type="button" onClick={onBrowse} style={{ border: 'none', background: 'none', padding: '8px', fontSize: '14px', color: 'var(--text-tertiary)', textDecoration: 'underline', textUnderlineOffset: '3px', cursor: 'pointer' }}>
+                  가입 없이 둘러보기
+                </button>
+              )}
             </div>
           </div>
         )}
