@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { Announcement, Profile } from '../types';
 import { TeamBoard } from './TeamBoard';
+import { GuestTeamTeaser } from './GuestTeamTeaser';
 import { AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
 import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Sparkles, Copy, Zap } from 'lucide-react';
@@ -21,6 +22,9 @@ interface DetailViewProps {
   backRef?: React.MutableRefObject<(() => boolean) | null>;
   // 외부 링크(끌에서 팀원 찾기)로 들어왔을 때 팀 빌딩 게시판으로 바로 스크롤
   focusTeamBoard?: boolean;
+  // 가입하지 않고 둘러보는 중
+  isGuest?: boolean;
+  onRequireLogin?: (reason: string) => void;
 }
 
 export const DetailView: React.FC<DetailViewProps> = ({
@@ -34,7 +38,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
   onDelete,
   onUpdate,
   backRef,
-  focusTeamBoard
+  focusTeamBoard,
+  isGuest = false,
+  onRequireLogin
 }) => {
   useEffect(() => {
     if (!focusTeamBoard) return;
@@ -61,6 +67,10 @@ export const DetailView: React.FC<DetailViewProps> = ({
   const [activeDetailTab, setActiveDetailTab] = useState<'info' | 'jokbo'>('info');
 
   const startAutoApply = () => {
+    if (isGuest) {
+      onRequireLogin?.('Kkeul 프로필로 지원하려면 먼저 가입해 주세요.');
+      return;
+    }
     setIsFillingForm(true);
     setApplyProgress(0);
     setFillingStepMessage('포트폴리오 데이터 추출 중...');
@@ -934,7 +944,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
                 {/* 대회 팀원 매칭 (Team-building) */}
                 {!isHostUser && <AdSlot placement="detail" style={{ margin: '4px 0' }} />}
-                {!isHostUser && <TeamBoard announcementId={announcement.id} profile={profile} />}
+                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} profile={profile} />}
+                {!isHostUser && isGuest && <GuestTeamTeaser announcementId={announcement.id} onRequireLogin={(reason) => onRequireLogin?.(reason)} />}
               </div>
             )}
 
@@ -1091,6 +1102,10 @@ export const DetailView: React.FC<DetailViewProps> = ({
         {!isHostUser && (
           <button
             onClick={() => {
+              if (isGuest) {
+                onRequireLogin?.('Kkeul 프로필로 지원하려면 먼저 가입해 주세요.');
+                return;
+              }
               setShow1ClickModal(true);
               setApplyProgress(0);
               setIsFillingForm(false);

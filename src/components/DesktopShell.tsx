@@ -28,6 +28,8 @@ interface DesktopShellProps {
   onOpenAnnouncement: (ann: Announcement) => void;
   // 관리자 계정일 때만 전달됨
   onOpenAdmin?: () => void;
+  // 비회원일 때 가입·로그인 화면으로
+  onLogin?: () => void;
 }
 
 const STUDENT_TABS = [
@@ -55,7 +57,8 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
   bookmarks,
   onNavigate,
   onOpenAnnouncement,
-  onOpenAdmin
+  onOpenAdmin,
+  onLogin
 }) => {
   const [openDoc, setOpenDoc] = useState<LegalDoc['id'] | null>(null);
   const isHost = profile?.role === 'host';
@@ -141,10 +144,13 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
           <div className="desk-pitch">
             <h2>대회에 같이 나갈 팀원,<br />끌에서 찾으세요</h2>
             <ul>
-              <li>관심 분야에 맞춘 청소년 대회 50여 개</li>
+              <li>지금 접수 중인 청소년 공모전·대외활동</li>
               <li>대회별 팀원 모집 게시판</li>
               <li>우리 학교 동아리 모집과 지원</li>
             </ul>
+            {onLogin && (
+              <button type="button" className="btn btn-primary" style={{ marginTop: '16px', width: '100%' }} onClick={onLogin}>가입 · 로그인</button>
+            )}
           </div>
         )}
 

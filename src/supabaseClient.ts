@@ -1389,6 +1389,13 @@ export const db = {
       .filter(p => !p.is_hidden && !blocked.includes(p.user_id));
   },
 
+  // 12-1. 대회의 구인글 개수 (비회원 안내용. 글 내용은 주지 않는다)
+  async getTeamPostCount(announcementId: string): Promise<number> {
+    const { data, error } = await supabase.rpc('team_post_count', { p_announcement_id: announcementId });
+    if (error) throw new Error(error.message);
+    return typeof data === 'number' ? data : 0;
+  },
+
   // 13. 팀 빌딩 구인글 작성
   async createTeamPost(post: Pick<TeamPost, 'announcement_id' | 'user_id' | 'user_name' | 'role_wanted' | 'my_role' | 'comment'>): Promise<TeamPost> {
     const uid = await getSessionUserId();

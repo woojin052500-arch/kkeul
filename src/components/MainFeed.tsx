@@ -68,6 +68,9 @@ interface MainFeedProps {
   onUpdateProfile: (profile: Profile) => Promise<void>;
   // 관리자 계정일 때만 전달됨
   onOpenAdmin?: () => void;
+  // 가입하지 않고 둘러보는 중 (리스트 5개까지, 스와이프·찜 등은 가입 필요)
+  isGuest?: boolean;
+  onRequireLogin?: (reason: string) => void;
   notificationPanel: React.ReactNode;
   backRef?: React.MutableRefObject<(() => boolean) | null>;
 }
@@ -87,6 +90,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   setActiveTab,
   onUpdateProfile,
   onOpenAdmin,
+  isGuest = false,
+  onRequireLogin,
   notificationPanel: _notificationPanel,
   backRef
 }) => {
@@ -96,7 +101,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('추천');
 
   // B2C 학생용 뷰 모드: 'swipe' (토스형 스와이프 매칭) vs 'list' (리스트 뷰)
-  const [viewMode, setViewMode] = useState<'swipe' | 'list'>('swipe');
+  // 스와이프 매칭은 회원 전용. 비회원은 항상 리스트로 본다.
+  const [viewModeState, setViewMode] = useState<'swipe' | 'list'>('swipe');
+  const viewMode: 'swipe' | 'list' = isGuest ? 'list' : viewModeState;
+  // 비회원이 리스트에서 볼 수 있는 공고 수
+  const GUEST_LIST_LIMIT = 5;
 
   // 스와이프 Pass 처리되어 영구 제외할 공고 ID 목록
   const [passedIds, setPassedIds] = useState<string[]>([]);
@@ -394,7 +403,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   // user_actions 복원 훅
   useEffect(() => {
     const loadActions = async () => {
-      if (!profile || profile.role === 'host') return;
+      if (!profile || isGuest || profile.role === 'host') return;
       try {
         const actions = await db.getUserActions(profile.id, profile.email);
         const passed = actions.filter(a => a.action_type === 'pass').map(a => a.announcement_id);
@@ -591,6 +600,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   // 초대장 마이크로 공유 함수 (Viral Loop)
   const handleMicroShare = async (e: React.MouseEvent, card: Announcement) => {
     e.stopPropagation();
+    if (isGuest) {
+      onRequireLogin?.('공유하면 XP를 받을 수 있어요. 가입하고 친구에게 공유해 보세요.');
+      return;
+    }
     
     // 사용자 지역 기반 공유 카피
     const userLocation = profile.location || '전국';
@@ -1004,9 +1017,17 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0, fontWeight: 500 }}>
-                  안녕하세요, {profile.name}님
+                  {isGuest ? '끌 둘러보는 중' : `안녕하세요, ${profile.name}님`}
                 </p>
-                {!showSimulation && (
+                {isGuest && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button type="button" className="guest-swipe-locked" onClick={() => onRequireLogin?.('스와이프 매칭은 관심 분야에 맞춰 대회를 골라 드리는 회원 전용 기능이에요.')}>
+                      <Lock size={11} /> 스와이프 매칭
+                    </button>
+                    <button type="button" className="guest-join" onClick={() => onRequireLogin?.('')}>가입 · 로그인</button>
+                  </div>
+                )}
+                {!isGuest && !showSimulation && (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
 
                     {/* 체험 가이드 실행 버튼 */}
@@ -1084,13 +1105,20 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 )}
               </div>
             </div>
+            {isGuest ? (
+              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>
+                지금 접수 중인 공고<br />
+                <span style={{ color: 'var(--color-indigo)' }}>{studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').length}개</span>가 있어요.
+              </h1>
+            ) : (
             <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>
                 오늘 <span style={{ color: 'var(--color-indigo)' }}>{studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').length}개</span>의 기회가<br />
                 매칭되었습니다.
               </h1>
+            )}
 
               {/* Toss-Style Premium Curation Panel */}
-              {(!showSimulation || simulationStep === 1) && (
+              {!isGuest && (!showSimulation || simulationStep === 1) && (
                 <div 
                   id="guide-step-1"
                   className={`toss-card-spring ${showSimulation && simulationStep === 1 ? 'guide-highlight' : ''}`}
@@ -1613,6 +1641,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             {/* VIEW MODE 2: 리스트 뷰 모드 및 기존 컨텐츠 */}
             {viewMode === 'list' && (
               <>
+                {!isGuest && (<>
                 {/* Gamification Stats Card */}
                 <div style={{
                   background: 'linear-gradient(135deg, var(--color-indigo) 0%, #6366F1 100%)',
@@ -1637,6 +1666,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   </div>
                 </div>
 
+                </>)}
                 {/* Horizontal Category Tag Filters */}
                 <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar h-scroll-desktop">
                   {categories.map((cat) => {
@@ -1668,6 +1698,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                 {/* Announcements Grid */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {!isGuest && (<>
                   {/* 비공개 프리미엄 공고를 리스트 최상단/하단에 노출하여 초대 가입 욕구 촉진 */}
                   <div
                     onClick={isPremiumUnlocked ? () => onSelectAnnouncement(premiumLockedAnnouncement) : undefined}
@@ -1727,12 +1758,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       </div>
                     </div>
                   </div>
+                  </>)}
 
                   {studentMatchedAnnouncements
                     .filter(ann => ann.id !== 'ann-premium-locked') // 일반 리스트에서는 프리미엄 고정 락 카드는 하단에 별도 노출했으므로 중복 제거
                     .length > 0 ? (
                     studentMatchedAnnouncements
                       .filter(ann => ann.id !== 'ann-premium-locked')
+                      .slice(0, isGuest ? GUEST_LIST_LIMIT : undefined)
                       .map((ann, idx) => {
                         const isBookmarked = bookmarks.includes(ann.id);
                         const dday = getDDay(ann.deadline);
@@ -1844,6 +1877,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               </div>
                             </div>
 
+                            {!isGuest && (<>
                             {/* 매칭 추천 사유 문구 */}
                             <div style={{
                               fontSize: '11.5px',
@@ -1860,6 +1894,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             }}>
                               {getRecommendationReason(ann)}
                             </div>
+                            </>)}
 
                             <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35 }}>
                               {ann.title}
@@ -1885,6 +1920,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       관심 분야를 넓히거나 전체 탭을 확인해 보세요.
                     </div>
                   )}
+
+                  {isGuest && (() => {
+                    const total = studentMatchedAnnouncements.filter(ann => ann.id !== 'ann-premium-locked').length;
+                    if (total <= GUEST_LIST_LIMIT) return null;
+                    return (
+                      <div className="guest-gate">
+                        <strong>공고가 {(total - GUEST_LIST_LIMIT).toLocaleString()}개 더 있어요</strong>
+                        <p>가입하면 전체 공고를 보고, 관심 분야에 맞춘 스와이프 매칭과 대회별 팀원 찾기를 쓸 수 있어요.</p>
+                        <button type="button" className="btn btn-primary" onClick={() => onRequireLogin?.('')}>가입하고 전체 보기</button>
+                      </div>
+                    );
+                  })()}
                 </div>
               </>
             )}
