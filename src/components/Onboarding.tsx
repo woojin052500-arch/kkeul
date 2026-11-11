@@ -383,6 +383,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
               />
               <label className="toss-input-placeholder">이메일 주소</label>
             </div>
+            {mode === 'signup' && (
+              <p style={{ marginTop: '12px', fontSize: '13px', lineHeight: 1.5, color: 'var(--text-tertiary)' }}>
+                본인이 쓰는 이메일로 가입해 주세요. 다른 사람의 이메일로 가입한 계정은 삭제될 수 있어요.
+              </p>
+            )}
           </div>
         )}
 
