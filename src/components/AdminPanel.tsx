@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { Announcement, ClubAnnouncement } from '../types';
-import { db, type AdminReport, type AdminSuspendedUser, type AdminUser } from '../supabaseClient';
+import { db, type AdminReport, type AdminSuspendedUser, type AdminTeamPost, type AdminUser } from '../supabaseClient';
 import { getDDay } from '../utils/dday';
 
 interface AdminPanelProps {
@@ -11,12 +11,13 @@ interface AdminPanelProps {
   onClose: () => void;
 }
 
-type Tab = 'reports' | 'users' | 'suspended' | 'announcements' | 'clubs';
+type Tab = 'reports' | 'posts' | 'users' | 'suspended' | 'announcements' | 'clubs';
 
 const USERS_PAGE = 50;
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'reports', label: '신고' },
+  { id: 'posts', label: '구인글' },
   { id: 'users', label: '회원' },
   { id: 'suspended', label: '이용 정지' },
   { id: 'announcements', label: '대회 공고' },
@@ -50,6 +51,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
   const [userLimit, setUserLimit] = useState(USERS_PAGE);
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersError, setUsersError] = useState<string | null>(null);
+
+  // 구인글 탭
+  const [posts, setPosts] = useState<AdminTeamPost[]>([]);
+  const [postTotal, setPostTotal] = useState(0);
+  const [postInput, setPostInput] = useState('');
+  const [postQuery, setPostQuery] = useState('');
+  const [postLimit, setPostLimit] = useState(USERS_PAGE);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postsError, setPostsError] = useState<string | null>(null);
 
   // 값이 바뀌면 목록을 다시 불러온다
   const [reloadKey, setReloadKey] = useState(0);
@@ -97,6 +107,32 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
       alive = false;
     };
   }, [tab, userQuery, userLimit, reloadKey]);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      setPostQuery(postInput.trim());
+      setPostLimit(USERS_PAGE);
+    }, 300);
+    return () => window.clearTimeout(t);
+  }, [postInput]);
+
+  useEffect(() => {
+    if (tab !== 'posts') return;
+    let alive = true;
+    Promise.resolve().then(() => alive && setPostsLoading(true));
+    db.adminListTeamPosts(postQuery, postLimit, 0)
+      .then((res) => {
+        if (!alive) return;
+        setPosts(res.posts);
+        setPostTotal(res.total);
+        setPostsError(null);
+      })
+      .catch((err) => alive && setPostsError(errorText(err)))
+      .finally(() => alive && setPostsLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, [tab, postQuery, postLimit, reloadKey]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -203,6 +239,53 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
                   )}
                 </article>
               ))}
+            </>
+          )}
+
+          {!loading && !error && tab === 'posts' && (
+            <>
+              <input className="admin-search" type="search" value={postInput} onChange={(e) => setPostInput(e.target.value)} placeholder="작성자·내용·역할로 찾기" aria-label="구인글 검색" />
+              {postsError && <p className="admin-error">불러오지 못했어요: {postsError}</p>}
+              {!postsError && (
+                <p className="admin-hint">
+                  {postQuery ? `'${postQuery}' 검색 결과 ` : '전체 구인글 '}{postTotal.toLocaleString()}개 · 최근 순 · 숨긴 글도 보여요{postsLoading ? ' · 불러오는 중…' : ''}
+                </p>
+              )}
+              {!postsError && !postsLoading && posts.length === 0 && <p className="admin-empty">구인글이 없어요.</p>}
+              {posts.map(p => (
+                <article key={p.id} className="admin-card">
+                  <div className="admin-card-top">
+                    <span>
+                      <span className="admin-tag">구인글</span>
+                      {p.is_hidden && <span className="admin-tag" data-kind="warn">숨김</span>}
+                    </span>
+                    <span className="admin-meta">{formatDate(p.created_at)}</span>
+                  </div>
+                  <p className="admin-content">{p.comment || '(내용 없음)'}</p>
+                  <dl className="admin-facts">
+                    <div><dt>작성자</dt><dd>{p.user_name || '알 수 없음'}{p.author_suspended && <span className="admin-tag" data-kind="warn">정지됨</span>}</dd></div>
+                    <div><dt>대회</dt><dd>{titleOf(p.announcement_id) || `(목록에 없는 대회 · ${p.announcement_id})`}</dd></div>
+                    {(p.my_role || p.role_wanted) && <div><dt>역할</dt><dd>{[p.my_role && `내 역할 ${p.my_role}`, p.role_wanted && `구함 ${p.role_wanted}`].filter(Boolean).join(' · ')}</dd></div>}
+                    <div><dt>현황</dt><dd>합류 요청 {p.request_count}건{p.report_count > 0 ? ` · 신고 ${p.report_count}건` : ''}</dd></div>
+                  </dl>
+                  <div className="admin-actions">
+                    {p.is_hidden ? (
+                      <button type="button" disabled={busy} onClick={() => run(() => db.adminSetTeamPostHidden(p.id, false))}>다시 공개</button>
+                    ) : (
+                      <button type="button" disabled={busy} onClick={() => run(() => db.adminSetTeamPostHidden(p.id, true))}>숨기기</button>
+                    )}
+                    <button type="button" data-kind="danger" disabled={busy} onClick={() => { if (window.confirm('이 구인글을 삭제할까요? 받은 합류 요청도 함께 지워지고 되돌릴 수 없어요.')) run(() => db.adminDeleteTeamPost(p.id)); }}>삭제</button>
+                    {!p.author_suspended && (
+                      <button type="button" data-kind="danger" disabled={busy} onClick={() => suspend(p.user_id, p.user_name)}>작성자 이용 정지</button>
+                    )}
+                  </div>
+                </article>
+              ))}
+              {!postsError && posts.length < postTotal && (
+                <div className="admin-actions" style={{ justifyContent: 'center' }}>
+                  <button type="button" disabled={postsLoading} onClick={() => setPostLimit(l => l + USERS_PAGE)}>더 보기 ({posts.length}/{postTotal.toLocaleString()})</button>
+                </div>
+              )}
             </>
           )}
 
