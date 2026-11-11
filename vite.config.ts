@@ -7,9 +7,11 @@ const siteVerification = (env: Record<string, string>): Plugin => ({
   name: 'site-verification',
   transformIndexHtml(html) {
     const clean = (v?: string) => (v || '').trim().replace(/[^A-Za-z0-9_-]/g, '')
+    // index.html 에 이미 들어 있는 태그는 다시 넣지 않는다
+    const has = (name: string) => html.includes(`name="${name}"`)
     const tags = [
-      clean(env.GOOGLE_SITE_VERIFICATION) && `<meta name="google-site-verification" content="${clean(env.GOOGLE_SITE_VERIFICATION)}" />`,
-      clean(env.NAVER_SITE_VERIFICATION) && `<meta name="naver-site-verification" content="${clean(env.NAVER_SITE_VERIFICATION)}" />`
+      !has('google-site-verification') && clean(env.GOOGLE_SITE_VERIFICATION) && `<meta name="google-site-verification" content="${clean(env.GOOGLE_SITE_VERIFICATION)}" />`,
+      !has('naver-site-verification') && clean(env.NAVER_SITE_VERIFICATION) && `<meta name="naver-site-verification" content="${clean(env.NAVER_SITE_VERIFICATION)}" />`
     ].filter(Boolean)
     return tags.length ? html.replace('<!--seo:start-->', `${tags.join('\n    ')}\n    <!--seo:start-->`) : html
   }
