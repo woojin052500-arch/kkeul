@@ -24,8 +24,6 @@ interface DetailViewProps {
   focusTeamBoard?: boolean;
   // 가입하지 않고 둘러보는 중
   isGuest?: boolean;
-  // 관리자에게만 AI 세특 분석기를 보여준다
-  isAdmin?: boolean;
   onRequireLogin?: (reason: string) => void;
 }
 
@@ -42,7 +40,6 @@ export const DetailView: React.FC<DetailViewProps> = ({
   backRef,
   focusTeamBoard,
   isGuest = false,
-  isAdmin = false,
   onRequireLogin
 }) => {
   useEffect(() => {
@@ -821,7 +818,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 </div>
 
                 {/* AI 세특(생기부) 핏 분석기 */}
-                {!isHostUser && isAdmin && (
+                {!isHostUser && !isGuest && (
                   <div style={{
                     backgroundColor: '#FFFFFF',
                     borderRadius: '20px',

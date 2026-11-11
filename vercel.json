@@ -1,10 +1,38 @@
 {
   "rewrites": [
-    { "source": "/contest/:path*", "destination": "/index.html" },
-    { "source": "/team", "destination": "/index.html" },
-    { "source": "/p/:path*", "destination": "/index.html" }
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/rss.xml",
+      "destination": "/api/rss"
+    },
+    {
+      "source": "/contests",
+      "destination": "/api/contests-page"
+    },
+    {
+      "source": "/contest/:id",
+      "destination": "/api/contest-page?id=:id"
+    },
+    {
+      "source": "/contest/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/team",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/p/:path*",
+      "destination": "/index.html"
+    }
   ],
   "crons": [
-    { "path": "/api/sync-contests", "schedule": "0 20 * * *" }
+    {
+      "path": "/api/sync-contests",
+      "schedule": "0 20 * * *"
+    }
   ]
 }
