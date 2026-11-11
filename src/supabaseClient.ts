@@ -830,6 +830,21 @@ export interface AdminUser {
   is_admin: boolean;
 }
 
+export interface AdminTeamPost {
+  id: string;
+  announcement_id: string;
+  user_id: string;
+  user_name: string | null;
+  my_role: string | null;
+  role_wanted: string | null;
+  comment: string | null;
+  is_hidden: boolean;
+  created_at: string;
+  request_count: number;
+  report_count: number;
+  author_suspended: boolean;
+}
+
 export interface AdminSuspendedUser {
   user_id: string;
   name: string | null;
@@ -1575,6 +1590,23 @@ export const db = {
     if (error) throw new Error(error.message);
     const res = (data || {}) as { total?: number; users?: AdminUser[] };
     return { total: res.total || 0, users: res.users || [] };
+  },
+
+  async adminListTeamPosts(query = '', limit = 50, offset = 0): Promise<{ total: number; posts: AdminTeamPost[] }> {
+    const { data, error } = await supabase.rpc('admin_list_team_posts', { p_query: query, p_limit: limit, p_offset: offset });
+    if (error) throw new Error(error.message);
+    const res = (data || {}) as { total?: number; posts?: AdminTeamPost[] };
+    return { total: res.total || 0, posts: res.posts || [] };
+  },
+
+  async adminSetTeamPostHidden(id: string, hidden: boolean): Promise<void> {
+    const { error } = await supabase.rpc('admin_set_team_post_hidden', { p_id: id, p_hidden: hidden });
+    if (error) throw new Error(error.message);
+  },
+
+  async adminDeleteTeamPost(id: string): Promise<void> {
+    const { error } = await supabase.rpc('admin_delete_team_post', { p_id: id });
+    if (error) throw new Error(error.message);
   },
 
   async adminListSuspended(): Promise<AdminSuspendedUser[]> {

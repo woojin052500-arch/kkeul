@@ -893,6 +893,7 @@ function App() {
           profile={profile || undefined}
           focusTeamBoard={focusTeamBoard}
           isGuest={isGuest}
+          isAdmin={isAdmin}
           onRequireLogin={requireLogin}
           onBack={() => {
             setSelectedAnnouncement(null);
