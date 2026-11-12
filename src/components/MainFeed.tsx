@@ -24,6 +24,7 @@ import { Contacts } from '@capacitor-community/contacts';
 import { AdFitNativeCard, AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
 import { SchoolPicker } from './SchoolPicker';
+import { SavedTeamPosts } from './SavedTeamPosts';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -58,6 +59,8 @@ interface MainFeedProps {
   announcements: Announcement[];
   bookmarks: string[];
   onSelectAnnouncement: (announcement: Announcement) => void;
+  // 저장한 구인글을 눌렀을 때 그 대회의 팀 빌딩 게시판으로
+  onOpenTeamPost?: (announcementId: string, postId: string) => void;
   onToggleBookmark: (id: string) => void;
   onLogout: () => void;
   onWithdraw: () => void;
@@ -81,6 +84,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   announcements,
   bookmarks,
   onSelectAnnouncement,
+  onOpenTeamPost,
   onToggleBookmark,
   onLogout,
   onWithdraw,
@@ -2146,6 +2150,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </div>
               )}
             </div>
+            {!isGuest && onOpenTeamPost && <SavedTeamPosts announcements={announcements} onOpen={onOpenTeamPost} />}
             <AdSlot placement="bookmarks" />
           </div>
         )}

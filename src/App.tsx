@@ -56,6 +56,7 @@ function App() {
     Capacitor.isNativePlatform() ? null : parseDeepLink(window.location)
   );
   const [focusTeamBoard, setFocusTeamBoard] = useState(false);
+  const [focusPostId, setFocusPostId] = useState<string | null>(null);
   // 가입하지 않은 방문자는 둘러보기(비회원) 모드로 본다
   const isGuest = !profile;
   const viewProfile = profile ?? GUEST_PROFILE;
@@ -64,7 +65,7 @@ function App() {
   const requireLogin = (reason: string) => setLoginPrompt(reason);
   const goToSignup = () => {
     // 보던 대회가 있으면 가입 후 그 대회로 돌아온다
-    if (selectedAnnouncement) savePendingDeepLink({ kind: 'contest', id: selectedAnnouncement.id });
+    if (selectedAnnouncement) savePendingDeepLink({ kind: 'contest', id: selectedAnnouncement.id, ...(focusPostId ? { postId: focusPostId } : {}) });
     setLoginPrompt(null);
     setSelectedAnnouncement(null);
     setScreen('onboarding');
@@ -141,6 +142,7 @@ function App() {
     if (ann) {
       setSelectedAnnouncement(ann);
       setFocusTeamBoard(true);
+      setFocusPostId(link.kind === 'contest' ? link.postId || null : null);
       setScreen('detail');
     } else {
       alert('끌에 아직 등록되지 않은 대회예요. 비슷한 대회를 홈에서 찾아보세요.');
@@ -742,12 +744,14 @@ function App() {
             setActiveTab(tab);
             setSelectedAnnouncement(null);
             setFocusTeamBoard(false);
+            setFocusPostId(null);
             setScreen('main');
             window.scrollTo({ top: 0 });
           }}
           onOpenAnnouncement={(ann) => {
             setSelectedAnnouncement(ann);
             setFocusTeamBoard(false);
+            setFocusPostId(null);
             setScreen('detail');
             window.scrollTo({ top: 0 });
           }}
@@ -831,6 +835,17 @@ function App() {
               setSelectedAnnouncement(ann);
               setScreen('detail');
             }}
+            onOpenTeamPost={(announcementId, postId) => {
+              const ann = announcements.find(a => a.id === announcementId);
+              if (!ann) {
+                alert('마감되어 내려간 대회의 구인글이에요.');
+                return;
+              }
+              setSelectedAnnouncement(ann);
+              setFocusTeamBoard(true);
+              setFocusPostId(postId);
+              setScreen('detail');
+            }}
             onToggleBookmark={handleToggleBookmark}
             onLogout={handleLogout}
             onWithdraw={handleWithdraw}
@@ -892,11 +907,13 @@ function App() {
           announcement={selectedAnnouncement}
           profile={profile || undefined}
           focusTeamBoard={focusTeamBoard}
+          focusPostId={focusPostId}
           isGuest={isGuest}
           onRequireLogin={requireLogin}
           onBack={() => {
             setSelectedAnnouncement(null);
             setFocusTeamBoard(false);
+            setFocusPostId(null);
             setScreen('main');
           }}
           onOpenBrowser={(url, title) => {

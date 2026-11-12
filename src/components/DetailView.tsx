@@ -22,6 +22,8 @@ interface DetailViewProps {
   backRef?: React.MutableRefObject<(() => boolean) | null>;
   // 외부 링크(끌에서 팀원 찾기)로 들어왔을 때 팀 빌딩 게시판으로 바로 스크롤
   focusTeamBoard?: boolean;
+  // 공유 링크로 들어온 구인글
+  focusPostId?: string | null;
   // 가입하지 않고 둘러보는 중
   isGuest?: boolean;
   onRequireLogin?: (reason: string) => void;
@@ -39,6 +41,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
   onUpdate,
   backRef,
   focusTeamBoard,
+  focusPostId,
   isGuest = false,
   onRequireLogin
 }) => {
@@ -944,7 +947,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
                 {/* 대회 팀원 매칭 (Team-building) */}
                 {!isHostUser && <AdSlot placement="detail" style={{ margin: '4px 0' }} />}
-                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} profile={profile} />}
+                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={focusPostId} />}
                 {!isHostUser && isGuest && <GuestTeamTeaser announcementId={announcement.id} onRequireLogin={(reason) => onRequireLogin?.(reason)} />}
               </div>
             )}
