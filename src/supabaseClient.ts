@@ -1387,6 +1387,41 @@ export const db = {
   // ------------------------------------------------------------------
 
   // 12. 팀 빌딩 구인글 목록 조회 (신고로 숨겨진 글·내가 차단한 사람의 글 제외)
+  // ---- 구인글 저장 ----
+  async getSavedTeamPostIds(): Promise<string[]> {
+    const uid = await getSessionUserId();
+    if (!uid) return [];
+    const { data, error } = await supabase.from('saved_team_posts').select('post_id');
+    if (error) throw error;
+    return (data || []).map((r: { post_id: string }) => r.post_id);
+  },
+
+  async setTeamPostSaved(postId: string, saved: boolean): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) throw new Error('로그인이 필요해요.');
+    if (saved) {
+      const { error } = await supabase.from('saved_team_posts').upsert({ user_id: uid, post_id: postId }, { onConflict: 'user_id,post_id', ignoreDuplicates: true });
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('saved_team_posts').delete().eq('user_id', uid).eq('post_id', postId);
+      if (error) throw error;
+    }
+  },
+
+  // 저장한 구인글 (최근 저장 순). 삭제·숨김·차단된 글은 team_posts 권한 규칙에 따라 빠진다.
+  async getSavedTeamPosts(): Promise<TeamPost[]> {
+    const uid = await getSessionUserId();
+    if (!uid) return [];
+    const { data, error } = await supabase
+      .from('saved_team_posts')
+      .select('created_at, team_posts(*)')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data || [])
+      .map((r: { team_posts: TeamPost | TeamPost[] | null }) => (Array.isArray(r.team_posts) ? r.team_posts[0] : r.team_posts))
+      .filter((p): p is TeamPost => !!p && !p.is_hidden);
+  },
+
   async getTeamPosts(announcementId: string): Promise<TeamPost[]> {
     const uid = await getSessionUserId();
     if (uid) {

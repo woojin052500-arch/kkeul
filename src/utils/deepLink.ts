@@ -1,11 +1,11 @@
 import type { Announcement } from '../types';
 
 // 외부에서 끌로 들어오는 링크
-//   /contest/<끌 공고 ID>          → 그 대회의 팀 빌딩 게시판
+//   /contest/<끌 공고 ID>          → 그 대회의 팀 빌딩 게시판 (?post=<구인글 ID> 면 그 글로 이동)
 //   /team?name=<대회명>            → 대회명으로 찾아서 팀 빌딩 게시판 (콘테스트코리아 연동용)
 //   /p/<프로필 ID 앞 8자리>         → 명함 QR 공개 프로필
 export type DeepLink =
-  | { kind: 'contest'; id: string }
+  | { kind: 'contest'; id: string; postId?: string }
   | { kind: 'team'; name: string }
   | { kind: 'profile'; shortId: string };
 
@@ -16,7 +16,10 @@ export const parseDeepLink = (loc: Pick<Location, 'pathname' | 'search'>): DeepL
   const params = new URLSearchParams(loc.search);
 
   const contest = /^\/contest\/([^/]+)$/.exec(path);
-  if (contest) return { kind: 'contest', id: contest[1] };
+  if (contest) {
+    const postId = (params.get('post') || '').trim();
+    return /^[0-9a-f-]{36}$/i.test(postId) ? { kind: 'contest', id: contest[1], postId } : { kind: 'contest', id: contest[1] };
+  }
 
   if (path === '/team') {
     const name = (params.get('name') || params.get('q') || '').trim();

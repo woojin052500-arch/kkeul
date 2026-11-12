@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { JoinRequest, Profile, TeamPost } from '../types';
-import { Check, Flag, Plus, ShieldOff, Users } from 'lucide-react';
+import { Bookmark, Check, Flag, Plus, Share2, ShieldOff, Users } from 'lucide-react';
 import { db } from '../supabaseClient';
+import { shareLink, teamPostUrl } from '../utils/share';
 
 type Role = '기획' | '디자인' | '개발';
 
 interface TeamBoardProps {
   announcementId: string;
+  announcementTitle?: string;
   profile?: Profile;
+  // 공유 링크로 들어왔을 때 이 구인글로 이동해 강조한다
+  focusPostId?: string | null;
 }
 
 const roleColor = (role: string) => {
@@ -38,13 +42,17 @@ const smallBtn: React.CSSProperties = {
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요.');
 
-export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile }) => {
+export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announcementTitle, profile, focusPostId }) => {
   const [posts, setPosts] = useState<TeamPost[]>([]);
   const [myRequests, setMyRequests] = useState<JoinRequest[]>([]);
   const [incoming, setIncoming] = useState<Record<string, JoinRequest[]>>({});
   const [contacts, setContacts] = useState<Record<string, string | null>>({});
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [myRole, setMyRole] = useState<Role>('개발');
@@ -57,6 +65,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
       const list = await db.getTeamPosts(announcementId);
       setLoadError(null);
       setPosts(list);
+      setLoaded(true);
       if (!profile) return;
 
       const mine = await db.getMyJoinRequests(profile.id);
@@ -83,12 +92,67 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
     } catch (err) {
       console.error('팀 빌딩 데이터 조회 실패:', err);
       setLoadError('구인글을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
+      setLoaded(true);
     }
   }, [announcementId, profile]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // 저장한 구인글 (실패해도 게시판은 그대로 보여 준다)
+  useEffect(() => {
+    if (!profile) return;
+    let alive = true;
+    db.getSavedTeamPostIds()
+      .then(ids => alive && setSavedIds(ids))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [profile]);
+
+  // 공유 링크로 들어온 구인글로 이동
+  const focusMissing = loaded && !!focusPostId && !posts.some(p => p.id === focusPostId);
+  useEffect(() => {
+    if (!loaded || !focusPostId || !posts.some(p => p.id === focusPostId)) return;
+    const t1 = window.setTimeout(() => {
+      document.getElementById(`team-post-${focusPostId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHighlightId(focusPostId);
+    }, 500);
+    const t2 = window.setTimeout(() => setHighlightId(null), 3500);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [loaded, focusPostId, posts]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), 2000);
+    return () => window.clearTimeout(t);
+  }, [toast]);
+
+  const handleToggleSave = async (post: TeamPost) => {
+    if (!profile) return;
+    const saved = savedIds.includes(post.id);
+    setSavedIds(prev => (saved ? prev.filter(id => id !== post.id) : [...prev, post.id]));
+    try {
+      await db.setTeamPostSaved(post.id, !saved);
+      setToast(saved ? '저장을 취소했어요' : '보관함에 저장했어요');
+    } catch (err) {
+      setSavedIds(prev => (saved ? [...prev, post.id] : prev.filter(id => id !== post.id)));
+      alert(errorText(err));
+    }
+  };
+
+  const handleShare = async (post: TeamPost) => {
+    const contest = announcementTitle ? `[${announcementTitle}] ` : '';
+    const text = `${contest}${post.role_wanted} 팀원 구해요 (${post.user_name} · ${post.my_role})\n${post.comment}`;
+    const result = await shareLink({ title: `${contest}팀원 모집`, text, url: teamPostUrl(announcementId, post.id) });
+    if (result === 'copied') setToast('링크를 복사했어요');
+    else if (result === 'failed') alert(`이 링크를 복사해 공유해 주세요\n${teamPostUrl(announcementId, post.id)}`);
+  };
 
   const run = async (action: () => Promise<void>) => {
     if (busy) return;
@@ -212,6 +276,11 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {loadError && <div style={{ fontSize: '12.5px', color: 'var(--color-red)' }}>{loadError}</div>}
+        {focusMissing && (
+          <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', background: '#F9FAFB', borderRadius: '10px', padding: '10px 12px' }}>
+            공유받은 구인글을 찾을 수 없어요. 삭제되었거나 볼 수 없는 글이에요.
+          </div>
+        )}
         {!loadError && posts.length === 0 && (
           <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-tertiary)', fontSize: '13px', border: '1.5px dashed #F2F4F6', borderRadius: '12px' }}>
             아직 이 대회에 등록된 팀 구인글이 없습니다.<br />
@@ -227,7 +296,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
           const wantColor = roleColor(post.role_wanted);
 
           return (
-            <div key={post.id} style={{ border: '1px solid #E5E8EB', borderRadius: '14px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF', textAlign: 'left' }}>
+            <div key={post.id} id={`team-post-${post.id}`} style={{ scrollMarginTop: '80px', border: highlightId === post.id ? '1.5px solid var(--color-indigo)' : '1px solid #E5E8EB', boxShadow: highlightId === post.id ? '0 0 0 4px var(--color-indigo-light)' : 'none', transition: 'box-shadow 0.3s, border-color 0.3s', borderRadius: '14px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF', textAlign: 'left' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center', minWidth: 0 }}>
                   <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>{post.user_name}</span>
@@ -240,6 +309,23 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
               </div>
 
               <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{post.comment}</p>
+
+              {/* 저장 · 공유 */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {!isMine && profile && (
+                  <button
+                    type="button"
+                    onClick={() => handleToggleSave(post)}
+                    aria-pressed={savedIds.includes(post.id)}
+                    style={{ ...smallBtn, ...(savedIds.includes(post.id) ? { color: 'var(--color-indigo)', borderColor: 'var(--color-indigo)', background: 'var(--color-indigo-light)' } : {}) }}
+                  >
+                    <Bookmark size={11} fill={savedIds.includes(post.id) ? 'currentColor' : 'none'} /> {savedIds.includes(post.id) ? '저장됨' : '저장'}
+                  </button>
+                )}
+                <button type="button" onClick={() => handleShare(post)} style={smallBtn}>
+                  <Share2 size={11} /> {isMine ? '내 구인글 공유' : '공유'}
+                </button>
+              </div>
 
               {isMine && post.is_hidden && (
                 <div style={{ fontSize: '11.5px', color: 'var(--color-red)', background: 'var(--color-red-light)', borderRadius: '8px', padding: '8px 10px' }}>
@@ -306,6 +392,12 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, profile })
           );
         })}
       </div>
+
+      {toast && (
+        <div role="status" style={{ position: 'fixed', left: '50%', bottom: '96px', transform: 'translateX(-50%)', background: 'rgba(25,31,40,0.92)', color: '#FFFFFF', fontSize: '13px', fontWeight: 600, padding: '10px 16px', borderRadius: '20px', zIndex: 3000, whiteSpace: 'nowrap' }}>
+          {toast}
+        </div>
+      )}
 
       {showModal && (
         <div className="calendar-success-overlay" onClick={() => setShowModal(false)} style={{ zIndex: 130, backdropFilter: 'blur(5px)' }}>
