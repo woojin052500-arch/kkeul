@@ -4,6 +4,7 @@ import { Directory, Filesystem } from '@capacitor/filesystem';
 
 // 인스타그램 스토리 크기(1080x1920)의 진단 결과 카드를 캔버스로 그린다.
 // 위·아래 250px 안쪽은 인스타 화면 버튼에 가려지므로 중요한 내용을 두지 않는다.
+// 맨 아래 안내 문구 밑은 사용자가 링크 스티커를 붙이는 자리로 비워 둔다.
 
 export interface StoryCardData {
   track: string;
@@ -103,7 +104,7 @@ export const drawStoryCard = async (data: StoryCardData): Promise<HTMLCanvasElem
   ctx.fillText('끌', left, 296);
   ctx.font = `500 34px ${FONT}`;
   ctx.fillStyle = 'rgba(255,255,255,0.75)';
-  ctx.fillText('청소년 대회 팀원 찾기', left + 84, 292);
+  ctx.fillText('청소년 대회 팀원 찾기 · kkeul.telosix.co.kr', left + 84, 292);
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = `800 76px ${FONT}`;
@@ -217,7 +218,7 @@ export const drawStoryCard = async (data: StoryCardData): Promise<HTMLCanvasElem
   ctx.fillText('이 대회 같이 나갈 사람?', W / 2, bottom);
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
   ctx.font = `500 36px ${FONT}`;
-  ctx.fillText('kkeul.telosix.co.kr 에서 3초 만에 내 핏 보기', W / 2, bottom + 70);
+  ctx.fillText('아래 링크 누르고 3초 만에 내 핏 보기 ↓', W / 2, bottom + 66);
   ctx.textAlign = 'left';
 
   return canvas;

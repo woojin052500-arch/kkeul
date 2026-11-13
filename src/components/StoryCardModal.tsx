@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Capacitor } from '@capacitor/core';
-import { Download, Send, X } from 'lucide-react';
+import { Check, Copy, Download, Link2, Send, X } from 'lucide-react';
 import { downloadStoryImage, drawStoryCard, shareStoryImage, type StoryCardData } from '../utils/storyCard';
 import { SITE_URL } from '../utils/share';
 
@@ -18,6 +18,7 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const link = `${SITE_URL}/contest/${encodeURIComponent(announcementId)}`;
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(link);
+      setLinkCopied(true);
       return true;
     } catch {
       return false;
@@ -59,7 +61,7 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
     const copied = await copyLink();
     const result = await shareStoryImage(canvas);
     if (result === 'shared') {
-      setNote(copied ? '대회 링크를 복사해 뒀어요. 스토리에서 링크 스티커에 붙여넣으세요.' : null);
+      setNote(copied ? '대회 링크를 복사했어요. 스토리에서 스티커 → 링크에 붙여넣으세요.' : '스토리에서 스티커 → 링크에 아래 주소를 넣어 주세요.');
     } else if (result === 'unsupported') {
       if (Capacitor.isNativePlatform()) {
         setNote('공유창을 열지 못했어요. 화면을 캡처해서 올려 주세요.');
@@ -93,14 +95,39 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
 
         <div style={{ display: 'flex', justifyContent: 'center', background: '#F2F4F6', borderRadius: '16px', padding: '12px' }}>
           {preview ? (
-            <img src={preview} alt={`${data.title} 핏 ${data.score}점 스토리 카드`} style={{ height: 'min(46vh, 420px)', aspectRatio: '9 / 16', borderRadius: '12px', display: 'block' }} />
+            <div style={{ position: 'relative', height: 'min(40vh, 380px)', aspectRatio: '9 / 16' }}>
+              <img src={preview} alt={`${data.title} 핏 ${data.score}점 스토리 카드`} style={{ width: '100%', height: '100%', borderRadius: '12px', display: 'block' }} />
+              {/* 미리보기에만 보이는 안내. 저장되는 이미지에는 들어가지 않는다 */}
+              <div className="story-sticker-spot" aria-hidden="true" style={{ position: 'absolute', left: '50%', bottom: '3%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', background: '#FFFFFF', color: '#2563EB', fontSize: '11px', fontWeight: 800, padding: '5px 10px', borderRadius: '8px', border: '1.5px dashed #2563EB', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                <Link2 size={12} /> 링크 스티커는 여기에
+              </div>
+            </div>
           ) : (
-            <div style={{ height: 'min(46vh, 420px)', display: 'flex', alignItems: 'center', color: 'var(--text-tertiary)', fontSize: '13px' }}>{error || '카드를 만드는 중…'}</div>
+            <div style={{ height: 'min(40vh, 380px)', display: 'flex', alignItems: 'center', color: 'var(--text-tertiary)', fontSize: '13px' }}>{error || '카드를 만드는 중…'}</div>
           )}
         </div>
 
-        {note && <p role="status" style={{ fontSize: '12.5px', color: 'var(--color-indigo)', margin: 0 }}>{note}</p>}
-        {!note && <p style={{ fontSize: '12.5px', margin: 0 }}>공유창에서 <strong>Instagram 스토리</strong>를 고르면 돼요.</p>}
+        {note && <p role="status" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-indigo)', margin: 0 }}>{note}</p>}
+
+        <ol className="story-guide" style={{ listStyle: 'none', margin: 0, padding: '14px', background: '#F9FAFB', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[
+            <>아래 <strong>인스타 스토리에 공유</strong>를 누르고, 공유창에서 <strong>Instagram → 스토리</strong>를 골라요.</>,
+            <>스토리 화면 위쪽 <strong>스티커 버튼</strong>을 누르고 <strong>링크</strong>를 골라요.</>,
+            <>주소 칸에 <strong>붙여넣기</strong> 하고, 스티커를 <strong>화살표(↓) 아래 빈 곳</strong>에 놓아요. 친구가 누르면 이 대회로 바로 와요.</>
+          ].map((text, i) => (
+            <li key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '13px', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
+              <span style={{ flexShrink: 0, width: '22px', height: '22px', borderRadius: '50%', background: 'var(--color-indigo)', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{i + 1}</span>
+              <span>{text}</span>
+            </li>
+          ))}
+          <li style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#FFFFFF', border: '1px solid #E5E8EB', borderRadius: '10px', padding: '8px 10px' }}>
+            <Link2 size={14} color="var(--color-indigo)" style={{ flexShrink: 0 }} />
+            <span style={{ flex: 1, minWidth: 0, fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link.replace('https://', '')}</span>
+            <button type="button" onClick={async () => { if (!(await copyLink())) window.prompt('이 주소를 복사해 주세요', link); }} style={{ flexShrink: 0, border: 'none', background: linkCopied ? '#ECFDF5' : 'var(--color-indigo-light)', color: linkCopied ? '#059669' : 'var(--color-indigo)', fontSize: '12px', fontWeight: 800, padding: '6px 10px', borderRadius: '8px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              {linkCopied ? <Check size={12} /> : <Copy size={12} />} {linkCopied ? '복사됨' : '링크 복사'}
+            </button>
+          </li>
+        </ol>
 
         <button type="button" className="btn btn-primary" disabled={!preview || busy} onClick={share} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           <Send size={15} /> 인스타 스토리에 공유
