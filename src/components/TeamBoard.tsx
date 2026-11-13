@@ -27,7 +27,7 @@ const statusLabel: Record<string, string> = {
 };
 
 const smallBtn: React.CSSProperties = {
-  border: '1px solid #E5E8EB',
+  border: '1px solid #E4DFD4',
   background: '#FFFFFF',
   color: 'var(--text-secondary)',
   fontSize: '11px',
@@ -258,7 +258,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
   };
 
   return (
-    <div id="team-board" style={{ scrollMarginTop: '72px', backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 14px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div id="team-board" style={{ scrollMarginTop: '72px', backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4', boxShadow: '0 4px 14px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Users size={16} color="var(--color-indigo)" /> 대회 팀 빌딩
@@ -277,12 +277,12 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {loadError && <div style={{ fontSize: '12.5px', color: 'var(--color-red)' }}>{loadError}</div>}
         {focusMissing && (
-          <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', background: '#F9FAFB', borderRadius: '10px', padding: '10px 12px' }}>
+          <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', background: '#FAF8F3', borderRadius: '10px', padding: '10px 12px' }}>
             공유받은 구인글을 찾을 수 없어요. 삭제되었거나 볼 수 없는 글이에요.
           </div>
         )}
         {!loadError && posts.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-tertiary)', fontSize: '13px', border: '1.5px dashed #F2F4F6', borderRadius: '12px' }}>
+          <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-tertiary)', fontSize: '13px', border: '1.5px dashed #F1EDE4', borderRadius: '12px' }}>
             아직 이 대회에 등록된 팀 구인글이 없습니다.<br />
             첫 구인글을 올리고 함께할 팀원을 찾아보세요!
           </div>
@@ -296,11 +296,11 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
           const wantColor = roleColor(post.role_wanted);
 
           return (
-            <div key={post.id} id={`team-post-${post.id}`} style={{ scrollMarginTop: '80px', border: highlightId === post.id ? '1.5px solid var(--color-indigo)' : '1px solid #E5E8EB', boxShadow: highlightId === post.id ? '0 0 0 4px var(--color-indigo-light)' : 'none', transition: 'box-shadow 0.3s, border-color 0.3s', borderRadius: '14px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF', textAlign: 'left' }}>
+            <div key={post.id} id={`team-post-${post.id}`} style={{ scrollMarginTop: '80px', border: highlightId === post.id ? '1.5px solid var(--color-indigo)' : '1px solid #E4DFD4', boxShadow: highlightId === post.id ? '0 0 0 4px var(--color-indigo-light)' : 'none', transition: 'box-shadow 0.3s, border-color 0.3s', borderRadius: '14px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF', textAlign: 'left' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center', minWidth: 0 }}>
                   <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>{post.user_name}</span>
-                  {isMine && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: '#F2F4F6', color: 'var(--text-secondary)', padding: '2px 5px', borderRadius: '4px' }}>내 구인글</span>}
+                  {isMine && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: '#F1EDE4', color: 'var(--text-secondary)', padding: '2px 5px', borderRadius: '4px' }}>내 구인글</span>}
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                   <span style={{ fontSize: '9.5px', fontWeight: 700, backgroundColor: mineColor.bg, color: mineColor.txt, padding: '2px 6px', borderRadius: '4px' }}>직무: {post.my_role}</span>
@@ -335,10 +335,10 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
 
               {/* 내 구인글: 받은 합류 요청 */}
               {isMine && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F2F4F6', paddingTop: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1EDE4', paddingTop: '10px' }}>
                   <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--text-secondary)' }}>받은 합류 요청 {requests.length}건</div>
                   {requests.map(req => (
-                    <div key={req.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#F9FAFB', borderRadius: '10px', padding: '10px' }}>
+                    <div key={req.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#FAF8F3', borderRadius: '10px', padding: '10px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>{req.user_name}</span>
                         <span style={{ fontSize: '11px', color: req.status === 'accepted' ? '#059669' : 'var(--text-tertiary)' }}>{statusLabel[req.status || 'pending']}</span>
@@ -394,19 +394,19 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       </div>
 
       {toast && (
-        <div role="status" style={{ position: 'fixed', left: '50%', bottom: '96px', transform: 'translateX(-50%)', background: 'rgba(25,31,40,0.92)', color: '#FFFFFF', fontSize: '13px', fontWeight: 600, padding: '10px 16px', borderRadius: '20px', zIndex: 3000, whiteSpace: 'nowrap' }}>
+        <div role="status" style={{ position: 'fixed', left: '50%', bottom: '96px', transform: 'translateX(-50%)', background: 'rgba(25,31,40,0.92)', color: '#FFFFFF', fontSize: '13px', fontWeight: 600, padding: '10px 16px', borderRadius: '14px', zIndex: 3000, whiteSpace: 'nowrap' }}>
           {toast}
         </div>
       )}
 
       {showModal && (
         <div className="calendar-success-overlay" onClick={() => setShowModal(false)} style={{ zIndex: 130, backdropFilter: 'blur(5px)' }}>
-          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', maxWidth: 'calc(100vw - 32px)', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
+          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', maxWidth: 'calc(100vw - 32px)', padding: '24px', borderRadius: '16px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
             <h3 style={{ fontSize: '17px', fontWeight: 800, margin: '0 0 16px 0' }}>팀원 구인글 올리기</h3>
             <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 내 직무 역할
-                <select value={myRole} onChange={(e) => setMyRole(e.target.value as Role)} style={{ padding: '10px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF' }}>
+                <select value={myRole} onChange={(e) => setMyRole(e.target.value as Role)} style={{ padding: '10px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', background: '#FFFFFF' }}>
                   <option value="개발">개발</option>
                   <option value="기획">기획</option>
                   <option value="디자인">디자인</option>
@@ -414,7 +414,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 찾는 팀원 역할
-                <select value={wantedRole} onChange={(e) => setWantedRole(e.target.value as Role)} style={{ padding: '10px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF' }}>
+                <select value={wantedRole} onChange={(e) => setWantedRole(e.target.value as Role)} style={{ padding: '10px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', background: '#FFFFFF' }}>
                   <option value="기획">기획</option>
                   <option value="디자인">디자인</option>
                   <option value="개발">개발</option>
@@ -422,11 +422,11 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 한 줄 소개 및 포부
-                <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} placeholder="예: 기획안이 준비된 팀이에요. 피그마 쓰는 디자이너 한 분 모십니다." style={{ padding: '10px', fontSize: '13px', border: '1px solid #E5E8EB', borderRadius: '8px', resize: 'none', fontWeight: 400 }} />
+                <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} placeholder="예: 기획안이 준비된 팀이에요. 피그마 쓰는 디자이너 한 분 모십니다." style={{ padding: '10px', fontSize: '13px', border: '1px solid #E4DFD4', borderRadius: '8px', resize: 'none', fontWeight: 400 }} />
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 내 연락처
-                <input type="text" value={contact} onChange={(e) => setContact(e.target.value)} placeholder="예: 카카오톡 ID 또는 전화번호" style={{ padding: '10px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', fontWeight: 400 }} />
+                <input type="text" value={contact} onChange={(e) => setContact(e.target.value)} placeholder="예: 카카오톡 ID 또는 전화번호" style={{ padding: '10px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', fontWeight: 400 }} />
                 <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-tertiary)' }}>합류 요청을 수락한 사람에게만 보여요.</span>
               </label>
               <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>

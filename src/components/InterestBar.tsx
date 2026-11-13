@@ -18,7 +18,7 @@ interface InterestBarProps {
 }
 
 const chip: React.CSSProperties = {
-  border: '1px solid #E5E8EB', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 700,
+  border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 700,
   padding: '7px 12px', borderRadius: '8px', cursor: 'pointer'
 };
 
@@ -87,7 +87,7 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
   const wanted = count.total >= 2 ? ROLES.filter(r => count[r] === 0) : [];
 
   return (
-    <div className="interest-bar" data-compact={compact ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: compact ? 'transparent' : '#FFFFFF', border: compact ? 'none' : '1px solid #E5E8EB', borderRadius: '16px', padding: compact ? 0 : '16px', textAlign: 'left' }}>
+    <div className="interest-bar" data-compact={compact ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: compact ? 'transparent' : '#FFFFFF', border: compact ? 'none' : '1px solid #E4DFD4', borderRadius: '12px', padding: compact ? 0 : '16px', textAlign: 'left' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-secondary)' }}>
         {count.total > 0 ? (
           <>

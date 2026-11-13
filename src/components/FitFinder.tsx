@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronRight, Copy, Check, Image as ImageIcon, RotateCcw, Sparkles } from 'lucide-react';
+import { ChevronRight, Copy, Check, Image as ImageIcon, RotateCcw, Search } from 'lucide-react';
 import type { Announcement } from '../types';
 import { db, type InterestCount, type TeamRole } from '../supabaseClient';
 import { LEVELS, ROLES, TRACKS, findBestFits, type Level, type Role, type Track } from '../utils/fit';
@@ -33,7 +33,7 @@ const loadChoice = (): Choice => {
 };
 
 const optBtn = (on: boolean): React.CSSProperties => ({
-  border: on ? '1.5px solid var(--color-indigo)' : '1px solid #E5E8EB',
+  border: on ? '1.5px solid var(--color-indigo)' : '1px solid #E4DFD4',
   background: on ? 'var(--color-indigo-light)' : '#FFFFFF',
   color: on ? 'var(--color-indigo)' : 'var(--text-secondary)',
   fontSize: '13px', fontWeight: on ? 800 : 600, padding: '9px 12px', borderRadius: '10px', cursor: 'pointer'
@@ -111,10 +111,10 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
   };
 
   return (
-    <section className="fit-finder" style={{ background: '#FFFFFF', border: '1px solid #E5E8EB', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
+    <section className="fit-finder" style={{ background: '#FFFFFF', border: '1.5px solid var(--color-ink)', boxShadow: '4px 4px 0 var(--color-ink)', borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
       <div>
         <h2 style={{ fontSize: '19px', fontWeight: 800, margin: 0, lineHeight: 1.35, display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Sparkles size={18} color="var(--color-indigo)" /> 나한테 맞는 대회 찾기
+          <Search size={18} strokeWidth={2.6} /> 나한테 <span style={{ background: 'linear-gradient(transparent 58%, var(--color-highlight) 58%)', padding: '0 2px' }}>맞는 대회</span> 찾기
         </h2>
         <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
           세 가지만 누르면 생기부에 맞는 대회와 같이 나갈 팀원을 바로 보여 드려요.
@@ -168,9 +168,9 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
           {results.map((r, i) => {
             const a = r.announcement;
             return (
-              <article key={a.id} className="fit-result" style={{ border: i === 0 ? '1.5px solid var(--color-indigo)' : '1px solid #E5E8EB', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <article key={a.id} className="fit-result" style={{ border: i === 0 ? '1.5px solid var(--color-ink)' : '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 800, color: i === 0 ? '#FFFFFF' : 'var(--color-indigo)', background: i === 0 ? 'var(--color-indigo)' : 'var(--color-indigo-light)', padding: '3px 8px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: i === 0 ? '#FFFFFF' : 'var(--color-ink)', background: i === 0 ? 'var(--color-ink)' : 'var(--color-bg-gray)', padding: '3px 8px', borderRadius: '6px' }}>
                     핏 {i + 1}위 · {r.score}점
                   </span>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-red)' }}>{getDDay(a.deadline)}</span>
@@ -186,14 +186,14 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
                 </div>
 
                 {i === 0 && (
-                  <div style={{ background: '#F9FAFB', borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ background: '#FAF8F3', borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>생기부에 남기기 좋은 점</div>
                     <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                       {r.points.map(p => <li key={p}>{p}</li>)}
                     </ul>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>선생님께 드릴 활동 요약 초안</span>
-                      <button type="button" onClick={() => copyDraft(a.id, r.draft)} style={{ border: '1px solid #E5E8EB', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                      <button type="button" onClick={() => copyDraft(a.id, r.draft)} style={{ border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                         {copied === a.id ? <Check size={11} color="#10B981" /> : <Copy size={11} />} {copied === a.id ? '복사됨' : '복사'}
                       </button>
                     </div>
@@ -202,7 +202,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
                   </div>
                 )}
 
-                <button type="button" onClick={() => openStory(r, i + 1)} style={{ border: '1px solid #E5E8EB', background: '#FFFFFF', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 700, height: '40px', borderRadius: '10px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <button type="button" onClick={() => openStory(r, i + 1)} style={{ border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 700, height: '40px', borderRadius: '10px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                   <ImageIcon size={15} color="var(--color-indigo)" /> 인스타 스토리 카드 만들기
                 </button>
 

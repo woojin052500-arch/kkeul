@@ -60,9 +60,9 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
 
       {/* Permission Box */}
       <div style={{
-        backgroundColor: '#F8FAFC',
-        border: '1px solid #E2E8F0',
-        borderRadius: '16px',
+        backgroundColor: '#FAF8F3',
+        border: '1px solid #E4DFD4',
+        borderRadius: '12px',
         padding: '16px',
         display: 'flex',
         alignItems: 'center',
@@ -104,8 +104,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                 key={ann.id}
                 style={{
                   backgroundColor: '#FFFFFF',
-                  border: '1px solid #E5E8EB',
-                  borderRadius: '16px',
+                  border: '1px solid #E4DFD4',
+                  borderRadius: '12px',
                   padding: '16px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -124,7 +124,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                 </div>
 
                 {/* Tester Buttons */}
-                <div style={{ display: 'flex', gap: '8px', borderTop: '1px dashed #F2F4F6', paddingTop: '10px' }}>
+                <div style={{ display: 'flex', gap: '8px', borderTop: '1px dashed #F1EDE4', paddingTop: '10px' }}>
                   <button
                     onClick={() => handleTest24hPush(ann.title)}
                     className="btn btn-gray"
@@ -162,12 +162,12 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
             textAlign: 'center',
             padding: '40px 20px',
             backgroundColor: '#FFFFFF',
-            border: '1px dashed #CCD2E3',
-            borderRadius: '16px',
+            border: '1px dashed #D5CFC3',
+            borderRadius: '12px',
             color: 'var(--text-tertiary)',
             fontSize: '13px'
           }}>
-            <Bell size={24} style={{ color: '#CCD2E3', marginBottom: '8px' }} />
+            <Bell size={24} style={{ color: '#D5CFC3', marginBottom: '8px' }} />
             <br />
             공고를 찜하면 리마인드 푸시가 자동으로 예약됩니다.
           </div>
@@ -178,7 +178,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
       <div style={{
         backgroundColor: 'var(--color-cyan-light)',
         border: '1px solid rgba(6, 182, 212, 0.2)',
-        borderRadius: '16px',
+        borderRadius: '12px',
         padding: '16px',
         display: 'flex',
         flexDirection: 'column',
