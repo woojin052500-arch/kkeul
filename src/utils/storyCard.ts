@@ -64,12 +64,35 @@ const wrap = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, max
   return [...lines.slice(0, maxLines - 1), `${last}…`];
 };
 
+const INK = '#141414';
+const PAPER = '#F3EFE6';
+const YELLOW = '#FFE14A';
+const BLUE = '#2D4BFF';
+const RED = '#F0432C';
+const NUM = `'Outfit', ${FONT}`;
+
+// 번짐 없는 그림자가 달린 상자 (종이를 오려 붙인 느낌)
+const block = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number, fill: string, shadow = 0) => {
+  if (shadow) {
+    ctx.fillStyle = INK;
+    roundRect(ctx, x + shadow, y + shadow, w, h, r);
+    ctx.fill();
+  }
+  ctx.fillStyle = fill;
+  roundRect(ctx, x, y, w, h, r);
+  ctx.fill();
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = INK;
+  ctx.stroke();
+};
+
 export const drawStoryCard = async (data: StoryCardData): Promise<HTMLCanvasElement> => {
   try {
     await Promise.all([
       document.fonts.load(`900 100px ${FONT}`),
       document.fonts.load(`700 40px ${FONT}`),
-      document.fonts.load(`500 40px ${FONT}`)
+      document.fonts.load(`500 40px ${FONT}`),
+      document.fonts.load(`800 200px 'Outfit'`)
     ]);
   } catch {
     // 글꼴을 못 불러와도 기본 글꼴로 그린다
@@ -81,144 +104,196 @@ export const drawStoryCard = async (data: StoryCardData): Promise<HTMLCanvasElem
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('이미지를 만들 수 없는 브라우저예요.');
 
-  // 배경
-  const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, '#4F46E5');
-  bg.addColorStop(1, '#312E81');
-  ctx.fillStyle = bg;
+  // 종이 바탕 + 옅은 모눈
+  ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = 'rgba(255,255,255,0.06)';
-  ctx.beginPath();
-  ctx.arc(W - 60, 330, 360, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(80, H - 380, 300, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.textBaseline = 'alphabetic';
-  const left = 90;
-
-  // 머리말
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = `900 64px ${FONT}`;
-  ctx.fillText('끌', left, 296);
-  ctx.font = `500 34px ${FONT}`;
-  ctx.fillStyle = 'rgba(255,255,255,0.75)';
-  ctx.fillText('청소년 대회 팀원 찾기 · kkeul.telosix.co.kr', left + 84, 292);
-
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = `800 76px ${FONT}`;
-  ctx.fillText('나한테 맞는 대회', left, 404);
-
-  // 내가 고른 값
-  let x = left;
-  ctx.font = `700 36px ${FONT}`;
-  for (const chip of [data.track, data.level, data.role]) {
-    const w = ctx.measureText(chip).width + 56;
-    ctx.fillStyle = 'rgba(255,255,255,0.16)';
-    roundRect(ctx, x, 440, w, 72, 36);
-    ctx.fill();
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(chip, x + 28, 489);
-    x += w + 16;
+  ctx.strokeStyle = 'rgba(20,20,20,0.045)';
+  ctx.lineWidth = 2;
+  for (let gx = 60; gx < W; gx += 60) {
+    ctx.beginPath();
+    ctx.moveTo(gx, 0);
+    ctx.lineTo(gx, H);
+    ctx.stroke();
+  }
+  for (let gy = 60; gy < H; gy += 60) {
+    ctx.beginPath();
+    ctx.moveTo(0, gy);
+    ctx.lineTo(W, gy);
+    ctx.stroke();
   }
 
-  // 결과 카드
-  const cardX = 60;
-  const cardY = 560;
-  const cardW = W - 120;
-  const inner = cardW - 120;
-  ctx.font = `800 58px ${FONT}`;
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
+  const left = 80;
+  const right = W - 80;
+
+  // 머리말
+  ctx.fillStyle = INK;
+  ctx.font = `800 30px ${NUM}`;
+  ctx.fillText('KKEUL  FIT  REPORT', left, 300);
+  ctx.textAlign = 'right';
+  ctx.font = `600 30px ${NUM}`;
+  ctx.fillText('kkeul.telosix.co.kr', right, 300);
+  ctx.textAlign = 'left';
+  ctx.fillRect(left, 322, right - left, 5);
+
+  // 제목: "찾았다"에 형광펜
+  ctx.font = `900 92px ${FONT}`;
+  ctx.fillText('나한테 맞는 대회,', left, 432);
+  const found = '찾았다.';
+  const foundW = ctx.measureText(found).width;
+  ctx.fillStyle = YELLOW;
+  ctx.fillRect(left - 10, 476, foundW + 20, 62);
+  ctx.fillStyle = INK;
+  ctx.fillText(found, left, 534);
+
+  // 내가 고른 값
+  let x = left + foundW + 40;
+  ctx.font = `700 32px ${FONT}`;
+  for (const chip of [data.track, data.level, data.role]) {
+    const w = ctx.measureText(chip).width + 44;
+    if (x + w > right) break;
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = INK;
+    roundRect(ctx, x, 474, w, 62, 31);
+    ctx.stroke();
+    ctx.fillStyle = INK;
+    ctx.fillText(chip, x + 22, 517);
+    x += w + 12;
+  }
+
+  // 결과 티켓
+  const cardX = 70;
+  const cardY = 592;
+  const cardW = W - 140 - 14;
+  const cx = cardX + 56;
+  const inner = cardW - 112;
+  ctx.font = `900 56px ${FONT}`;
   const titleLines = wrap(ctx, data.title, inner, 2);
   ctx.font = `500 36px ${FONT}`;
-  const reasonLines = data.reasons.slice(0, 3).map(r => wrap(ctx, r, inner - 50, 1));
-  // 아래 그리는 순서와 같은 간격으로 카드 높이를 구한다
-  const cardH =
-    110 + 165 + 24 + titleLines.length * 76 + (data.host ? 58 : 0) + 34 + reasonLines.length * 62 + 48 + 96 + 48;
+  const reasonLines = data.reasons.slice(0, 3).map(r => wrap(ctx, r, inner - 46, 1)[0] || '');
+  const topH = 96 + 178 + 24 + titleLines.length * 72 + (data.host ? 50 : 0) + 38;
+  const bottomH = 26 + reasonLines.length * 56 + 36 + 92 + 40;
+  const cardH = topH + bottomH;
 
-  ctx.fillStyle = '#FFFFFF';
-  ctx.shadowColor = 'rgba(0,0,0,0.25)';
-  ctx.shadowBlur = 60;
-  ctx.shadowOffsetY = 20;
-  roundRect(ctx, cardX, cardY, cardW, cardH, 56);
-  ctx.fill();
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetY = 0;
-
-  const cx = cardX + 60;
-  let y = cardY + 110;
+  block(ctx, cardX, cardY, cardW, cardH, 28, '#FFFFFF', 14);
 
   // 순위 · D-day
-  ctx.font = `800 38px ${FONT}`;
-  const rankText = `핏 ${data.rank}위`;
-  const rankW = ctx.measureText(rankText).width + 52;
-  ctx.fillStyle = '#4F46E5';
-  roundRect(ctx, cx, y - 54, rankW, 76, 20);
+  let y = cardY + 96;
+  ctx.font = `800 34px ${FONT}`;
+  const rankText = `FIT ${data.rank}위`;
+  const rankW = ctx.measureText(rankText).width + 40;
+  ctx.fillStyle = INK;
+  roundRect(ctx, cx, y - 46, rankW, 62, 10);
   ctx.fill();
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillText(rankText, cx + 26, y);
+  ctx.fillText(rankText, cx + 20, y - 2);
   if (data.dday) {
-    ctx.fillStyle = '#EF4444';
+    ctx.fillStyle = RED;
+    ctx.font = `800 40px ${NUM}`;
     ctx.textAlign = 'right';
-    ctx.fillText(data.dday, cardX + cardW - 60, y);
+    ctx.fillText(data.dday, cardX + cardW - 56, y);
     ctx.textAlign = 'left';
   }
 
-  // 점수
-  y += 165;
-  ctx.fillStyle = '#4F46E5';
-  ctx.font = `900 170px ${FONT}`;
+  // 점수: 큰 숫자 아래쪽에 형광펜
+  y += 178;
+  ctx.font = `800 190px ${NUM}`;
   const scoreText = String(data.score);
-  ctx.fillText(scoreText, cx - 8, y);
   const scoreW = ctx.measureText(scoreText).width;
-  ctx.font = `800 60px ${FONT}`;
-  ctx.fillText('점', cx + scoreW + 8, y);
+  ctx.fillStyle = YELLOW;
+  ctx.fillRect(cx - 12, y - 58, scoreW + 24, 54);
+  ctx.fillStyle = INK;
+  ctx.fillText(scoreText, cx - 6, y);
+  ctx.font = `900 50px ${FONT}`;
+  ctx.fillText('점', cx + scoreW + 16, y);
+  ctx.fillStyle = '#8A857A';
+  ctx.font = `600 34px ${NUM}`;
+  ctx.fillText('/ 100', cx + scoreW + 78, y);
 
   // 대회명
   y += 24;
-  ctx.fillStyle = '#191F28';
-  ctx.font = `800 58px ${FONT}`;
+  ctx.fillStyle = INK;
+  ctx.font = `900 56px ${FONT}`;
   for (const line of titleLines) {
-    y += 76;
+    y += 72;
     ctx.fillText(line, cx, y);
   }
   if (data.host) {
-    y += 58;
-    ctx.fillStyle = '#6B7684';
-    ctx.font = `500 34px ${FONT}`;
+    y += 50;
+    ctx.fillStyle = '#6F6A60';
+    ctx.font = `500 32px ${FONT}`;
     ctx.fillText(wrap(ctx, data.host, inner, 1)[0] || '', cx, y);
   }
 
+  // 티켓 절취선
+  const cutY = cardY + topH;
+  ctx.setLineDash([14, 12]);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = INK;
+  ctx.beginPath();
+  ctx.moveTo(cardX + 34, cutY);
+  ctx.lineTo(cardX + cardW - 34, cutY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  for (const nx of [cardX, cardX + cardW]) {
+    ctx.fillStyle = PAPER;
+    ctx.beginPath();
+    ctx.arc(nx, cutY, 24, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(nx, cutY, 24, nx === cardX ? -Math.PI / 2 : Math.PI / 2, nx === cardX ? Math.PI / 2 : (Math.PI * 3) / 2);
+    ctx.stroke();
+  }
+  // 오른쪽 홈 뒤로 비치는 그림자를 종이색으로 덮는다
+  ctx.fillStyle = PAPER;
+  ctx.fillRect(cardX + cardW + 3, cutY - 20, 14, 40);
+
   // 이유
-  y += 34;
+  y = cutY + 26;
   ctx.font = `500 36px ${FONT}`;
-  for (const lines of reasonLines) {
-    y += 62;
-    ctx.fillStyle = '#4F46E5';
-    ctx.fillText('✓', cx, y);
-    ctx.fillStyle = '#4E5968';
-    ctx.fillText(lines[0] || '', cx + 50, y);
+  for (const line of reasonLines) {
+    y += 56;
+    ctx.fillStyle = BLUE;
+    ctx.fillRect(cx, y - 26, 18, 18);
+    ctx.fillStyle = '#2B2B2B';
+    ctx.fillText(line, cx + 46, y);
   }
 
   // 같이 나갈 사람
-  y += 48;
-  ctx.fillStyle = '#EEF2FF';
-  roundRect(ctx, cx, y, inner, 96, 24);
+  y += 36;
+  ctx.fillStyle = BLUE;
+  roundRect(ctx, cx, y, inner, 92, 14);
   ctx.fill();
-  ctx.fillStyle = '#4338CA';
+  ctx.fillStyle = '#FFFFFF';
   ctx.font = `800 38px ${FONT}`;
   ctx.textAlign = 'center';
-  ctx.fillText(data.interestTotal > 0 ? `지금 ${data.interestTotal}명이 팀원 찾는 중` : '같이 나갈 팀원 구해요', cx + inner / 2, y + 62);
+  ctx.fillText(data.interestTotal > 0 ? `지금 ${data.interestTotal}명이 팀원 찾는 중` : '같이 나갈 팀원 구해요', cx + inner / 2, y + 60);
+  ctx.textAlign = 'left';
 
-  // 아래 안내
-  const bottom = Math.min(cardY + cardH + 112, H - 320);
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = `800 56px ${FONT}`;
+  // 비스듬히 붙인 스티커
+  ctx.save();
+  ctx.translate(cardX + cardW - 150, cardY + 190);
+  ctx.rotate((-9 * Math.PI) / 180);
+  ctx.font = `900 40px ${FONT}`;
+  const label = '팀원 구함!';
+  const lw = ctx.measureText(label).width + 56;
+  block(ctx, -lw / 2, -44, lw, 84, 12, YELLOW, 8);
+  ctx.fillStyle = INK;
+  ctx.textAlign = 'center';
+  ctx.fillText(label, 0, 14);
+  ctx.restore();
+
+  // 아래 안내 (그 밑은 링크 스티커 자리)
+  const bottom = Math.min(cardY + cardH + 112, H - 322);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = INK;
+  ctx.font = `900 58px ${FONT}`;
   ctx.fillText('이 대회 같이 나갈 사람?', W / 2, bottom);
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  ctx.font = `500 36px ${FONT}`;
-  ctx.fillText('아래 링크 누르고 3초 만에 내 핏 보기 ↓', W / 2, bottom + 66);
+  ctx.fillStyle = '#5E594F';
+  ctx.font = `500 34px ${FONT}`;
+  ctx.fillText('아래 링크 누르고 3초 만에 내 핏 보기 ↓', W / 2, bottom + 62);
   ctx.textAlign = 'left';
 
   return canvas;
