@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronRight, Copy, Check, RotateCcw, Sparkles } from 'lucide-react';
+import { ChevronRight, Copy, Check, Image as ImageIcon, RotateCcw, Sparkles } from 'lucide-react';
 import type { Announcement } from '../types';
 import { db, type InterestCount, type TeamRole } from '../supabaseClient';
 import { LEVELS, ROLES, TRACKS, findBestFits, type Level, type Role, type Track } from '../utils/fit';
 import { getDDay } from '../utils/dday';
 import { InterestBar } from './InterestBar';
+import { StoryCardModal } from './StoryCardModal';
+import type { FitResult } from '../utils/fit';
+import type { StoryCardData } from '../utils/storyCard';
 
 interface FitFinderProps {
   announcements: Announcement[];
@@ -42,6 +45,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
   const [counts, setCounts] = useState<Record<string, InterestCount> | null>(null);
   const [mine, setMine] = useState<Record<string, TeamRole>>({});
   const [copied, setCopied] = useState<string | null>(null);
+  const [story, setStory] = useState<{ id: string; data: StoryCardData } | null>(null);
 
   const done = !!(choice.track && choice.level && choice.role);
   const results = useMemo(
@@ -78,6 +82,23 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
     setCounts(null);
     setChoice(prev => ({ ...prev, ...patch }));
   };
+
+  const openStory = (r: FitResult, rank: number) =>
+    setStory({
+      id: r.announcement.id,
+      data: {
+        track: choice.track || '',
+        level: choice.level || '',
+        role: choice.role || '',
+        rank,
+        score: r.score,
+        title: r.announcement.title,
+        host: r.announcement.host,
+        dday: getDDay(r.announcement.deadline),
+        reasons: r.reasons,
+        interestTotal: counts?.[r.announcement.id]?.total || 0
+      }
+    });
 
   const copyDraft = async (id: string, text: string) => {
     try {
@@ -181,6 +202,10 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
                   </div>
                 )}
 
+                <button type="button" onClick={() => openStory(r, i + 1)} style={{ border: '1px solid #E5E8EB', background: '#FFFFFF', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 700, height: '40px', borderRadius: '10px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                  <ImageIcon size={15} color="var(--color-indigo)" /> 인스타 스토리 카드 만들기
+                </button>
+
                 {counts !== null && (
                   <InterestBar
                     key={`${a.id}-${mine[a.id] || ''}`}
@@ -198,6 +223,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
           })}
         </>
       )}
+      {story && <StoryCardModal announcementId={story.id} data={story.data} onClose={() => setStory(null)} />}
     </section>
   );
 };
