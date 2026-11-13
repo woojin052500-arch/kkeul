@@ -25,6 +25,7 @@ import { AdFitNativeCard, AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
 import { SchoolPicker } from './SchoolPicker';
 import { SavedTeamPosts } from './SavedTeamPosts';
+import { FitFinder } from './FitFinder';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -1109,6 +1110,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 )}
               </div>
             </div>
+            {!showSimulation && (
+              <FitFinder
+                announcements={announcements}
+                isGuest={isGuest}
+                onRequireLogin={onRequireLogin}
+                onSelectAnnouncement={onSelectAnnouncement}
+              />
+            )}
             {isGuest ? (
               <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>
                 지금 접수 중인 공고<br />

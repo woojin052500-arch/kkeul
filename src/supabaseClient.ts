@@ -830,6 +830,14 @@ export interface AdminUser {
   is_admin: boolean;
 }
 
+export type TeamRole = '기획' | '디자인' | '개발';
+export interface InterestCount {
+  total: number;
+  개발: number;
+  디자인: number;
+  기획: number;
+}
+
 export interface AdminTeamPost {
   id: string;
   announcement_id: string;
@@ -1387,6 +1395,43 @@ export const db = {
   // ------------------------------------------------------------------
 
   // 12. 팀 빌딩 구인글 목록 조회 (신고로 숨겨진 글·내가 차단한 사람의 글 제외)
+  // ---- "나도 나갈래요" ----
+  // 대회별·역할별 인원수 (비회원도 조회 가능). 실패하면 빈 값.
+  async getInterestCounts(announcementIds: string[]): Promise<Record<string, InterestCount>> {
+    const ids = [...new Set(announcementIds)].slice(0, 200);
+    if (ids.length === 0) return {};
+    const { data, error } = await supabase.rpc('contest_interest_counts', { p_ids: ids });
+    if (error) throw new Error(error.message);
+    const out: Record<string, InterestCount> = {};
+    for (const r of (data || []) as { announcement_id: string; total: number; dev: number; design: number; plan: number }[]) {
+      out[r.announcement_id] = { total: r.total, 개발: r.dev, 디자인: r.design, 기획: r.plan };
+    }
+    return out;
+  },
+
+  async getMyInterests(): Promise<Record<string, TeamRole>> {
+    const uid = await getSessionUserId();
+    if (!uid) return {};
+    const { data, error } = await supabase.from('contest_interests').select('announcement_id, role');
+    if (error) throw error;
+    const out: Record<string, TeamRole> = {};
+    for (const r of (data || []) as { announcement_id: string; role: TeamRole }[]) out[r.announcement_id] = r.role;
+    return out;
+  },
+
+  // role 이 null 이면 표시를 지운다
+  async setInterest(announcementId: string, role: TeamRole | null): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) throw new Error('로그인이 필요해요.');
+    if (role) {
+      const { error } = await supabase.from('contest_interests').upsert({ user_id: uid, announcement_id: announcementId, role }, { onConflict: 'user_id,announcement_id' });
+      if (error) throw new Error(/row-level security/i.test(error.message) ? '이용이 정지된 계정이에요.' : error.message);
+    } else {
+      const { error } = await supabase.from('contest_interests').delete().eq('user_id', uid).eq('announcement_id', announcementId);
+      if (error) throw error;
+    }
+  },
+
   // ---- 구인글 저장 ----
   async getSavedTeamPostIds(): Promise<string[]> {
     const uid = await getSessionUserId();
