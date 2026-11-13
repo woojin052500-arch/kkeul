@@ -316,14 +316,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
               }}
               style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '8px', marginLeft: '-8px' }}
             >
-              <ArrowLeft size={24} color="#191F28" />
+              <ArrowLeft size={24} color="#171717" />
             </button>
           </div>
         )}
 
         {/* Progress Bar */}
         {step > 0 && mode === 'signup' && (
-          <div style={{ width: '100%', height: '4px', backgroundColor: '#F2F4F6', borderRadius: '2px', marginBottom: '32px' }}>
+          <div style={{ width: '100%', height: '4px', backgroundColor: '#F1EDE4', borderRadius: '2px', marginBottom: '32px' }}>
             <div style={{ 
               width: `${getProgressPercent()}%`, 
               height: '100%', 
@@ -461,7 +461,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                 autoComplete="off"
                 onChange={(e) => handleBirthDateChange(e.target.value)}
                 className="input-field"
-                style={{ padding: '12px', fontSize: '15px', border: '1px solid #E5E8EB', borderRadius: '10px', background: '#FFFFFF' }}
+                style={{ padding: '12px', fontSize: '15px', border: '1px solid #E4DFD4', borderRadius: '10px', background: '#FFFFFF' }}
               />
               <span style={{ fontSize: '12px', color: ageStatus === 'under' ? 'var(--color-red)' : 'var(--text-tertiary)' }}>
                 {ageStatus === 'under'
@@ -471,7 +471,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="consent-row" style={{ padding: '16px', backgroundColor: '#FAFBFC', borderRadius: '12px', border: '1px solid #E5E8EB' }}>
+              <div className="consent-row" style={{ padding: '16px', backgroundColor: '#FBF9F5', borderRadius: '12px', border: '1px solid #E4DFD4' }}>
                 <button type="button" className="consent-row-toggle" role="checkbox" aria-checked={allAgreed} onClick={handleAllAgree}>
                   <span className="consent-check" data-on={allAgreed}><Check size={16} color="#FFFFFF" /></span>
                   <span className="consent-label" style={{ fontSize: '16px', fontWeight: 700 }}>전체 동의하기 <span style={{ fontSize: '12.5px', fontWeight: 400, color: 'var(--text-tertiary)' }}>(선택 항목 포함)</span></span>
@@ -544,31 +544,31 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
               <div 
                 onClick={() => { setRole('student'); setStep(6); }}
                 style={{
-                  padding: '24px', borderRadius: '16px', backgroundColor: '#FAFBFC', border: '1px solid #E5E8EB',
+                  padding: '24px', borderRadius: '12px', backgroundColor: '#FBF9F5', border: '1px solid #E4DFD4',
                   display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s'
                 }}
               >
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(49, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <User size={24} color="#3182F6" />
+                  <User size={24} color="#2D4BFF" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#191F28' }}>대회 참여 / 스펙 관리</h3>
-                  <p style={{ fontSize: '14px', color: '#8B95A1', margin: 0 }}>학생 및 참가자용</p>
+                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#171717' }}>대회 참여 / 스펙 관리</h3>
+                  <p style={{ fontSize: '14px', color: '#8E887D', margin: 0 }}>학생 및 참가자용</p>
                 </div>
               </div>
               <div 
                 onClick={() => { setRole('host'); setStep(10); }}
                 style={{
-                  padding: '24px', borderRadius: '16px', backgroundColor: '#FAFBFC', border: '1px solid #E5E8EB',
+                  padding: '24px', borderRadius: '12px', backgroundColor: '#FBF9F5', border: '1px solid #E4DFD4',
                   display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s'
                 }}
               >
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(124, 58, 237, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <ShieldCheck size={24} color="#7C3AED" />
+                  <ShieldCheck size={24} color="#2D4BFF" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#191F28' }}>대회 주최 / 모집</h3>
-                  <p style={{ fontSize: '14px', color: '#8B95A1', margin: 0 }}>주최 기관 및 동아리용</p>
+                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#171717' }}>대회 주최 / 모집</h3>
+                  <p style={{ fontSize: '14px', color: '#8E887D', margin: 0 }}>주최 기관 및 동아리용</p>
                 </div>
               </div>
             </div>
@@ -588,8 +588,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                   onClick={() => setLocation(loc)}
                   style={{
                     padding: '12px 0', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                    border: location === loc ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                    backgroundColor: location === loc ? 'var(--color-indigo-light)' : '#FAFBFC',
+                    border: location === loc ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                    backgroundColor: location === loc ? 'var(--color-indigo-light)' : '#FBF9F5',
                     color: location === loc ? 'var(--color-indigo)' : 'var(--text-secondary)'
                   }}
                 >
@@ -613,8 +613,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                   onClick={() => setGrade(g)}
                   style={{
                     padding: '16px 0', borderRadius: '12px', fontSize: '15px', fontWeight: 600,
-                    border: grade === g ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                    backgroundColor: grade === g ? 'var(--color-indigo-light)' : '#FAFBFC',
+                    border: grade === g ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                    backgroundColor: grade === g ? 'var(--color-indigo-light)' : '#FBF9F5',
                     color: grade === g ? 'var(--color-indigo)' : 'var(--text-secondary)'
                   }}
                 >
@@ -654,9 +654,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                     );
                   }}
                   style={{
-                    padding: '12px 16px', borderRadius: '24px', fontSize: '14px', fontWeight: 600,
-                    border: interests.includes(interest) ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                    backgroundColor: interests.includes(interest) ? 'var(--color-indigo-light)' : '#FAFBFC',
+                    padding: '12px 16px', borderRadius: '16px', fontSize: '14px', fontWeight: 600,
+                    border: interests.includes(interest) ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                    backgroundColor: interests.includes(interest) ? 'var(--color-indigo-light)' : '#FBF9F5',
                     color: interests.includes(interest) ? 'var(--color-indigo)' : 'var(--text-secondary)'
                   }}
                 >
@@ -689,8 +689,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                       )}
                       style={{
                         padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                        border: playStyleTeamSize.includes(opt) ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                        backgroundColor: playStyleTeamSize.includes(opt) ? 'var(--color-indigo-light)' : '#FAFBFC',
+                        border: playStyleTeamSize.includes(opt) ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                        backgroundColor: playStyleTeamSize.includes(opt) ? 'var(--color-indigo-light)' : '#FBF9F5',
                         color: playStyleTeamSize.includes(opt) ? 'var(--color-indigo)' : 'var(--text-secondary)'
                       }}
                     >
@@ -709,8 +709,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                       onClick={() => setPlayStyleDuration(opt)}
                       style={{
                         padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                        border: playStyleDuration === opt ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                        backgroundColor: playStyleDuration === opt ? 'var(--color-indigo-light)' : '#FAFBFC',
+                        border: playStyleDuration === opt ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                        backgroundColor: playStyleDuration === opt ? 'var(--color-indigo-light)' : '#FBF9F5',
                         color: playStyleDuration === opt ? 'var(--color-indigo)' : 'var(--text-secondary)'
                       }}
                     >
@@ -729,8 +729,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                       onClick={() => setPlayStyleType(opt)}
                       style={{
                         padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                        border: playStyleType === opt ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                        backgroundColor: playStyleType === opt ? 'var(--color-indigo-light)' : '#FAFBFC',
+                        border: playStyleType === opt ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                        backgroundColor: playStyleType === opt ? 'var(--color-indigo-light)' : '#FBF9F5',
                         color: playStyleType === opt ? 'var(--color-indigo)' : 'var(--text-secondary)'
                       }}
                     >

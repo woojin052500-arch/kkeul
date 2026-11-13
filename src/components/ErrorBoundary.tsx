@@ -41,7 +41,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
           <pre style={{ fontSize: '11px', lineHeight: 1.4, color: '#6B7280', background: '#F3F4F6', borderRadius: '8px', padding: '10px', margin: '0 0 16px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxHeight: '140px', overflow: 'auto' }}>
             {error.message}
           </pre>
-          <button onClick={this.resetAndReload} style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', background: '#4F46E5', color: '#FFFFFF', fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
+          <button onClick={this.resetAndReload} style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', background: '#2D4BFF', color: '#FFFFFF', fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
             초기화 후 다시 시작
           </button>
         </div>

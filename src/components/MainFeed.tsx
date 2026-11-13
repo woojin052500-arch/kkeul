@@ -37,14 +37,14 @@ const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neo
   },
   '캘린더 마스터': {
     emoji: <CalendarIcon size={16} strokeWidth={1.75} />,
-    color: '#8B5CF6',
-    neonColor: '0 0 10px rgba(139, 92, 246, 0.4)',
+    color: '#2D4BFF',
+    neonColor: '0 0 10px rgba(45, 75, 255, 0.4)',
     criteria: '공모전 상세 정보의 달력 버튼을 눌러 내 기본 캘린더에 일정을 저장하면 획득!'
   },
   '인싸의 탄생': {
     emoji: <Handshake size={16} strokeWidth={1.75} />,
-    color: '#FF007F',
-    neonColor: '0 0 10px rgba(255, 0, 127, 0.4)',
+    color: '#F0432C',
+    neonColor: '0 0 10px rgba(240, 67, 44, 0.4)',
     criteria: '마이페이지의 설정에서 친구 초대 적용 완료 시 획득!'
   },
   '끌 마스터': {
@@ -1046,7 +1046,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       }}
                       style={{
                         border: 'none',
-                        background: '#E8EBF0',
+                        background: '#ECE7DD',
                         color: 'var(--color-indigo)',
                         padding: '5px 9px',
                         borderRadius: '8px',
@@ -1066,7 +1066,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     {/* 뷰 모드 토글 스위치 */}
                     <div style={{
                       display: 'inline-flex',
-                      backgroundColor: '#E5E8EB',
+                      backgroundColor: '#E4DFD4',
                       padding: '3px',
                       borderRadius: '10px',
                       gap: '2px'
@@ -1137,9 +1137,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   className={`toss-card-spring ${showSimulation && simulationStep === 1 ? 'guide-highlight' : ''}`}
                   style={{
                     background: '#FFFFFF',
-                    borderRadius: '20px',
+                    borderRadius: '14px',
                     padding: '18px 20px',
-                    border: '1px solid #E5E8EB',
+                    border: '1px solid #E4DFD4',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '8px',
@@ -1203,9 +1203,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           style={{
                             flexShrink: 0,
                             width: '260px',
-                            background: 'linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%)',
-                            border: '1px solid #E5E8EB',
-                            borderRadius: '16px',
+                            background: '#FFFFFF',
+                            border: '1px solid #E4DFD4',
+                            borderRadius: '12px',
                             padding: '16px',
                             display: 'flex',
                             flexDirection: 'column',
@@ -1258,9 +1258,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   fontSize: '12px',
                   color: 'var(--text-tertiary)',
                   fontWeight: 600,
-                  backgroundColor: '#F2F4F6',
+                  backgroundColor: '#F1EDE4',
                   padding: '6px 14px',
-                  borderRadius: '20px',
+                  borderRadius: '14px',
                   marginBottom: '-10px',
                   animation: 'fade-in 0.3s ease'
                 }}>
@@ -1371,8 +1371,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                   <span style={{
                                     fontSize: '11px',
                                     fontWeight: 800,
-                                    color: isNeonThemeUnlocked ? '#FF007F' : 'var(--color-indigo)',
-                                    backgroundColor: isNeonThemeUnlocked ? '#FFF0F6' : 'var(--color-indigo-light)',
+                                    color: isNeonThemeUnlocked ? '#F0432C' : 'var(--color-indigo)',
+                                    backgroundColor: isNeonThemeUnlocked ? '#FFF1EC' : 'var(--color-indigo-light)',
                                     padding: '4px 10px',
                                     borderRadius: '6px'
                                   }}>
@@ -1404,7 +1404,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               <div style={{
                                 fontSize: '11px',
                                 color: 'var(--color-indigo)',
-                                backgroundColor: 'rgba(79, 70, 229, 0.05)',
+                                backgroundColor: 'rgba(20, 20, 20, 0.05)',
                                 padding: '5px 10px',
                                 borderRadius: '8px',
                                 fontWeight: 700,
@@ -1427,7 +1427,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               </div>
 
                               {/* 카드 푸터 및 원터치 공유 */}
-                              <div style={{ borderTop: '1px solid #F2F4F6', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div style={{ borderTop: '1px solid #F1EDE4', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', gap: '4px', fontSize: '12px', color: 'var(--text-tertiary)' }}>
                                   <span>{ann.host.slice(0, 10)}</span>
                                   <span>•</span>
@@ -1441,7 +1441,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                     className={`spring-active ${showSimulation && simulationStep === 4 ? 'guide-highlight-pink' : ''}`}
                                     style={{
                                       border: 'none',
-                                      background: isNeonThemeUnlocked ? 'linear-gradient(135deg, #FF007F 0%, #FF60B5 100%)' : '#FAFBFC',
+                                      background: isNeonThemeUnlocked ? '#F0432C' : '#FBF9F5',
                                       color: isNeonThemeUnlocked ? '#FFFFFF' : 'var(--text-secondary)',
                                       padding: '8px 12px',
                                       borderRadius: '8px',
@@ -1451,7 +1451,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                       display: 'flex',
                                       alignItems: 'center',
                                       gap: '4px',
-                                      boxShadow: isNeonThemeUnlocked ? '0 2px 8px rgba(255,0,127,0.2)' : 'none'
+                                      boxShadow: isNeonThemeUnlocked ? '0 2px 8px rgba(240,67,44,0.2)' : 'none'
                                     }}
                                     title="인스타/카톡으로 공유하고 뱃지 받기"
                                   >
@@ -1468,7 +1468,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                       className="spring-active guide-highlight-pink"
                                       style={{
                                         border: 'none',
-                                        background: 'linear-gradient(135deg, #FF007F 0%, #FF60B5 100%)',
+                                        background: '#F0432C',
                                         color: '#FFFFFF',
                                         padding: '8px 12px',
                                         borderRadius: '8px',
@@ -1478,7 +1478,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                         display: 'flex',
                                         alignItems: 'center',
                                         gap: '4px',
-                                        boxShadow: '0 2px 8px rgba(255,0,127,0.2)'
+                                        boxShadow: '0 2px 8px rgba(240,67,44,0.2)'
                                       }}
                                     >
                                       <CalendarIcon size={12} />
@@ -1521,8 +1521,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         maxWidth: '360px',
                         height: '420px',
                         backgroundColor: '#FFFFFF',
-                        border: '1px dashed #CCD2E3',
-                        borderRadius: '28px',
+                        border: '1px dashed #D5CFC3',
+                        borderRadius: '18px',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -1534,7 +1534,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         <div style={{
                           width: '64px',
                           height: '64px',
-                          borderRadius: '20px',
+                          borderRadius: '14px',
                           backgroundColor: 'var(--color-indigo-light)',
                           color: 'var(--color-indigo)',
                           display: 'flex',
@@ -1603,7 +1603,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           width: '56px',
                           height: '56px',
                           borderRadius: '50%',
-                          border: '1px solid #E5E8EB',
+                          border: '1px solid #E4DFD4',
                           backgroundColor: '#FFFFFF',
                           color: '#FF4D4F',
                           display: 'flex',
@@ -1628,7 +1628,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           width: '56px',
                           height: '56px',
                           borderRadius: '50%',
-                          border: '1px solid #E5E8EB',
+                          border: '1px solid #E4DFD4',
                           backgroundColor: '#FFFFFF',
                           color: '#10B981',
                           display: 'flex',
@@ -1657,11 +1657,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 {!isGuest && (<>
                 {/* Gamification Stats Card */}
                 <div style={{
-                  background: 'linear-gradient(135deg, var(--color-indigo) 0%, #6366F1 100%)',
-                  borderRadius: '20px',
+                  background: 'var(--color-indigo)',
+                  borderRadius: '14px',
                   padding: '20px',
                   color: 'white',
-                  boxShadow: '0 8px 24px rgba(79, 70, 229, 0.15)'
+                  boxShadow: '0 8px 24px rgba(20, 20, 20, 0.15)'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 600, opacity: 0.9 }}>기회 획득 레벨</span>
@@ -1699,7 +1699,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           cursor: 'pointer',
                           backgroundColor: isSelected ? 'var(--color-indigo)' : '#FFFFFF',
                           color: isSelected ? '#FFFFFF' : 'var(--text-secondary)',
-                          boxShadow: isSelected ? '0 4px 10px rgba(79, 70, 229, 0.2)' : '0 1px 3px rgba(0,0,0,0.05)',
+                          boxShadow: isSelected ? '0 4px 10px rgba(20, 20, 20, 0.2)' : '0 1px 3px rgba(0,0,0,0.05)',
                           transition: 'var(--transition-smooth)'
                         }}
                       >
@@ -1733,20 +1733,20 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     )}
                     <div
                       style={{
-                        backgroundColor: '#FFF0F6',
-                        borderRadius: '18px',
+                        backgroundColor: '#FFF1EC',
+                        borderRadius: '12px',
                         padding: '20px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '12px',
-                        border: '2px solid #FF007F',
-                        boxShadow: '0 6px 20px rgba(255, 0, 127, 0.08)'
+                        border: '2px solid #F0432C',
+                        boxShadow: '0 6px 20px rgba(240, 67, 44, 0.08)'
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{
                           color: '#FFFFFF',
-                          background: 'linear-gradient(135deg, #FF007F 0%, #FF60B5 100%)',
+                          background: '#F0432C',
                           fontSize: '11px',
                           fontWeight: 800,
                           padding: '4px 10px',
@@ -1757,11 +1757,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         }}>
                           <Lock size={11} /> 프리미엄 비공개
                         </span>
-                        <span style={{ fontSize: '11px', color: '#FF007F', fontWeight: 700 }}>
+                        <span style={{ fontSize: '11px', color: '#F0432C', fontWeight: 700 }}>
                           {getDDay(premiumLockedAnnouncement.deadline)}
                         </span>
                       </div>
-                      <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#191F28' }}>
+                      <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#171717' }}>
                         {premiumLockedAnnouncement.title}
                       </h3>
                       <div style={{ display: 'flex', gap: '12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
@@ -1793,14 +1793,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             className="animate-fade-in toss-card-spring"
                             style={{
                               backgroundColor: ann.bid_amount && ann.bid_amount > 0 ? '#F4F6FF' : 'var(--color-card-bg)',
-                              borderRadius: '18px',
+                              borderRadius: '12px',
                               padding: '20px',
                               display: 'flex',
                               flexDirection: 'column',
                               gap: '12px',
                               cursor: 'pointer',
-                              boxShadow: ann.bid_amount && ann.bid_amount > 0 ? '0 6px 20px rgba(79, 70, 229, 0.06)' : '0 4px 16px rgba(0,0,0,0.02)',
-                              border: ann.bid_amount && ann.bid_amount > 0 ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
+                              boxShadow: ann.bid_amount && ann.bid_amount > 0 ? '0 6px 20px rgba(20, 20, 20, 0.06)' : '0 4px 16px rgba(0,0,0,0.02)',
+                              border: ann.bid_amount && ann.bid_amount > 0 ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
                               transition: 'var(--transition-bounce)',
                               position: 'relative'
                             }}
@@ -1810,18 +1810,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                                   <span style={{
                                     color: '#FFFFFF',
-                                    background: 'linear-gradient(135deg, var(--color-indigo) 0%, #6366F1 100%)',
+                                    background: 'var(--color-indigo)',
                                     fontSize: '11px',
                                     fontWeight: 800,
                                     padding: '4px 10px',
                                     borderRadius: '30px',
-                                    boxShadow: '0 2px 6px rgba(79, 70, 229, 0.15)'
+                                    boxShadow: '0 2px 6px rgba(20, 20, 20, 0.15)'
                                   }}>
                                     최상단 추천
                                   </span>
                                   <span style={{
                                     color: 'var(--color-indigo)',
-                                    backgroundColor: 'rgba(79, 70, 229, 0.08)',
+                                    backgroundColor: 'rgba(20, 20, 20, 0.08)',
                                     fontSize: '11px',
                                     fontWeight: 700,
                                     padding: '4px 8px',
@@ -1862,7 +1862,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 <span style={{
                                   fontSize: '11px',
                                   color: 'var(--text-tertiary)',
-                                  backgroundColor: '#F2F4F6',
+                                  backgroundColor: '#F1EDE4',
                                   padding: '4px 8px',
                                   borderRadius: '6px',
                                   fontWeight: 600
@@ -1895,7 +1895,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             <div style={{
                               fontSize: '11.5px',
                               color: 'var(--color-indigo)',
-                              backgroundColor: 'rgba(79, 70, 229, 0.05)',
+                              backgroundColor: 'rgba(20, 20, 20, 0.05)',
                               padding: '5px 10px',
                               borderRadius: '8px',
                               fontWeight: 700,
@@ -1913,7 +1913,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               {ann.title}
                             </h3>
 
-                            <div style={{ display: 'flex', gap: '12px', fontSize: '13px', color: 'var(--text-secondary)', borderTop: '1px solid #F9FAFB', paddingTop: '10px' }}>
+                            <div style={{ display: 'flex', gap: '12px', fontSize: '13px', color: 'var(--text-secondary)', borderTop: '1px solid #FAF8F3', paddingTop: '10px' }}>
                               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <Compass size={14} />
                                 {ann.host}
@@ -1960,7 +1960,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             </div>
 
             {/* Toss-style Custom Calendar Widget */}
-            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', fontWeight: 700, fontSize: '16px' }}>
                 <span>{currentYear}년 {currentMonth}월</span>
               </div>
@@ -2035,7 +2035,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        border: '1px solid #E5E8EB',
+                        border: '1px solid #E4DFD4',
                         cursor: 'pointer'
                       }}
                     >
@@ -2090,13 +2090,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       className="toss-card-spring"
                       style={{
                         backgroundColor: 'var(--color-card-bg)',
-                        borderRadius: '16px',
+                        borderRadius: '12px',
                         padding: '18px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '10px',
                         cursor: 'pointer',
-                        border: '1px solid #E5E8EB',
+                        border: '1px solid #E4DFD4',
                         opacity: isClosed(ann.deadline) ? 0.6 : 1
                       }}
                     >
@@ -2104,7 +2104,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         {ann.bid_amount && ann.bid_amount > 0 ? (
                           <span style={{
                             color: '#FFFFFF',
-                            background: 'linear-gradient(135deg, var(--color-indigo) 0%, #6366F1 100%)',
+                            background: 'var(--color-indigo)',
                             fontSize: '11px',
                             fontWeight: 800,
                             padding: '3px 8px',
@@ -2115,7 +2115,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         ) : (
                           <span style={{
                             color: isClosed(ann.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)',
-                            backgroundColor: isClosed(ann.deadline) ? '#F2F4F6' : 'var(--color-red-light)',
+                            backgroundColor: isClosed(ann.deadline) ? '#F1EDE4' : 'var(--color-red-light)',
                             fontSize: '11px',
                             fontWeight: 700,
                             padding: '3px 6px',
@@ -2175,7 +2175,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             </div>
 
             {/* Club Roles Switcher */}
-            <div style={{ display: 'flex', backgroundColor: '#F2F4F6', borderRadius: '12px', padding: '4px' }}>
+            <div style={{ display: 'flex', backgroundColor: '#F1EDE4', borderRadius: '12px', padding: '4px' }}>
               <button
                 onClick={() => setClubRole('student')}
                 style={{
@@ -2224,7 +2224,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   {clubAnnouncements.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-tertiary)', fontSize: '13px', border: '1.5px dashed #E5E8EB', borderRadius: '16px' }}>
+                    <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-tertiary)', fontSize: '13px', border: '1.5px dashed #E4DFD4', borderRadius: '12px' }}>
                       현재 학교에 모집 중인 동아리 공고가 없습니다.<br />
                       마이페이지에서 소속 학교 정보를 변경해보세요!
                     </div>
@@ -2235,9 +2235,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       return (
                         <div key={club.id} style={{
                           backgroundColor: '#FFFFFF',
-                          borderRadius: '20px',
+                          borderRadius: '14px',
                           padding: '20px',
-                          border: '1px solid #E5E8EB',
+                          border: '1px solid #E4DFD4',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
                           display: 'flex',
                           flexDirection: 'column',
@@ -2262,7 +2262,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '4px 0' }}>
                             {club.tags.map((tag: string) => (
-                              <span key={tag} style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-secondary)', backgroundColor: '#F2F4F6', padding: '2px 6px', borderRadius: '4px' }}>
+                              <span key={tag} style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-secondary)', backgroundColor: '#F1EDE4', padding: '2px 6px', borderRadius: '4px' }}>
                                 #{tag}
                               </span>
                             ))}
@@ -2284,7 +2284,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               alignItems: 'center',
                               justifyContent: 'center',
                               gap: '4px',
-                              boxShadow: hasApplied ? 'none' : '0 4px 10px rgba(79, 70, 229, 0.15)',
+                              boxShadow: hasApplied ? 'none' : '0 4px 10px rgba(20, 20, 20, 0.15)',
                               transition: 'all 0.2s ease'
                             }}
                           >
@@ -2298,7 +2298,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 lineHeight: 1.5,
                                 borderRadius: '10px',
                                 padding: '10px 12px',
-                                background: myApp.status === 'approved' ? '#ECFDF5' : myApp.status === 'rejected' ? '#F7F8FA' : '#F7F8FA',
+                                background: myApp.status === 'approved' ? '#ECFDF5' : myApp.status === 'rejected' ? '#FAF8F3' : '#FAF8F3',
                                 color: myApp.status === 'approved' ? '#047857' : 'var(--text-secondary)'
                               }}
                             >
@@ -2359,7 +2359,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             }
                           }
                         }}
-                        style={{ padding: '10px 12px', fontSize: '13.5px', border: '1px solid #E5E8EB', borderRadius: '8px', background: '#FFFFFF', outline: 'none', fontWeight: 700 }}
+                        style={{ padding: '10px 12px', fontSize: '13.5px', border: '1px solid #E4DFD4', borderRadius: '8px', background: '#FFFFFF', outline: 'none', fontWeight: 700 }}
                       >
                         {clubAnnouncements.map(c => (
                           <option key={c.id} value={c.id}>
@@ -2369,7 +2369,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       </select>
                     </div>
 
-                    <h4 style={{ fontSize: '14px', fontWeight: 800, margin: '8px 0 0 0', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: 800, margin: '8px 0 0 0', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
                       접수된 지원 서류 리스트 ({clubApplicants.length}건)
                     </h4>
 
@@ -2383,8 +2383,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         clubApplicants.map(app => (
                           <div key={app.id} style={{
                             backgroundColor: '#FFFFFF',
-                            borderRadius: '16px',
-                            border: '1px solid #E5E8EB',
+                            borderRadius: '12px',
+                            border: '1px solid #E4DFD4',
                             padding: '16px',
                             display: 'flex',
                             flexDirection: 'column',
@@ -2427,7 +2427,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             )}
 
                             {/* Self intro summary */}
-                            <div style={{ backgroundColor: '#F8FAFC', padding: '10px', borderRadius: '10px', fontSize: '12px', border: '1px solid #EEF2F6' }}>
+                            <div style={{ backgroundColor: '#FAF8F3', padding: '10px', borderRadius: '10px', fontSize: '12px', border: '1px solid #F1EDE4' }}>
                               <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                                 &ldquo;{app.introduction_summary}&rdquo;
                               </p>
@@ -2442,7 +2442,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                     flex: 1,
                                     height: '34px',
                                     borderRadius: '8px',
-                                    border: '1px solid #E5E8EB',
+                                    border: '1px solid #E4DFD4',
                                     backgroundColor: '#FFFFFF',
                                     color: 'var(--text-secondary)',
                                     fontSize: '12px',
@@ -2492,8 +2492,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   {clubNetworkingEvents.map(event => (
                     <div key={event.id} style={{
-                      backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px',
-                      border: '1px solid #E5E8EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+                      backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px',
+                      border: '1px solid #E4DFD4', boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
                       display: 'flex', flexDirection: 'column', gap: '12px'
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -2510,7 +2510,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         <h4 style={{ fontSize: '15px', fontWeight: 800, margin: '0 0 6px 0', lineHeight: 1.3 }}>{event.title}</h4>
                         <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4, wordBreak: 'keep-all' }}>{event.description}</p>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', backgroundColor: '#F8FAFC', padding: '12px', borderRadius: '12px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', backgroundColor: '#FAF8F3', padding: '12px', borderRadius: '12px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
                           <span style={{ display: 'inline-block', width: '60px', fontWeight: 700 }}>진행 일정</span>
                           <span>{event.event_date}</span>
@@ -2538,8 +2538,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 <button
                   style={{
                     position: 'fixed', bottom: '80px', right: '20px', width: '56px', height: '56px',
-                    borderRadius: '28px', backgroundColor: 'var(--color-indigo)', color: '#FFF',
-                    border: 'none', boxShadow: '0 4px 16px rgba(79, 70, 229, 0.3)',
+                    borderRadius: '18px', backgroundColor: 'var(--color-indigo)', color: '#FFF',
+                    border: 'none', boxShadow: '0 4px 16px rgba(20, 20, 20, 0.3)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', cursor: 'pointer', zIndex: 100
                   }}
                   onClick={() => alert('교류회 제안글 작성 기능은 준비 중입니다.')}
@@ -2583,7 +2583,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               {/* Sub-tab Navigation */}
               <div style={{
                 display: 'flex',
-                backgroundColor: '#E5E8EB',
+                backgroundColor: '#E4DFD4',
                 padding: '4px',
                 borderRadius: '12px',
                 gap: '4px',
@@ -2749,48 +2749,48 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     style={{
                       width: '100%',
                       backgroundColor: '#FFFFFF',
-                      border: '1px solid #E5E8EB',
-                      borderRadius: '16px',
+                      border: '1px solid #E4DFD4',
+                      borderRadius: '12px',
                       padding: '16px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      color: '#191F28',
+                      color: '#171717',
                       fontWeight: 700,
                       fontSize: '15px',
                       cursor: 'pointer',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                     }}>
-                    <Phone size={18} color="#3182F6" /> 연락처로 Kkeul 친구 찾기
+                    <Phone size={18} color="#2D4BFF" /> 연락처로 Kkeul 친구 찾기
                   </button>
 
-                  <div style={{ width: '100%', height: '1px', backgroundColor: '#E5E8EB', margin: '8px 0' }}></div>
+                  <div style={{ width: '100%', height: '1px', backgroundColor: '#E4DFD4', margin: '8px 0' }}></div>
 
                   {/* CAREER ROADMAP TIMELINE */}
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 20px 0', color: '#191F28', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Milestone size={20} color="#3182F6" /> 진로 성장 로드맵
+                    <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 20px 0', color: '#171717', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Milestone size={20} color="#2D4BFF" /> 진로 성장 로드맵
                     </h3>
                     
                     <div style={{ position: 'relative', paddingLeft: '20px' }}>
                       {/* Timeline Line */}
-                      <div style={{ position: 'absolute', left: '7px', top: '10px', bottom: '10px', width: '2px', backgroundColor: '#E5E8EB', borderRadius: '1px' }}></div>
+                      <div style={{ position: 'absolute', left: '7px', top: '10px', bottom: '10px', width: '2px', backgroundColor: '#E4DFD4', borderRadius: '1px' }}></div>
 
                       {/* STEP 1: AI 역량 진단 */}
                       <div style={{ position: 'relative', marginBottom: '32px' }}>
-                        <div style={{ position: 'absolute', left: '-20px', top: '0', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#FFFFFF', border: '3px solid #3182F6', zIndex: 2 }}></div>
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                        <div style={{ position: 'absolute', left: '-20px', top: '0', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#FFFFFF', border: '3px solid #2D4BFF', zIndex: 2 }}></div>
+                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '20px', border: '1px solid #E4DFD4', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                            <span style={{ fontSize: '11px', fontWeight: 700, color: '#3182F6', backgroundColor: '#E8F3FF', padding: '2px 6px', borderRadius: '4px' }}>STEP 1</span>
-                            <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#191F28' }}>AI 역량 진단 완료</h4>
+                            <span style={{ fontSize: '11px', fontWeight: 700, color: '#2D4BFF', backgroundColor: '#E8F3FF', padding: '2px 6px', borderRadius: '4px' }}>STEP 1</span>
+                            <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#171717' }}>AI 역량 진단 완료</h4>
                           </div>
                           
 
                           {profile.competency_consent ? (
                             <>
-                          <div style={{ backgroundColor: '#F8FAFC', borderRadius: '8px', padding: '12px', marginTop: '12px' }}>
-                            <p style={{ fontSize: '12px', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                          <div style={{ backgroundColor: '#FAF8F3', borderRadius: '8px', padding: '12px', marginTop: '12px' }}>
+                            <p style={{ fontSize: '12px', color: '#55504A', margin: 0, lineHeight: 1.5 }}>
                               <Activity size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: '-2px' }} />
                               분석 결과: <strong>기획력</strong>과 <strong>리더십</strong>이 돋보입니다. 프로젝트 매니징이나 해커톤 리더 역할에 적합한 역량을 갖추고 있습니다.
                             </p>
@@ -2808,8 +2808,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               </button>
                             </>
                           ) : (
-                            <div style={{ backgroundColor: '#F8FAFC', borderRadius: '8px', padding: '12px', marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                            <div style={{ backgroundColor: '#FAF8F3', borderRadius: '8px', padding: '12px', marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              <p style={{ fontSize: '12px', color: '#55504A', margin: 0, lineHeight: 1.5 }}>
                                 역량 진단은 관심 분야·수상 실적·포트폴리오를 이용해요. [선택] 동의한 경우에만 결과를 보여드려요.
                               </p>
                               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -2836,10 +2836,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       {/* STEP 2: 획득한 배지 (업적 룸) */}
                       <div style={{ position: 'relative', marginBottom: '32px' }}>
                         <div style={{ position: 'absolute', left: '-20px', top: '0', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#FFFFFF', border: '3px solid #10B981', zIndex: 2 }}></div>
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '20px', border: '1px solid #E4DFD4', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                             <span style={{ fontSize: '11px', fontWeight: 700, color: '#10B981', backgroundColor: '#ECFDF5', padding: '2px 6px', borderRadius: '4px' }}>STEP 2</span>
-                            <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#191F28' }}>인증 배지 컬렉션</h4>
+                            <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#171717' }}>인증 배지 컬렉션</h4>
                           </div>
 
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -2847,18 +2847,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               const isUnlocked = profile.badges && profile.badges.includes(badgeName);
                               return (
                                 <div key={badgeName} style={{
-                                  backgroundColor: isUnlocked ? '#FFFFFF' : '#FAFBFC',
+                                  backgroundColor: isUnlocked ? '#FFFFFF' : '#FBF9F5',
                                   borderRadius: '12px', padding: '12px',
-                                  border: isUnlocked ? `1px solid ${details.color}40` : '1px solid #F1F5F9',
+                                  border: isUnlocked ? `1px solid ${details.color}40` : '1px solid #F1EDE4',
                                   display: 'flex', alignItems: 'center', gap: '10px',
                                   opacity: isUnlocked ? 1 : 0.5
                                 }}>
-                                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: isUnlocked ? `${details.color}15` : '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', color: isUnlocked ? details.color : '#94A3B8' }}>
+                                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: isUnlocked ? `${details.color}15` : '#E4DFD4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', color: isUnlocked ? details.color : '#8E887D' }}>
                                     {details.emoji}
                                   </div>
                                   <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#1E293B', marginBottom: '2px' }}>{badgeName}</div>
-                                    <div style={{ fontSize: '9px', color: '#64748B' }}>{isUnlocked ? '획득 완료' : '잠김'}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#262626', marginBottom: '2px' }}>{badgeName}</div>
+                                    <div style={{ fontSize: '9px', color: '#6B665D' }}>{isUnlocked ? '획득 완료' : '잠김'}</div>
                                   </div>
                                 </div>
                               );
@@ -2869,12 +2869,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                       {/* STEP 3: 수상 및 활동 실적 */}
                       <div style={{ position: 'relative' }}>
-                        <div style={{ position: 'absolute', left: '-20px', top: '0', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#FFFFFF', border: '3px solid #8B5CF6', zIndex: 2 }}></div>
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E5E8EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                        <div style={{ position: 'absolute', left: '-20px', top: '0', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#FFFFFF', border: '3px solid #2D4BFF', zIndex: 2 }}></div>
+                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '20px', border: '1px solid #E4DFD4', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 700, color: '#8B5CF6', backgroundColor: '#F5F3FF', padding: '2px 6px', borderRadius: '4px' }}>STEP 3</span>
-                              <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#191F28' }}>수상 실적 & 포트폴리오</h4>
+                              <span style={{ fontSize: '11px', fontWeight: 700, color: '#2D4BFF', backgroundColor: '#EEF1FF', padding: '2px 6px', borderRadius: '4px' }}>STEP 3</span>
+                              <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#171717' }}>수상 실적 & 포트폴리오</h4>
                             </div>
                             <button 
                               onClick={async () => {
@@ -2894,7 +2894,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                   await showAlert("포트폴리오 링크가 등록되었습니다.");
                                 }
                               }}
-                              style={{ backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '6px 10px', fontSize: '12px', fontWeight: 700, color: '#334155', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              style={{ backgroundColor: '#FAF8F3', border: '1px solid #E4DFD4', borderRadius: '8px', padding: '6px 10px', fontSize: '12px', fontWeight: 700, color: '#3A3733', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <Plus size={14} /> 등록하기
                             </button>
                           </div>
@@ -2902,11 +2902,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           {/* 수상 실적 리스트 */}
                           {profile.awards && profile.awards.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B' }}>활동 및 수상 내역</div>
+                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#6B665D' }}>활동 및 수상 내역</div>
                               {profile.awards.map((award, i) => (
-                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#F8FAFC', padding: '10px 12px', borderRadius: '8px', border: '1px solid #F1F5F9' }}>
-                                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#1E293B' }}>{award.title}</span>
-                                  <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600 }}>{award.date}</span>
+                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FAF8F3', padding: '10px 12px', borderRadius: '8px', border: '1px solid #F1EDE4' }}>
+                                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#262626' }}>{award.title}</span>
+                                  <span style={{ fontSize: '11px', color: '#6B665D', fontWeight: 600 }}>{award.date}</span>
                                 </div>
                               ))}
                             </div>
@@ -2915,9 +2915,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           {/* 포폴 링크 리스트 */}
                           {profile.portfolio_urls && profile.portfolio_urls.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B' }}>첨부 링크</div>
+                              <div style={{ fontSize: '12px', fontWeight: 700, color: '#6B665D' }}>첨부 링크</div>
                               {profile.portfolio_urls.map((url, i) => (
-                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#F8FAFC', padding: '10px 12px', borderRadius: '8px', border: '1px solid #F1F5F9', textDecoration: 'none', color: '#3182F6', fontSize: '13px', fontWeight: 600 }}>
+                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#FAF8F3', padding: '10px 12px', borderRadius: '8px', border: '1px solid #F1EDE4', textDecoration: 'none', color: '#2D4BFF', fontSize: '13px', fontWeight: 600 }}>
                                   <Share2 size={14} /> {url}
                                 </a>
                               ))}
@@ -2925,7 +2925,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           ) : null}
 
                           {(!profile.awards || profile.awards.length === 0) && (!profile.portfolio_urls || profile.portfolio_urls.length === 0) && (
-                            <div style={{ textAlign: 'center', padding: '20px 0', color: '#94A3B8', fontSize: '13px' }}>
+                            <div style={{ textAlign: 'center', padding: '20px 0', color: '#8E887D', fontSize: '13px' }}>
                               아직 등록된 실적이나 링크가 없습니다.<br/>우측 상단의 등록 버튼을 눌러 추가해보세요.
                             </div>
                           )}
@@ -2968,9 +2968,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     className="spring-active"
                     style={{
                       width: '100%',
-                      backgroundColor: '#191F28',
+                      backgroundColor: '#171717',
                       border: 'none',
-                      borderRadius: '16px',
+                      borderRadius: '12px',
                       padding: '18px',
                       display: 'flex',
                       alignItems: 'center',
@@ -2994,7 +2994,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
                   
                   {/* Basic Info fields */}
-                  <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                     <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, marginBottom: '4px' }}>기본 인적 사항</h3>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -3003,7 +3003,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         type="text"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
+                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
                       />
                     </div>
 
@@ -3018,7 +3018,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         <select
                           value={editGrade}
                           onChange={(e) => setEditGrade(e.target.value)}
-                          style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', backgroundColor: '#FFFFFF' }}
+                          style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', backgroundColor: '#FFFFFF' }}
                         >
                           {grades.map(g => (
                             <option key={g} value={g}>{g}</option>
@@ -3031,7 +3031,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         <select
                           value={editLocation}
                           onChange={(e) => setEditLocation(e.target.value)}
-                          style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', backgroundColor: '#FFFFFF' }}
+                          style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', backgroundColor: '#FFFFFF' }}
                         >
                           {locations.map(loc => (
                             <option key={loc} value={loc}>{loc}</option>
@@ -3047,7 +3047,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         value={editContact}
                         onChange={(e) => setEditContact(e.target.value)}
                         placeholder="010-0000-0000"
-                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
+                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
                       />
                     </div>
 
@@ -3058,13 +3058,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         value={editMajor}
                         onChange={(e) => setEditMajor(e.target.value)}
                         placeholder="예: 컴퓨터공학과, 경영학과, 디자인과, 기계공학과"
-                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
+                        style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
                       />
                     </div>
                   </div>
 
                   {/* Interest options */}
-                  <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>관심 분야</h3>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                       {interestOptions.map((interest) => {
@@ -3083,7 +3083,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                               fontSize: '12.5px',
                               fontWeight: 700,
                               borderRadius: '12px',
-                              border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
+                              border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
                               backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FFFFFF',
                               color: isSelected ? 'var(--color-indigo)' : 'var(--text-secondary)',
                               cursor: 'pointer',
@@ -3103,7 +3103,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   type="button"
                   onClick={handleSaveProfile}
                   className="btn btn-primary"
-                  style={{ padding: '14px', fontSize: '14.5px', fontWeight: 800, borderRadius: '12px', marginTop: '8px', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)' }}
+                  style={{ padding: '14px', fontSize: '14.5px', fontWeight: 800, borderRadius: '12px', marginTop: '8px', boxShadow: '0 4px 12px rgba(20, 20, 20, 0.2)' }}
                 >
                   포트폴리오 저장하기
                 </button>
@@ -3115,18 +3115,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
                 
                 {/* School Profile Card */}
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB' }}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4' }}>
                   <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, marginBottom: '14px' }}>학적 사항</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F2F4F6', paddingBottom: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F1EDE4', paddingBottom: '12px' }}>
                       <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>학교</span>
                       <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{profile.school || '미입력'}</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F2F4F6', paddingBottom: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F1EDE4', paddingBottom: '12px' }}>
                       <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>학년</span>
                       <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{profile.grade}</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F2F4F6', paddingBottom: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F1EDE4', paddingBottom: '12px' }}>
                       <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>이름</span>
                       <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{profile.name}</span>
                     </div>
@@ -3138,7 +3138,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 </div>
 
                 {/* Badges card */}
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB' }}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4' }}>
                   <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Award size={18} style={{ color: 'var(--color-indigo)' }} /> 획득한 업적 배지
                   </h3>
@@ -3162,8 +3162,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             borderRadius: '12px',
                             fontSize: '12px',
                             fontWeight: 600,
-                            backgroundColor: isUnlocked ? 'var(--color-cyan-light)' : '#E2E8F0',
-                            color: isUnlocked ? 'var(--color-cyan)' : '#94A3B8',
+                            backgroundColor: isUnlocked ? 'var(--color-cyan-light)' : '#E4DFD4',
+                            color: isUnlocked ? 'var(--color-cyan)' : '#8E887D',
                             border: isUnlocked ? '1px solid var(--color-cyan)' : '1px solid transparent',
                             cursor: 'pointer'
                           }}
@@ -3178,15 +3178,15 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 {/* Gamification referral loop */}
                 <div style={{
                   backgroundColor: '#FFFFFF',
-                  borderRadius: '20px',
-                  border: '1px solid #E5E8EB',
+                  borderRadius: '14px',
+                  border: '1px solid #E4DFD4',
                   padding: '18px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '12px'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Sparkles size={16} style={{ color: '#FF007F' }} />
+                    <Sparkles size={16} style={{ color: '#F0432C' }} />
                     <span style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
                       친구 초대하고 특별 혜택 언락하기
                     </span>
@@ -3205,10 +3205,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         flex: 1,
                         padding: '10px 12px',
                         fontSize: '13px',
-                        border: '1px solid #E5E8EB',
+                        border: '1px solid #E4DFD4',
                         borderRadius: '8px',
                         outline: 'none',
-                        backgroundColor: '#FAFBFC'
+                        backgroundColor: '#FBF9F5'
                       }}
                     />
                     <button
@@ -3218,7 +3218,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         padding: '10px 16px',
                         fontSize: '12.5px',
                         fontWeight: 700,
-                        backgroundColor: '#FF007F',
+                        backgroundColor: '#F0432C',
                         color: '#FFFFFF',
                         border: 'none',
                         borderRadius: '8px',
@@ -3278,10 +3278,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
           {/* Hero Banner */}
           <div style={{ padding: '24px 8px', marginBottom: '8px' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#191F28', margin: '0 0 12px 0', lineHeight: 1.35, letterSpacing: '-0.5px' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#171717', margin: '0 0 12px 0', lineHeight: 1.35, letterSpacing: '-0.5px' }}>
               끌과 함께하는<br />협력 파트너
             </h2>
-            <p style={{ fontSize: '15px', color: '#8B95A1', margin: 0, lineHeight: 1.5, letterSpacing: '-0.3px' }}>
+            <p style={{ fontSize: '15px', color: '#8E887D', margin: 0, lineHeight: 1.5, letterSpacing: '-0.3px' }}>
               청소년 성장을 위해 끌과 협력하는<br />기관·인플루언서·기업·학교를 소개합니다.
             </p>
           </div>
@@ -3289,26 +3289,26 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           {/* 개발 기관 Telosix */}
           <div>
             <div style={{ padding: '0 8px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '15px', fontWeight: 700, color: '#333D4B', letterSpacing: '-0.3px' }}>개발 기관</span>
+              <span style={{ fontSize: '15px', fontWeight: 700, color: '#3A3733', letterSpacing: '-0.3px' }}>개발 기관</span>
             </div>
-            <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '22px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', border: '1px solid #F0F0F5' }}>
+            <div style={{ background: '#FFFFFF', borderRadius: '14px', padding: '22px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', border: '1px solid #F1EDE4' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
-                <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <School size={22} strokeWidth={1.75} color="#4E5968" />
+                <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: '#F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <School size={22} strokeWidth={1.75} color="#55504A" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>Telosix</h3>
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '4px 8px' }}>Kkeul 개발 기관</span>
+                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#171717', margin: '0 0 4px 0', letterSpacing: '-0.3px' }}>Telosix</h3>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '4px 8px' }}>Kkeul 개발 기관</span>
                 </div>
               </div>
-              <p style={{ fontSize: '14px', color: '#4E5968', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌(Kkeul)을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
+              <p style={{ fontSize: '14px', color: '#55504A', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌(Kkeul)을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <a href="https://telosix.co.kr" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
-                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
+                <a href="https://telosix.co.kr" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#55504A', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
+                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
                   telosix.co.kr
                 </a>
-                <a href="https://namu.wiki/w/telosix" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#505967', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
-                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><BookOpen size={13} /></span>
+                <a href="https://namu.wiki/w/telosix" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#55504A', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
+                  <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><BookOpen size={13} /></span>
                   나무위키 · Telosix
                 </a>
               </div>
@@ -3318,134 +3318,134 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           {/* 협력 업체 · 기관 · 학교 */}
           <div>
             <div style={{ padding: '0 8px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '15px', fontWeight: 700, color: '#333D4B', letterSpacing: '-0.3px' }}>협력 업체 · 기관 · 학교</span>
+              <span style={{ fontSize: '15px', fontWeight: 700, color: '#3A3733', letterSpacing: '-0.3px' }}>협력 업체 · 기관 · 학교</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {/* 강남디벨로퍼스 */}
-              <a href="https://www.gangnamdev.com/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '20px', padding: '18px', border: '1px solid #F0F0F5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', border: '1px solid #F0F0F5', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}>
+              <a href="https://www.gangnamdev.com/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '14px', padding: '18px', border: '1px solid #F1EDE4', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                <div style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}>
                   <img src={partnerGNDevs} alt="강남디벨로퍼스" style={{ width: '90%', height: '90%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>강남디벨로퍼스</span>
-                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력사</span>
+                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>강남디벨로퍼스</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력사</span>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>글로벌 HR 전문기업 및 맞춤형 IT 솔루션 구축 파트너</p>
+                  <p style={{ fontSize: '13px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>글로벌 HR 전문기업 및 맞춤형 IT 솔루션 구축 파트너</p>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {['솔루션', 'IT컨설팅', 'HR'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
+                    {['솔루션', 'IT컨설팅', 'HR'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
                   </div>
                 </div>
               </a>
 
               {/* Wellthy Korea */}
-              <a href="https://www.wellthykorea.kr/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '20px', padding: '18px', border: '1px solid #F0F0F5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', border: '1px solid #F0F0F5', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}>
+              <a href="https://www.wellthykorea.kr/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '14px', padding: '18px', border: '1px solid #F1EDE4', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                <div style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}>
                   <img src={partnerWellthy} alt="Wellthy Korea" style={{ width: '90%', height: '90%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>Wellthy Korea</span>
-                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력사</span>
+                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>Wellthy Korea</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력사</span>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>향기 관련 제휴 파트너</p>
+                  <p style={{ fontSize: '13px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>향기 관련 제휴 파트너</p>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {['향기', '라이프', '제휴'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
+                    {['향기', '라이프', '제휴'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
                   </div>
                 </div>
               </a>
 
               {/* Scent Pulse */}
-              <a href="https://www.scent-pulse.com/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '20px', padding: '18px', border: '1px solid #F0F0F5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', border: '1px solid #F0F0F5', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}>
+              <a href="https://www.scent-pulse.com/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '14px', padding: '18px', border: '1px solid #F1EDE4', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                <div style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}>
                   <img src={partnerScentpulse} alt="Scent Pulse" style={{ width: '90%', height: '90%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>Scent Pulse</span>
+                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>Scent Pulse</span>
                     <span style={{ fontSize: '11px', fontWeight: 600, color: '#F97316', background: 'rgba(249,115,22,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력 서비스</span>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>향기 관련 파트너 브랜드</p>
+                  <p style={{ fontSize: '13px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>향기 관련 파트너 브랜드</p>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {['향기', '서비스', '브랜드'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
+                    {['향기', '서비스', '브랜드'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
                   </div>
                 </div>
               </a>
 
               {/* 강대표님 */}
-              <a href="https://www.instagram.com/kangceo_official/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '20px', padding: '18px', border: '1px solid #F0F0F5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+              <a href="https://www.instagram.com/kangceo_official/" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '14px', padding: '18px', border: '1px solid #F1EDE4', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
                 <div style={{ position: 'relative', flexShrink: 0, width: '64px', height: '64px' }}>
-                  <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', border: '1px solid #F0F0F5', background: '#FFFFFF' }}>
+                  <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', border: '1px solid #F1EDE4', background: '#FFFFFF' }}>
                     <img src={partnerKangceo} alt="강대표님" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.3)' }} />
                   </div>
-                  <div style={{ position: 'absolute', bottom: -2, right: -2, width: '22px', height: '22px', borderRadius: '50%', background: '#3182F6', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #FFFFFF', zIndex: 1 }}><Check size={12} strokeWidth={3} color="#FFFFFF" /></div>
+                  <div style={{ position: 'absolute', bottom: -2, right: -2, width: '22px', height: '22px', borderRadius: '50%', background: '#2D4BFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #FFFFFF', zIndex: 1 }}><Check size={12} strokeWidth={3} color="#FFFFFF" /></div>
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}><span style={{ fontSize: '16px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>강대표님</span><span style={{ fontSize: '11px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>인플루언서</span></div><p style={{ fontSize: '13px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>전자명함 사업 인플루언서</p><div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>{['전자명함','사업','인플루언서'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}</div></div>
+                <div style={{ flex: 1, minWidth: 0 }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}><span style={{ fontSize: '16px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>강대표님</span><span style={{ fontSize: '11px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>인플루언서</span></div><p style={{ fontSize: '13px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>전자명함 사업 인플루언서</p><div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>{['전자명함','사업','인플루언서'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}</div></div>
               </a>
 
               {/* BSBRBO */}
-              <a href="https://open.kakao.com/o/gBXNKfEh" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '20px', padding: '18px', border: '1px solid #F0F0F5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, border: '1px solid #F0F0F5' }}>
+              <a href="https://open.kakao.com/o/gBXNKfEh" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', background: '#FFFFFF', borderRadius: '14px', padding: '18px', border: '1px solid #F1EDE4', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                <div style={{ width: '64px', height: '64px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, border: '1px solid #F1EDE4' }}>
                   <img src={partnerBsbrbo} alt="BSBRBO" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '5px' }}>
-                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>Team BSBRBO</span>
-                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3182F6', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력사</span>
+                    <span style={{ fontSize: '16px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>Team BSBRBO</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력사</span>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#8B95A1', margin: '0 0 8px 0', lineHeight: 1.4, letterSpacing: '-0.3px' }}>청소년 창작기반 엔터테인먼트형 프로젝트 팀</p>
+                  <p style={{ fontSize: '13px', color: '#8E887D', margin: '0 0 8px 0', lineHeight: 1.4, letterSpacing: '-0.3px' }}>청소년 창작기반 엔터테인먼트형 프로젝트 팀</p>
                   <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-                    {['교육','콘텐츠','e스포츠','음악','상담'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
+                    {['교육','콘텐츠','e스포츠','음악','상담'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}
                   </div>
                 </div>
               </a>
 
               {/* 학생 능력자들의 방 */}
-              <a href="https://open.kakao.com/o/gzJLwdxi" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'flex-start', gap: '14px', background: '#FFFFFF', padding: '16px', borderRadius: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', overflow: 'hidden', background: '#F2F4F6', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#191F28' }}>
+              <a href="https://open.kakao.com/o/gzJLwdxi" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'flex-start', gap: '14px', background: '#FFFFFF', padding: '16px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', overflow: 'hidden', background: '#F1EDE4', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#171717' }}>
                   <Users size={24} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>학생 능력자들의 방</span>
+                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>학생 능력자들의 방</span>
                   </div>
                   <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#8B5CF6', background: 'rgba(139,92,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>커뮤니티</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(45,75,255,0.1)', borderRadius: '6px', padding: '3px 6px' }}>커뮤니티</span>
                   </div>
-                  <p style={{ fontSize: '12px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>네트워킹 및 소통 공간</p>
+                  <p style={{ fontSize: '12px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>네트워킹 및 소통 공간</p>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {['소통', '네트워킹'].map(t => (
-                      <span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#8B5CF6', background: 'rgba(139,92,246,0.08)', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>
+                      <span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#2D4BFF', background: 'rgba(45,75,255,0.08)', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>
                     ))}
                   </div>
                 </div>
               </a>
 
               {/* 브롤 커뮤니티 방 */}
-              <a href="https://open.kakao.com/o/pKJ0jdxi" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'flex-start', gap: '14px', background: '#FFFFFF', padding: '16px', borderRadius: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', overflow: 'hidden', background: '#F2F4F6', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <a href="https://open.kakao.com/o/pKJ0jdxi" target="_blank" rel="noopener noreferrer" className="spring-active" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'flex-start', gap: '14px', background: '#FFFFFF', padding: '16px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', overflow: 'hidden', background: '#F1EDE4', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <img src={partnerBrawl} alt="브롤 커뮤니티 방" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>브롤 커뮤니티 방</span>
+                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>브롤 커뮤니티 방</span>
                   </div>
                   <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#8B5CF6', background: 'rgba(139,92,246,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력 커뮤니티</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(45,75,255,0.1)', borderRadius: '6px', padding: '3px 6px' }}>협력 커뮤니티</span>
                   </div>
-                  <p style={{ fontSize: '12px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>게임 기반 청소년 소통 및 대회 기획 파트너</p>
+                  <p style={{ fontSize: '12px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>게임 기반 청소년 소통 및 대회 기획 파트너</p>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {['게임', '대회', '친목'].map(t => (
-                      <span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#8B5CF6', background: 'rgba(139,92,246,0.08)', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>
+                      <span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#2D4BFF', background: 'rgba(45,75,255,0.08)', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>
                     ))}
                   </div>
                 </div>
               </a>
 
               {/* SWITCHBACK */}
-              <div className="spring-active" style={{ background: '#FFFFFF', borderRadius: '20px', padding: '18px', border: '1px solid #F0F0F5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', border: '1px solid #F0F0F5', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}><img src={partnerSwitchback} alt="SWITCHBACK" style={{ width: '90%', height: '90%', objectFit: 'contain' }} /></div>
-                <div style={{ flex: 1, minWidth: 0 }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}><span style={{ fontSize: '16px', fontWeight: 800, color: '#191F28', letterSpacing: '-0.3px' }}>SWITCHBACK</span><span style={{ fontSize: '11px', fontWeight: 600, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 6px' }}>협력사</span></div><p style={{ fontSize: '13px', color: '#8B95A1', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>패션의류 브랜드 파트너</p><div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>{['패션','의류','브랜드'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#4E5968', background: '#F2F4F6', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}</div></div>
+              <div className="spring-active" style={{ background: '#FFFFFF', borderRadius: '14px', padding: '18px', border: '1px solid #F1EDE4', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                <div style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, background: '#FFFFFF' }}><img src={partnerSwitchback} alt="SWITCHBACK" style={{ width: '90%', height: '90%', objectFit: 'contain' }} /></div>
+                <div style={{ flex: 1, minWidth: 0 }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}><span style={{ fontSize: '16px', fontWeight: 800, color: '#171717', letterSpacing: '-0.3px' }}>SWITCHBACK</span><span style={{ fontSize: '11px', fontWeight: 600, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 6px' }}>협력사</span></div><p style={{ fontSize: '13px', color: '#8E887D', margin: '0 0 8px 0', letterSpacing: '-0.3px' }}>패션의류 브랜드 파트너</p><div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>{['패션','의류','브랜드'].map(t => (<span key={t} style={{ fontSize: '11px', fontWeight: 500, color: '#55504A', background: '#F1EDE4', borderRadius: '6px', padding: '3px 8px' }}>{t}</span>))}</div></div>
               </div>
 
 
@@ -3454,14 +3454,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           </div>
 
           {/* 파트너십 CTA (토스 스타일) */}
-          <div style={{ background: '#F5F5FC', borderRadius: '16px', padding: '28px 20px', textAlign: 'center', marginTop: '8px' }}>
+          <div style={{ background: '#F5F5FC', borderRadius: '12px', padding: '28px 20px', textAlign: 'center', marginTop: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-              <Sparkles size={28} color="#5544FF" strokeWidth={2.5} />
+              <Sparkles size={28} color="#2D4BFF" strokeWidth={2.5} />
             </div>
-            <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#191F28', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>끌과 함께 성장하고 싶으신가요?</h4>
-            <p style={{ fontSize: '14px', color: '#8B95A1', margin: '0 0 20px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>학교·기관·기업 협력 문의는 아래로 연락해 주세요.</p>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '15px', fontWeight: 700, color: '#5544FF' }}>
-              <span style={{ background: 'rgba(85,68,255,0.1)', borderRadius: '4px', padding: '2px 4px', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>@</span> 
+            <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#171717', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>끌과 함께 성장하고 싶으신가요?</h4>
+            <p style={{ fontSize: '14px', color: '#8E887D', margin: '0 0 20px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>학교·기관·기업 협력 문의는 아래로 연락해 주세요.</p>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '15px', fontWeight: 700, color: '#2D4BFF' }}>
+              <span style={{ background: 'rgba(20,20,20,0.1)', borderRadius: '4px', padding: '2px 4px', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>@</span> 
               woojin052501@gmail.com
             </div>
           </div>
@@ -3503,9 +3503,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       onClick={() => onSelectAnnouncement(ann)}
                       style={{
                         backgroundColor: '#FFFFFF',
-                        borderRadius: '18px',
+                        borderRadius: '12px',
                         padding: '20px',
-                        border: '1px solid #E5E8EB',
+                        border: '1px solid #E4DFD4',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
                         cursor: 'pointer'
                       }}
@@ -3531,11 +3531,11 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             ) : (
               /* EMPTY DASHBOARD STATE */
               <div style={{
-                background: 'linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%)',
-                borderRadius: '24px',
+                background: '#FFFFFF',
+                borderRadius: '16px',
                 padding: '40px 24px',
                 textAlign: 'center',
-                border: '1px dashed #CCD2E3',
+                border: '1px dashed #D5CFC3',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -3545,7 +3545,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 <div style={{
                   width: '60px',
                   height: '60px',
-                  borderRadius: '18px',
+                  borderRadius: '12px',
                   backgroundColor: 'var(--color-indigo-light)',
                   color: 'var(--color-indigo)',
                   display: 'flex',
@@ -3596,7 +3596,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     flex: 1,
                     height: '4px',
                     borderRadius: '2px',
-                    backgroundColor: regStep >= s ? 'var(--color-indigo)' : '#E5E8EB',
+                    backgroundColor: regStep >= s ? 'var(--color-indigo)' : '#E4DFD4',
                     transition: 'background-color 0.3s'
                   }}
                 />
@@ -3616,10 +3616,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       width: '100%',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
                       outline: 'none',
-                      backgroundColor: '#FAFBFC'
+                      backgroundColor: '#FBF9F5'
                     }}
                     placeholder="예: Telosix 주최 기획팀"
                   />
@@ -3654,10 +3654,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       width: '100%',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
                       outline: 'none',
-                      backgroundColor: '#FAFBFC'
+                      backgroundColor: '#FBF9F5'
                     }}
                     placeholder="예: 제1회 전국 청소년 창업 아이디어 경진대회"
                   />
@@ -3673,10 +3673,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       height: '120px',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
                       outline: 'none',
-                      backgroundColor: '#FAFBFC',
+                      backgroundColor: '#FBF9F5',
                       resize: 'none',
                       fontFamily: 'var(--font-family)'
                     }}
@@ -3709,8 +3709,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             fontSize: '13px',
                             fontWeight: 600,
                             borderRadius: '12px',
-                            border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                            backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FAFBFC',
+                            border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                            backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FBF9F5',
                             color: isSelected ? 'var(--color-indigo)' : 'var(--text-secondary)',
                             cursor: 'pointer',
                             textAlign: 'center',
@@ -3735,10 +3735,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       width: '100%',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
                       outline: 'none',
-                      backgroundColor: '#FAFBFC'
+                      backgroundColor: '#FBF9F5'
                     }}
                     placeholder="https://docs.google.com/forms/..."
                   />
@@ -3754,9 +3754,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       width: '100%',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
-                      backgroundColor: '#FAFBFC'
+                      backgroundColor: '#FBF9F5'
                     }}
                   />
                 </div>
@@ -3800,9 +3800,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       width: '100%',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
-                      backgroundColor: '#FAFBFC'
+                      backgroundColor: '#FBF9F5'
                     }}
                   >
                     <option value="전국">전국 전체</option>
@@ -3835,9 +3835,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       width: '100%',
                       padding: '14px',
                       fontSize: '15px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       borderRadius: '10px',
-                      backgroundColor: '#FAFBFC'
+                      backgroundColor: '#FBF9F5'
                     }}
                   >
                     <option value="고등학교 전체">고등학교 전체</option>
@@ -3849,8 +3849,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                 {/* 실시간 타겟팅 시뮬레이터 카드 UI */}
                 <div style={{
-                  background: 'linear-gradient(135deg, #ECFEFF 0%, #F5F3FF 100%)',
-                  borderRadius: '16px',
+                  background: '#ECFEFF',
+                  borderRadius: '12px',
                   padding: '20px 18px',
                   border: '1px solid #C084FC',
                   textAlign: 'center',
@@ -3860,7 +3860,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   boxShadow: '0 8px 24px rgba(124, 58, 237, 0.05)',
                   margin: '6px 0'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, color: '#7C3AED' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, color: '#2D4BFF' }}>
                     실시간 타겟팅 시뮬레이터
                   </div>
                   <div style={{ fontSize: '32px', fontWeight: 900, color: 'var(--color-indigo)', letterSpacing: '-0.5px' }}>
@@ -3901,7 +3901,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   backgroundColor: 'var(--color-indigo-light)',
                   padding: '16px',
                   borderRadius: '14px',
-                  border: '1px solid rgba(79, 70, 229, 0.1)',
+                  border: '1px solid rgba(20, 20, 20, 0.1)',
                   fontSize: '14px',
                   color: 'var(--color-indigo)',
                   lineHeight: 1.5,
@@ -3917,8 +3917,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   gap: '10px',
                   backgroundColor: '#FFFFFF',
                   padding: '16px',
-                  borderRadius: '16px',
-                  border: '1px solid #E5E8EB',
+                  borderRadius: '12px',
+                  border: '1px solid #E4DFD4',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                 }}>
                   <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>선택사항: 공고 노출 방식 선택</span>
@@ -3929,8 +3929,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       style={{
                         padding: '12px',
                         borderRadius: '10px',
-                        border: !isBidding ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                        backgroundColor: !isBidding ? '#F5F6FF' : '#FFFFFF',
+                        border: !isBidding ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                        backgroundColor: !isBidding ? '#EEF1FF' : '#FFFFFF',
                         fontWeight: 700,
                         fontSize: '13px',
                         color: !isBidding ? 'var(--color-indigo)' : 'var(--text-secondary)',
@@ -3946,10 +3946,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       style={{
                         padding: '12px',
                         borderRadius: '10px',
-                        border: isBidding ? '2px solid transparent' : '1px solid #E5E8EB',
-                        background: isBidding 
-                          ? 'linear-gradient(#F5F6FF, #F5F6FF) padding-box, linear-gradient(135deg, #FF6B6B, #5544FF) border-box' 
-                          : '#FFFFFF',
+                        border: isBidding ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                        background: isBidding ? '#EEF1FF' : '#FFFFFF',
                         fontWeight: 800,
                         fontSize: '13px',
                         color: isBidding ? 'var(--color-indigo)' : 'var(--text-secondary)',
@@ -3970,15 +3968,15 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '12px',
-                    background: 'linear-gradient(145deg, #FFFFFF, #F8FAFF)',
+                    background: '#FFFFFF',
                     padding: '20px',
-                    borderRadius: '16px',
-                    border: '1px solid rgba(85, 68, 255, 0.2)',
-                    boxShadow: '0 4px 20px rgba(85, 68, 255, 0.08)'
+                    borderRadius: '12px',
+                    border: '1px solid rgba(20, 20, 20, 0.2)',
+                    boxShadow: '0 4px 20px rgba(20, 20, 20, 0.08)'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div>
-                        <label style={{ fontSize: '15px', fontWeight: 800, color: '#191F28', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <label style={{ fontSize: '15px', fontWeight: 800, color: '#171717', display: 'flex', alignItems: 'center', gap: '6px' }}>
                           VVIP 최상단 노출 패키지
                         </label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
@@ -3993,17 +3991,17 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       </div>
                     </div>
 
-                    <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '10px', border: '1px solid #E5E8EB', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '10px', border: '1px solid #E4DFD4', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(49,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3182F6', fontWeight: 800, fontSize: '12px' }}>1</div>
+                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(49,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2D4BFF', fontWeight: 800, fontSize: '12px' }}>1</div>
                         <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>조회수 평균 <span style={{ color: '#FF4747' }}>10배</span> 상승 효과!</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(49,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3182F6', fontWeight: 800, fontSize: '12px' }}>2</div>
+                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(49,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2D4BFF', fontWeight: 800, fontSize: '12px' }}>2</div>
                         <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>지원자 모집이 완료될 때까지 <span style={{ color: 'var(--color-indigo)' }}>최상단 고정</span></span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(49,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3182F6', fontWeight: 800, fontSize: '12px' }}>3</div>
+                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(49,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2D4BFF', fontWeight: 800, fontSize: '12px' }}>3</div>
                         <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>전국 청소년 대상 타겟 푸시 알림 우선 발송</span>
                       </div>
                     </div>
@@ -4040,8 +4038,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 {/* Receipt UI */}
                 <div style={{
                   backgroundColor: '#FFFFFF',
-                  border: '1px solid #E5E8EB',
-                  borderRadius: '20px',
+                  border: '1px solid #E4DFD4',
+                  borderRadius: '14px',
                   padding: '24px 20px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -4054,12 +4052,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--color-indigo)' }}>KKEUL 영수증</span>
                   </div>
 
-                  <div style={{ borderBottom: '1px dashed #E5E8EB', paddingBottom: '12px' }}>
+                  <div style={{ borderBottom: '1px dashed #E4DFD4', paddingBottom: '12px' }}>
                     <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>공고명</div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>{regTitle}</div>
                   </div>
 
-                  <div style={{ borderBottom: '1px dashed #E5E8EB', paddingBottom: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ borderBottom: '1px dashed #E4DFD4', paddingBottom: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                       <span style={{ color: 'var(--text-secondary)' }}>매칭 타겟</span>
                       <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{regRegion} / {regGrade}</span>
@@ -4101,7 +4099,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '6px',
-                      boxShadow: '0 6px 16px rgba(79, 70, 229, 0.2)'
+                      boxShadow: '0 6px 16px rgba(20, 20, 20, 0.2)'
                     }}
                   >
                     {isBidding ? `${regBidAmount.toLocaleString()}원 입찰 신청 및 알림 등록` : '무료로 공고 등록하고 알림 쏘기'}
@@ -4182,8 +4180,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 gap: '8px',
                 backgroundColor: '#FFFFFF',
                 padding: '16px',
-                borderRadius: '16px',
-                border: '1px solid #E5E8EB',
+                borderRadius: '12px',
+                border: '1px solid #E4DFD4',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
               }}>
                 <label style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>조회할 발송 공고 선택</label>
@@ -4195,9 +4193,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     padding: '12px 14px',
                     fontSize: '14px',
                     fontWeight: 600,
-                    border: '1px solid #E5E8EB',
+                    border: '1px solid #E4DFD4',
                     borderRadius: '10px',
-                    backgroundColor: '#FAFBFC',
+                    backgroundColor: '#FBF9F5',
                     outline: 'none',
                     color: 'var(--text-primary)'
                   }}
@@ -4215,26 +4213,26 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
               {/* Metrics cards grid */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '18px', padding: '18px', border: '1px solid #E5E8EB' }}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '18px', border: '1px solid #E4DFD4' }}>
                   <div style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '6px' }}>도달 학생 수</div>
                   <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)' }}>{reachCount.toLocaleString()} 명</div>
                 </div>
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '18px', padding: '18px', border: '1px solid #E5E8EB' }}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '18px', border: '1px solid #E4DFD4' }}>
                   <div style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '6px' }}>푸시 알림 열람률</div>
                   <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-indigo)' }}>{openRate} %</div>
                 </div>
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '18px', padding: '18px', border: '1px solid #E5E8EB' }}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '18px', border: '1px solid #E4DFD4' }}>
                   <div style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '6px' }}>상세 페이지 클릭 수</div>
                   <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)' }}>{clickCount.toLocaleString()} 회</div>
                 </div>
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '18px', padding: '18px', border: '1px solid #E5E8EB' }}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '18px', border: '1px solid #E4DFD4' }}>
                   <div style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 600, marginBottom: '6px' }}>관심 등록(찜) 수</div>
                   <div style={{ fontSize: '20px', fontWeight: 800, color: '#F59E0B' }}>{bookmarkCount.toLocaleString()} 회</div>
                 </div>
               </div>
 
               {/* CSS graph */}
-              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB' }}>
+              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>주간 상세 페이지 방문 추이</h3>
                 <div style={{ display: 'flex', height: '140px', alignItems: 'flex-end', justifyContent: 'space-around', paddingBottom: '10px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
@@ -4271,18 +4269,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               <p>소속 기관 설정 및 가입 상세 정보를 확인합니다.</p>
             </div>
 
-            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '20px', padding: '20px', border: '1px solid #E5E8EB' }}>
+            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', padding: '20px', border: '1px solid #E4DFD4' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F2F4F6', paddingBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F1EDE4', paddingBottom: '12px' }}>
                   <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>기관/동아리명</span>
                   <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{profile.name}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F2F4F6', paddingBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F1EDE4', paddingBottom: '12px' }}>
                   <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>담당자 이메일</span>
                   <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{profile.email}</span>
                 </div>
                 {profile.contact && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F2F4F6', paddingBottom: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #F1EDE4', paddingBottom: '12px' }}>
                     <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>연락처</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{profile.contact}</span>
                   </div>
@@ -4339,16 +4337,16 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const isHost = profile.role === 'host';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', backgroundColor: '#FAFBFC', position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', backgroundColor: '#FBF9F5', position: 'relative' }}>
       
       {/* Dynamic Main view rendering */}
       {isHost ? renderHostView() : renderStudentView()}
 
       {/* Business Info Footer (Shared) */}
       <footer style={{
-        backgroundColor: '#FAFBFC',
+        backgroundColor: '#FBF9F5',
         padding: '24px 20px',
-        borderTop: '1px solid #E5E8EB',
+        borderTop: '1px solid #E4DFD4',
         fontSize: '11px',
         color: 'var(--text-tertiary)',
         textAlign: 'left',
@@ -4386,7 +4384,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         maxWidth: '480px',
         height: '64px',
         backgroundColor: '#FFFFFF',
-        borderTop: '1px solid #E5E8EB',
+        borderTop: '1px solid #E4DFD4',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
@@ -4770,7 +4768,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         }}>
           <div className="animate-scale-in" style={{
             background: '#FFFFFF',
-            borderRadius: '24px',
+            borderRadius: '16px',
             padding: '24px',
             width: '100%',
             maxWidth: '340px',
@@ -4781,7 +4779,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               width: '56px',
               height: '56px',
               borderRadius: '50%',
-              background: '#EEF2FF',
+              background: '#EAEEFF',
               color: 'var(--color-indigo)',
               display: 'flex',
               alignItems: 'center',
@@ -4803,7 +4801,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 style={{
                   flex: 1,
                   border: 'none',
-                  background: '#F2F4F6',
+                  background: '#F1EDE4',
                   color: 'var(--text-secondary)',
                   padding: '12px',
                   borderRadius: '12px',
@@ -4842,7 +4840,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   fontSize: '14px',
                   fontWeight: 700,
                   cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)'
+                  boxShadow: '0 4px 12px rgba(20, 20, 20, 0.2)'
                 }}
               >
                 허용
@@ -4884,8 +4882,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           <div style={{
             width: '100%',
             maxWidth: '280px',
-            background: '#F2F4F6',
-            borderRadius: '16px',
+            background: '#F1EDE4',
+            borderRadius: '12px',
             padding: '14px 18px',
             marginBottom: '40px',
             display: 'flex',
@@ -4910,14 +4908,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               width: '100%',
               maxWidth: '280px',
               border: 'none',
-              background: 'linear-gradient(135deg, #FF007F 0%, #FF60B5 100%)',
+              background: '#F0432C',
               color: '#FFFFFF',
               padding: '16px',
-              borderRadius: '16px',
+              borderRadius: '12px',
               fontSize: '15px',
               fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: '0 6px 20px rgba(255, 0, 127, 0.3)'
+              boxShadow: '0 6px 20px rgba(240, 67, 44, 0.3)'
             }}
           >
             체험 완료하고 홈으로 가기
@@ -4928,7 +4926,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       {/* 동아리 새 모집 공고 작성 모달 (기장용) */}
       {showClubRegModal && (
         <div className="calendar-success-overlay" onClick={() => setShowClubRegModal(false)} style={{ zIndex: 140, backdropFilter: 'blur(5px)' }}>
-          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
+          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '16px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'left' }}>
             <h3 style={{ fontSize: '17px', fontWeight: 800, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
               새 동아리 모집 공고 등록
             </h3>
@@ -4941,7 +4939,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   value={clubRegName}
                   onChange={(e) => setClubRegName(e.target.value)}
                   placeholder="예: ALGO, Motion 등"
-                  style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
+                  style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
                   required
                 />
               </div>
@@ -4953,7 +4951,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   value={clubRegTitle}
                   onChange={(e) => setClubRegTitle(e.target.value)}
                   placeholder="예: 2026 알고리즘 동아리 부원 모집"
-                  style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
+                  style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
                   required
                 />
               </div>
@@ -4965,7 +4963,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   onChange={(e) => setClubRegDetails(e.target.value)}
                   placeholder="동아리 소개 및 활동 목표, 선발 방식을 적어주세요."
                   rows={4}
-                  style={{ padding: '10px 12px', fontSize: '13px', border: '1px solid #E5E8EB', borderRadius: '8px', resize: 'none', outline: 'none' }}
+                  style={{ padding: '10px 12px', fontSize: '13px', border: '1px solid #E4DFD4', borderRadius: '8px', resize: 'none', outline: 'none' }}
                   required
                 />
               </div>
@@ -4977,7 +4975,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   value={clubRegTags}
                   onChange={(e) => setClubRegTags(e.target.value)}
                   placeholder="예: IT/코딩, 학술, 인기"
-                  style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E5E8EB', borderRadius: '8px', outline: 'none' }}
+                  style={{ padding: '10px 12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
                 />
               </div>
 
@@ -5011,19 +5009,19 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             maxWidth: '920px',
             height: '90vh',
             maxHeight: '680px',
-            backgroundColor: '#F8FAFC',
-            borderRadius: '24px',
+            backgroundColor: '#FAF8F3',
+            borderRadius: '16px',
             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            border: '1px solid #E2E8F0'
+            border: '1px solid #E4DFD4'
           }}>
             {/* Desktop Browser Frame Header */}
             <div style={{
               height: '44px',
               backgroundColor: '#FFFFFF',
-              borderBottom: '1px solid #E2E8F0',
+              borderBottom: '1px solid #E4DFD4',
               display: 'flex',
               alignItems: 'center',
               padding: '0 16px',
@@ -5038,7 +5036,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               </div>
               {/* Address bar */}
               <div style={{
-                backgroundColor: '#F1F5F9',
+                backgroundColor: '#F1EDE4',
                 borderRadius: '8px',
                 width: '60%',
                 height: '28px',
@@ -5058,12 +5056,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             {/* Main B2B Dashboard Content */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '24px', overflowY: 'auto' }}>
               {/* Header section with school selector */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px', borderBottom: '1px solid #E2E8F0', paddingBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px', borderBottom: '1px solid #E4DFD4', paddingBottom: '16px' }}>
                 <div style={{ textAlign: 'left' }}>
                   <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--color-indigo)', backgroundColor: 'var(--color-indigo-light)', padding: '4px 8px', borderRadius: '6px' }}>
                     B2B 우수 인재 성과 관리 솔루션
                   </span>
-                  <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '6px 0 0 0' }}>
+                  <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#171717', margin: '6px 0 0 0' }}>
                     진로지도 및 대외활동 성과 어드민 대시보드
                   </h2>
                 </div>
@@ -5073,7 +5071,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   <select
                     value={selectedSchoolB2B}
                     onChange={(e) => setSelectedSchoolB2B(e.target.value)}
-                    style={{ padding: '8px 12px', fontSize: '13px', border: '1px solid #CBD5E1', borderRadius: '8px', background: '#FFFFFF', outline: 'none', fontWeight: 700, color: '#0F172A' }}
+                    style={{ padding: '8px 12px', fontSize: '13px', border: '1px solid #D5CFC3', borderRadius: '8px', background: '#FFFFFF', outline: 'none', fontWeight: 700, color: '#171717' }}
                   >
                     <option value="하나고등학교">하나고등학교</option>
                     <option value="한국디지털미디어고등학교">한국디지털미디어고등학교</option>
@@ -5140,9 +5138,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         { title: '외부 대회 입상 실적', val: `${metrics.awards}건`, desc: '연간 누적 카운트' },
                         { title: '활동 연계 동아리수', val: `${metrics.clubs}개`, desc: '모집 기한 운영 중' }
                       ].map((card, idx) => (
-                        <div key={idx} style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <div key={idx} style={{ backgroundColor: '#FFFFFF', border: '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-tertiary)' }}>{card.title}</span>
-                          <strong style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A' }}>{card.val}</strong>
+                          <strong style={{ fontSize: '22px', fontWeight: 800, color: '#171717' }}>{card.val}</strong>
                           <span style={{ fontSize: '10.5px', color: '#059669', fontWeight: 600 }}>{card.desc}</span>
                         </div>
                       ))}
@@ -5151,8 +5149,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     {/* Middle Row: Chart & Contests */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
                       {/* SVG Bar Chart for Categories */}
-                      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                        <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#0F172A' }}>
+                      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E4DFD4', borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                        <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#171717' }}>
                           학생 대외 성과 전공 카테고리 분포
                         </h3>
                         
@@ -5171,7 +5169,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                   <span style={{ color: 'var(--text-secondary)' }}>{bar.name}</span>
                                   <span style={{ color: 'var(--text-primary)' }}>{bar.val}명 ({pct}%)</span>
                                 </div>
-                                <div style={{ width: '100%', height: '8px', backgroundColor: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ width: '100%', height: '8px', backgroundColor: '#F1EDE4', borderRadius: '4px', overflow: 'hidden' }}>
                                   <div style={{ width: `${pct}%`, height: '100%', backgroundColor: bar.color, borderRadius: '4px' }} />
                                 </div>
                               </div>
@@ -5181,13 +5179,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       </div>
 
                       {/* Active Contests Monitor */}
-                      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#0F172A' }}>
+                      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E4DFD4', borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#171717' }}>
                           실시간 학생 참가 집중 외부 대회 (Top 3)
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
                           {[
-                            { title: '넥슨 청소년 프로그래밍 챌린지 (NYPC)', count: 42, color: '#EEF2FF', border: '#C7D2FE', text: 'var(--color-indigo)' },
+                            { title: '넥슨 청소년 프로그래밍 챌린지 (NYPC)', count: 42, color: '#EAEEFF', border: '#C7D2FE', text: 'var(--color-indigo)' },
                             { title: '한국정보올림피아드 경시부문 (KOI)', count: 28, color: '#FDF2F8', border: '#FBCFE8', text: '#D946EF' },
                             { title: '제7회 기상청 달콤기후 공모전', count: 15, color: '#ECFDF5', border: '#A7F3D0', text: '#059669' }
                           ].map((item, idx) => (
@@ -5201,15 +5199,15 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
 
                     {/* Bottom Row: Detailed student performance table */}
-                    <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                      <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#0F172A' }}>
+                    <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E4DFD4', borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: '#171717' }}>
                         교내 대외 실적 및 세특 추천 항목 모니터
                       </h3>
                       
                       <div style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
                           <thead>
-                            <tr style={{ borderBottom: '1.5px solid #E2E8F0', color: 'var(--text-tertiary)', textAlign: 'left' }}>
+                            <tr style={{ borderBottom: '1.5px solid #E4DFD4', color: 'var(--text-tertiary)', textAlign: 'left' }}>
                               <th style={{ padding: '8px 12px', fontWeight: 700 }}>지원 학생</th>
                               <th style={{ padding: '8px 12px', fontWeight: 700 }}>희망 목표전공</th>
                               <th style={{ padding: '8px 12px', fontWeight: 700 }}>소속 동아리</th>
@@ -5218,7 +5216,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           </thead>
                           <tbody>
                             {metrics.table.map((row, idx) => (
-                              <tr key={idx} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                              <tr key={idx} style={{ borderBottom: '1px solid #F1EDE4' }}>
                                 <td style={{ padding: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>{row.name}</td>
                                 <td style={{ padding: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>{row.major}</td>
                                 <td style={{ padding: '12px' }}>
@@ -5226,7 +5224,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                     {row.club}
                                   </span>
                                 </td>
-                                <td style={{ padding: '12px', fontWeight: 600, color: '#334155' }}>{row.award}</td>
+                                <td style={{ padding: '12px', fontWeight: 600, color: '#3A3733' }}>{row.award}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -5236,9 +5234,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                     {/* Action and Pitch Footer */}
                     <div style={{
-                      backgroundColor: '#EEF2FF',
-                      borderRadius: '16px',
-                      border: '1px solid #CBD5E1',
+                      backgroundColor: '#EAEEFF',
+                      borderRadius: '12px',
+                      border: '1px solid #D5CFC3',
                       padding: '16px',
                       display: 'flex',
                       alignItems: 'center',
@@ -5257,14 +5255,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         }}
                         style={{
                           border: 'none',
-                          background: 'linear-gradient(135deg, var(--color-indigo) 0%, #6366F1 100%)',
+                          background: 'var(--color-indigo)',
                           color: '#FFFFFF',
                           padding: '12px 20px',
                           borderRadius: '10px',
                           fontSize: '13px',
                           fontWeight: 800,
                           cursor: 'pointer',
-                          boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)',
+                          boxShadow: '0 4px 12px rgba(20, 20, 20, 0.2)',
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px'
@@ -5309,8 +5307,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               style={{
                 width: '100%',
                 maxWidth: '340px',
-                backgroundColor: '#1E293B',
-                borderRadius: '24px',
+                backgroundColor: '#262626',
+                borderRadius: '16px',
                 boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -5337,7 +5335,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     borderRadius: '50%',
                     width: '24px',
                     height: '24px',
-                    color: '#94A3B8',
+                    color: '#8E887D',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -5355,14 +5353,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                background: '#0F172A',
+                background: '#171717',
                 position: 'relative'
               }}>
                 <div style={{
                   width: '220px',
                   height: '380px',
-                  borderRadius: '20px',
-                  background: 'linear-gradient(135deg, #FF007F 0%, #7928CA 50%, #4F46E5 100%)',
+                  borderRadius: '14px',
+                  background: '#F0432C',
                   padding: '16px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -5381,7 +5379,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     width: '120px',
                     height: '120px',
                     borderRadius: '50%',
-                    background: '#FF007F',
+                    background: '#F0432C',
                     filter: 'blur(40px)',
                     opacity: 0.5
                   }} />
@@ -5392,7 +5390,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     width: '120px',
                     height: '120px',
                     borderRadius: '50%',
-                    background: '#4F46E5',
+                    background: '#2D4BFF',
                     filter: 'blur(40px)',
                     opacity: 0.5
                   }} />
@@ -5407,7 +5405,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     background: 'rgba(255,255,255,0.15)',
                     backdropFilter: 'blur(6px)',
                     padding: '4px 10px',
-                    borderRadius: '20px',
+                    borderRadius: '14px',
                     border: '1px solid rgba(255,255,255,0.2)'
                   }}>
                     <img src={logoImg} alt="Kkeul" style={{ width: '12px', height: '12px', objectFit: 'contain' }} />
@@ -5419,7 +5417,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     width: '100%',
                     background: 'rgba(255, 255, 255, 0.1)',
                     backdropFilter: 'blur(12px)',
-                    borderRadius: '16px',
+                    borderRadius: '12px',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     padding: '20px 12px',
                     display: 'flex',
@@ -5447,13 +5445,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
 
                     <div style={{ textAlign: 'center' }}>
-                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#E2E8F0', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#E4DFD4', textTransform: 'uppercase', letterSpacing: '1px' }}>
                         Official Digital Badge
                       </span>
                       <h4 style={{ fontSize: '16px', fontWeight: 900, color: '#FFFFFF', margin: '4px 0 2px 0', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
                         {selectedBadgeToShare}
                       </h4>
-                      <p style={{ fontSize: '10.5px', color: '#CBD5E1', margin: 0, fontWeight: 500 }}>
+                      <p style={{ fontSize: '10.5px', color: '#D5CFC3', margin: 0, fontWeight: 500 }}>
                         {profile.name} ({profile.school || '하나고등학교'})
                       </p>
                     </div>
@@ -5490,7 +5488,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     </div>
                     <div style={{ textAlign: 'left' }}>
                       <div style={{ fontSize: '8.5px', fontWeight: 800, color: '#FFFFFF' }}>스캔해서 나도 시작하기</div>
-                      <div style={{ fontSize: '7.5px', color: '#CBD5E1', marginTop: '1px' }}>10대 공모전 & 팀원 매칭 플랫폼 '끌'</div>
+                      <div style={{ fontSize: '7.5px', color: '#D5CFC3', marginTop: '1px' }}>10대 공모전 & 팀원 매칭 플랫폼 '끌'</div>
                     </div>
                   </div>
                 </div>
@@ -5536,7 +5534,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   disabled={isSharingBadge}
                   style={{
                     border: 'none',
-                    background: 'linear-gradient(135deg, #FF007F 0%, #E2008B 100%)',
+                    background: '#F0432C',
                     color: '#FFFFFF',
                     padding: '14px',
                     borderRadius: '12px',
@@ -5547,7 +5545,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    boxShadow: '0 4px 15px rgba(255, 0, 127, 0.3)',
+                    boxShadow: '0 4px 15px rgba(240, 67, 44, 0.3)',
                     transition: 'all 0.2s'
                   }}
                 >

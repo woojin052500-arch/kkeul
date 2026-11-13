@@ -90,10 +90,10 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
       <div className="login-prompt story-card-modal" role="dialog" aria-modal="true" aria-labelledby="story-card-title" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 id="story-card-title">스토리 카드</h2>
-          <button type="button" onClick={onClose} aria-label="닫기" style={{ border: 'none', background: '#F2F4F6', borderRadius: '10px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={16} /></button>
+          <button type="button" onClick={onClose} aria-label="닫기" style={{ border: 'none', background: '#F1EDE4', borderRadius: '10px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={16} /></button>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', background: '#F2F4F6', borderRadius: '16px', padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', background: '#F1EDE4', borderRadius: '12px', padding: '12px' }}>
           {preview ? (
             <div style={{ position: 'relative', height: 'min(40vh, 380px)', aspectRatio: '9 / 16' }}>
               <img src={preview} alt={`${data.title} 핏 ${data.score}점 스토리 카드`} style={{ width: '100%', height: '100%', borderRadius: '12px', display: 'block' }} />
@@ -109,7 +109,7 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
 
         {note && <p role="status" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-indigo)', margin: 0 }}>{note}</p>}
 
-        <ol className="story-guide" style={{ listStyle: 'none', margin: 0, padding: '14px', background: '#F9FAFB', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <ol className="story-guide" style={{ listStyle: 'none', margin: 0, padding: '14px', background: '#FAF8F3', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
             <>아래 <strong>인스타 스토리에 공유</strong>를 누르고, 공유창에서 <strong>Instagram → 스토리</strong>를 골라요.</>,
             <>스토리 화면 위쪽 <strong>스티커 버튼</strong>을 누르고 <strong>링크</strong>를 골라요.</>,
@@ -120,7 +120,7 @@ export const StoryCardModal: React.FC<StoryCardModalProps> = ({ data, announceme
               <span>{text}</span>
             </li>
           ))}
-          <li style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#FFFFFF', border: '1px solid #E5E8EB', borderRadius: '10px', padding: '8px 10px' }}>
+          <li style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#FFFFFF', border: '1px solid #E4DFD4', borderRadius: '10px', padding: '8px 10px' }}>
             <Link2 size={14} color="var(--color-indigo)" style={{ flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0, fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link.replace('https://', '')}</span>
             <button type="button" onClick={async () => { if (!(await copyLink())) window.prompt('이 주소를 복사해 주세요', link); }} style={{ flexShrink: 0, border: 'none', background: linkCopied ? '#ECFDF5' : 'var(--color-indigo-light)', color: linkCopied ? '#059669' : 'var(--color-indigo)', fontSize: '12px', fontWeight: 800, padding: '6px 10px', borderRadius: '8px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>

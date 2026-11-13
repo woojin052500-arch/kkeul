@@ -5,7 +5,7 @@ import { GuestTeamTeaser } from './GuestTeamTeaser';
 import { InterestBar } from './InterestBar';
 import { AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
-import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Sparkles, Copy, Zap } from 'lucide-react';
+import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Copy, Zap, FileText } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { Calendar } from '@awesome-cordova-plugins/calendar';
@@ -396,7 +396,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
             <div style={{
               width: '56px',
               height: '56px',
-              borderRadius: '16px',
+              borderRadius: '12px',
               backgroundColor: '#FEE500',
               display: 'flex',
               alignItems: 'center',
@@ -429,7 +429,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 16px',
-        borderBottom: '1px solid #F2F4F6',
+        borderBottom: '1px solid #F1EDE4',
         position: 'sticky',
         top: 0,
         backgroundColor: '#FFFFFF',
@@ -480,7 +480,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                style={{ padding: '12px', border: '1px solid #E5E8EB', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
+                style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
@@ -490,7 +490,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 type="text"
                 value={editApplyUrl}
                 onChange={(e) => setEditApplyUrl(e.target.value)}
-                style={{ padding: '12px', border: '1px solid #E5E8EB', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
+                style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
@@ -500,7 +500,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 <select
                   value={editLocation}
                   onChange={(e) => setEditLocation(e.target.value)}
-                  style={{ padding: '12px', border: '1px solid #E5E8EB', borderRadius: '10px', fontSize: '14px', outline: 'none', backgroundColor: '#FFFFFF' }}
+                  style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none', backgroundColor: '#FFFFFF' }}
                 >
                   {['전국', '서울', '경기', '인천', '부산', '대구', '대전', '광주', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'].map(loc => (
                     <option key={loc} value={loc}>{loc}</option>
@@ -534,8 +534,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
                           fontSize: '12px',
                           fontWeight: 600,
                           borderRadius: '10px',
-                          border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E5E8EB',
-                          backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FAFBFC',
+                          border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
+                          backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FBF9F5',
                           color: isSelected ? 'var(--color-indigo)' : 'var(--text-secondary)',
                           cursor: 'pointer',
                           textAlign: 'center',
@@ -560,7 +560,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   step="500"
                   value={editBidAmount}
                   onChange={(e) => setEditBidAmount(Number(e.target.value))}
-                  style={{ flex: 1, padding: '12px', border: '1px solid #E5E8EB', borderRadius: '10px', fontSize: '14px', outline: 'none', fontWeight: 700 }}
+                  style={{ flex: 1, padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none', fontWeight: 700 }}
                 />
                 <span style={{ fontWeight: 700 }}>원</span>
               </div>
@@ -575,7 +575,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 value={editDetails}
                 onChange={(e) => setEditDetails(e.target.value)}
                 rows={6}
-                style={{ padding: '12px', border: '1px solid #E5E8EB', borderRadius: '10px', fontSize: '14px', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
               />
             </div>
 
@@ -622,8 +622,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                backgroundColor: '#F5F6FF',
-                borderRadius: '16px',
+                backgroundColor: '#EEF1FF',
+                borderRadius: '12px',
                 padding: '14px 18px',
                 marginBottom: '20px',
                 border: '1px dashed var(--color-indigo)'
@@ -703,11 +703,11 @@ export const DetailView: React.FC<DetailViewProps> = ({
             <div style={{
               width: '100%',
               height: '220px',
-              borderRadius: '16px',
+              borderRadius: '12px',
               overflow: 'hidden',
-              backgroundColor: '#FAFBFC',
+              backgroundColor: '#FBF9F5',
               marginBottom: '24px',
-              border: '1px solid #F2F4F6'
+              border: '1px solid #F1EDE4'
             }}>
               <img
                 src={announcement.image_url}
@@ -724,8 +724,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
               display: 'flex',
               flexDirection: 'column',
               gap: '12px',
-              backgroundColor: '#F8FAFC',
-              borderRadius: '16px',
+              backgroundColor: '#FAF8F3',
+              borderRadius: '12px',
               padding: '16px',
               marginBottom: '24px'
             }}>
@@ -738,7 +738,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 <span style={{ color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', fontWeight: 700 }}>
                   {getFormattedDate(announcement.deadline)}
                 </span>
-                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 800, padding: '1px 8px', borderRadius: '6px', color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', backgroundColor: isClosed(announcement.deadline) ? '#F2F4F6' : 'var(--color-red-light)' }}>
+                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 800, padding: '1px 8px', borderRadius: '6px', color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', backgroundColor: isClosed(announcement.deadline) ? '#F1EDE4' : 'var(--color-red-light)' }}>
                   {getDDay(announcement.deadline)}
                 </span>
               </div>
@@ -763,7 +763,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
             {/* Tab Switcher: 모집 요강 vs 합격 족보 */}
             <div style={{
               display: 'flex',
-              borderBottom: '1px solid #E5E8EB',
+              borderBottom: '1px solid #E4DFD4',
               marginBottom: '20px',
               gap: '16px'
             }}>
@@ -825,9 +825,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 {!isHostUser && !isGuest && (
                   <div style={{
                     backgroundColor: '#FFFFFF',
-                    borderRadius: '20px',
+                    borderRadius: '14px',
                     padding: '20px',
-                    border: '1px solid #E5E8EB',
+                    border: '1px solid #E4DFD4',
                     boxShadow: '0 4px 14px rgba(0,0,0,0.02)',
                     display: 'flex',
                     flexDirection: 'column',
@@ -835,9 +835,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Sparkles size={16} color="var(--color-indigo)" /> AI 세특(생기부) 핏 분석기
+                        <FileText size={16} color="var(--color-indigo)" /> AI 세특(생기부) 핏 분석기
                       </h3>
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', backgroundColor: '#F2F4F6', padding: '3px 8px', borderRadius: '6px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', backgroundColor: '#F1EDE4', padding: '3px 8px', borderRadius: '6px' }}>
                         목표: {profile?.major || '컴퓨터공학'}
                       </span>
                     </div>
@@ -897,7 +897,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                               <span style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 600 }}>생기부 세특 연계 적합도</span>
                               <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-indigo)' }}>{score}%</span>
                             </div>
-                            <div style={{ width: '100%', height: '8px', backgroundColor: '#F2F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ width: '100%', height: '8px', backgroundColor: '#F1EDE4', borderRadius: '4px', overflow: 'hidden' }}>
                               <div style={{ width: `${score}%`, height: '100%', backgroundColor: 'var(--color-indigo)', borderRadius: '4px' }} />
                             </div>
                           </div>
@@ -912,7 +912,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                           </div>
 
                           {/* Insight box */}
-                          <div style={{ backgroundColor: '#F8FAFC', borderRadius: '12px', border: '1px solid #EEF2F6', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div style={{ backgroundColor: '#FAF8F3', borderRadius: '12px', border: '1px solid #F1EDE4', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 700 }}>추천 세특 서술식 단락</span>
                               <button
@@ -924,7 +924,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                                   fontWeight: 700,
                                   padding: '4px 8px',
                                   borderRadius: '6px',
-                                  border: '1px solid #E5E8EB',
+                                  border: '1px solid #E4DFD4',
                                   cursor: 'pointer',
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -1001,9 +1001,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   return (
                     <div style={{
                       backgroundColor: '#FFFFFF',
-                      borderRadius: '20px',
+                      borderRadius: '14px',
                       padding: '20px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       boxShadow: '0 4px 14px rgba(0,0,0,0.02)',
                       display: 'flex',
                       flexDirection: 'column',
@@ -1031,7 +1031,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       </div>
 
                       {/* Key point */}
-                      <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <div style={{ borderTop: '1px solid #F1EDE4', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                           수상 선배의 합격 치트키
                         </span>
@@ -1059,7 +1059,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
         height: '84px',
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(10px)',
-        borderTop: '1px solid #E5E8EB',
+        borderTop: '1px solid #E4DFD4',
         display: 'flex',
         alignItems: 'center',
         padding: '0 16px',
@@ -1129,7 +1129,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               padding: '0 12px',
               borderRadius: '10px',
               border: '1px solid var(--color-indigo)',
-              backgroundColor: '#F5F6FF',
+              backgroundColor: '#EEF1FF',
               color: 'var(--color-indigo)',
               fontWeight: 800,
               fontSize: '12px',
@@ -1138,7 +1138,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               justifyContent: 'center',
               gap: '3px',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(79, 70, 229, 0.08)',
+              boxShadow: '0 2px 6px rgba(20, 20, 20, 0.08)',
               flexShrink: 0
             }}
           >
@@ -1178,12 +1178,12 @@ export const DetailView: React.FC<DetailViewProps> = ({
       {/* Toss-Style Redirect Confirmation Modal */}
       {showRedirectModal && (
         <div className="calendar-success-overlay" onClick={() => setShowRedirectModal(false)} style={{ zIndex: 120, backdropFilter: 'blur(5px)' }}>
-          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '320px', padding: '28px 24px', borderRadius: '24px', boxShadow: '0 12px 40px rgba(0,0,0,0.12)' }}>
+          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '320px', padding: '28px 24px', borderRadius: '16px', boxShadow: '0 12px 40px rgba(0,0,0,0.12)' }}>
             <div style={{
               width: '56px',
               height: '56px',
-              borderRadius: '18px',
-              backgroundColor: '#F2F4F6',
+              borderRadius: '12px',
+              backgroundColor: '#F1EDE4',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -1201,12 +1201,12 @@ export const DetailView: React.FC<DetailViewProps> = ({
             {/* Domain Info Card */}
             <div style={{
               width: '100%',
-              backgroundColor: '#FAFBFC',
+              backgroundColor: '#FBF9F5',
               borderRadius: '14px',
               padding: '12px 14px',
               fontSize: '12px',
               color: 'var(--text-secondary)',
-              border: '1px solid #F2F4F6',
+              border: '1px solid #F1EDE4',
               marginBottom: '24px',
               textAlign: 'left',
               wordBreak: 'break-all',
@@ -1244,7 +1244,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
       {/* 1초 서류 자동 완성 모달 시트 */}
       {show1ClickModal && (
         <div className="calendar-success-overlay" onClick={isFillingForm ? undefined : () => { setShow1ClickModal(false); setSubmitSuccess(false); }} style={{ zIndex: 130, backdropFilter: 'blur(5px)' }}>
-          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="calendar-success-modal animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ width: '360px', padding: '24px', borderRadius: '16px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', maxHeight: '90vh', overflowY: 'auto' }}>
             {submitSuccess ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '10px 0' }}>
                 <div style={{
@@ -1282,7 +1282,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 <div style={{
                   width: '40px',
                   height: '40px',
-                  border: '3px solid #E5E8EB',
+                  border: '3px solid #E4DFD4',
                   borderTop: '3px solid var(--color-indigo)',
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite'
@@ -1292,7 +1292,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                     <span>{fillingStepMessage}</span>
                     <span>{applyProgress}%</span>
                   </div>
-                  <div style={{ width: '100%', height: '6px', backgroundColor: '#E5E8EB', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '6px', backgroundColor: '#E4DFD4', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{ width: `${applyProgress}%`, height: '100%', backgroundColor: 'var(--color-indigo)', borderRadius: '3px', transition: 'width 0.1s linear' }} />
                   </div>
                 </div>
@@ -1314,36 +1314,36 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
                 {/* Auto-filled details panel */}
                 <div style={{
-                  backgroundColor: '#F8FAFC',
+                  backgroundColor: '#FAF8F3',
                   borderRadius: '14px',
                   padding: '14px',
-                  border: '1px solid #E5E8EB',
+                  border: '1px solid #E4DFD4',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px',
                   fontSize: '12.5px'
                 }}>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #EEF2F6', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>이름</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{profile?.name || '홍길동'}</span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #EEF2F6', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>소속 학적</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
                       {profile?.school ? `${profile.school} (${profile.grade || '고등2'})` : `고등학교 (${profile?.grade || '2학년'})`}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #EEF2F6', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>연락처</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{profile?.contact || profile?.email || '미입력'}</span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #EEF2F6', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>매칭 역량</span>
                     <span style={{ color: 'var(--color-indigo)', fontWeight: 700 }}>
                       Figma, VS Code, Git
                     </span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #EEF2F6', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>대표 수상경력</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
                       교내 정보올림피아드 (최우수상)
@@ -1359,7 +1359,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       backgroundColor: '#FFFFFF',
                       padding: '8px',
                       borderRadius: '6px',
-                      border: '1px solid #E5E8EB',
+                      border: '1px solid #E4DFD4',
                       fontStyle: 'italic'
                     }}>
                       "저는 기획/개발/디자인 스택을 다룰 수 있는 청소년입니다. 교내 대회 등에서 수상하며 협업과 문제 해결 능력을 검증받았으며, 향후 프로젝트에서 성과를 내기 위해 지원합니다."
@@ -1384,8 +1384,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       borderRadius: '10px',
                       fontWeight: 800,
                       fontSize: '13px',
-                      background: 'linear-gradient(135deg, var(--color-indigo) 0%, #6366F1 100%)',
-                      boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)'
+                      background: 'var(--color-indigo)',
+                      boxShadow: '0 4px 14px rgba(20, 20, 20, 0.3)'
                     }}
                   >
                     서류 자동 제출
