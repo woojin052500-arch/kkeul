@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Announcement, Profile } from '../types';
 import { TeamBoard } from './TeamBoard';
 import { GuestTeamTeaser } from './GuestTeamTeaser';
+import { InterestBar } from './InterestBar';
 import { AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
 import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Sparkles, Copy, Zap } from 'lucide-react';
@@ -947,6 +948,14 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
                 {/* 대회 팀원 매칭 (Team-building) */}
                 {!isHostUser && <AdSlot placement="detail" style={{ margin: '4px 0' }} />}
+                {!isHostUser && (
+                  <InterestBar
+                    key={announcement.id}
+                    announcementId={announcement.id}
+                    isGuest={isGuest}
+                    onRequireLogin={(reason) => onRequireLogin?.(reason)}
+                  />
+                )}
                 {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={focusPostId} />}
                 {!isHostUser && isGuest && <GuestTeamTeaser announcementId={announcement.id} onRequireLogin={(reason) => onRequireLogin?.(reason)} />}
               </div>
