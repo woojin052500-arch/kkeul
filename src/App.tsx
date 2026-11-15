@@ -776,7 +776,7 @@ function App() {
         }}>
           <img 
             src={logoImg} 
-            alt="끌(Kkeul) 로고" 
+            alt="끌 로고" 
             className="animate-scale-in" 
             style={{
               height: '110px',
@@ -795,7 +795,7 @@ function App() {
       {pushNotification && (
         <div className="custom-push-banner" onClick={() => setPushNotification(null)}>
           <div className="push-logo" style={{ background: '#FFFFFF', border: '1px solid #E4DFD4', padding: '2px', overflow: 'hidden' }}>
-            <img src={logoImg} alt="끌(Kkeul)" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src={logoImg} alt="끌" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <div className="push-content">
             <div className="push-header">

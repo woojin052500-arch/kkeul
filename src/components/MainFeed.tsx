@@ -121,9 +121,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const [isNeonThemeUnlocked] = useState<boolean>(() => {
     return localStorage.getItem('kkeul_neon_theme') === 'true';
   });
-  const [isPremiumUnlocked] = useState<boolean>(() => {
-    return localStorage.getItem('kkeul_premium_unlocked') === 'true';
-  });
 
   // 시뮬레이션 가이드 관련 상태
   const [showSimulation, setShowSimulation] = useState<boolean>(false); // 튜토리얼 자동 표시 비활성화
@@ -272,9 +269,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
     onTriggerMockPush(
       '동아리 지원 완료',
-      `${club.school} '${club.club_name}' 동아리에 Kkeul 프로필로 1초 지원 완료! 서류가 정상 검토 중입니다.`
+      `${club.school} '${club.club_name}' 동아리에 끌 프로필로 지원 완료! 서류가 정상 검토 중입니다.`
     );
-    await showAlert(`'${club.club_name}' 동아리에 Kkeul 프로필로 즉시 지원되었습니다! (+10 XP 획득)`);
+    await showAlert(`'${club.club_name}' 동아리에 끌 프로필로 지원했어요! (+10 XP 획득)`);
   };
 
   // 동아리 모집 공고 등록 처리 (기장)
@@ -678,18 +675,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   }, [profile]);
 
   // 추천 근거 문구 생성기
-  const getRecommendationReason = useCallback((ann: Announcement) => {
-    // 3. 관심 카테고리 매칭
-
-    // 3. 관심 카테고리 매칭
-    const annCategories = ann.category ? ann.category.split(',').map(s => s.trim()) : [];
-    const matchesInterest = (profile.interests || []).some(interest => annCategories.includes(interest));
-    if (matchesInterest) {
-      return `내 관심사(${ann.category})에 쏙 맞는 공고예요!`;
-    }
-
-    return `진로 역량을 든든하게 채우는 맞춤 공고예요!`;
-  }, [profile]);
 
   useEffect(() => {
     if (!profile || profile.role === 'host') {
@@ -897,10 +882,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     return { currentYear: y, currentMonth: m + 1, firstDayOffset: firstDay, daysInMonth: days };
   }, []);
 
-  // Gamification Level calculations
-  const userLevel = Math.floor((profile.xp || 0) / 100) + 1;
-  const currentLevelXP = (profile.xp || 0) % 100;
-  const xpNeeded = 100;
 
   // Handle Host payment submit
   const handleHostPayment = async () => {
@@ -1001,7 +982,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0, fontWeight: 500 }}>
-                  {isGuest ? '끌 둘러보는 중' : `안녕하세요, ${profile.name}님`}
+                  {isGuest ? '끌 둘러보는 중' : `${profile.name}님, 반가워요`}
                 </p>
                 {isGuest && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1039,8 +1020,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         transition: 'all 0.2s'
                       }}
                     >
-                      <RefreshCw size={10} />
-                      가이드
+                      <RefreshCw size={12} />
                     </button>
                     {/* 뷰 모드 토글 스위치 */}
                     <div style={{
@@ -1065,7 +1045,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           transition: 'all 0.15s'
                         }}
                       >
-                        스와이프 매칭
+                        스와이프
                       </button>
                       <button
                         onClick={() => setViewMode('list')}
@@ -1082,7 +1062,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           transition: 'all 0.15s'
                         }}
                       >
-                        리스트 뷰
+                        리스트
                       </button>
                     </div>
                   </div>
@@ -1104,13 +1084,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               </h1>
             ) : (
             <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>
-                오늘 <span style={{ color: 'var(--color-indigo)' }}>{studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').length}개</span>의 기회가<br />
-                매칭되었습니다.
+                지금 볼 만한 공고<br />
+                <span style={{ color: 'var(--color-indigo)' }}>{studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').length}개</span>가 있어요.
               </h1>
             )}
 
               {/* Toss-Style Premium Curation Panel */}
-              {!isGuest && (!showSimulation || simulationStep === 1) && (
+              {!isGuest && showSimulation && simulationStep === 1 && (
                 <div 
                   id="guide-step-1"
                   className={`toss-card-spring ${showSimulation && simulationStep === 1 ? 'guide-highlight' : ''}`}
@@ -1137,13 +1117,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Award size={14} color="var(--color-indigo)" />
-                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-indigo)', letterSpacing: '-0.2px' }}>끌의 맞춤 큐레이션 가이드</span>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-indigo)', letterSpacing: '-0.2px' }}>관심 분야 맞춤</span>
                     {isAiLoading ? (
                       <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <RefreshCw size={10} className="animate-spin" /> 로딩 중...
                       </span>
                     ) : (
-                      <span style={{ fontSize: '10px', color: 'var(--color-indigo)', fontWeight: 700 }}>● 실시간 동기화 완료</span>
+                      <span style={{ fontSize: '10px', color: 'var(--color-indigo)', fontWeight: 700 }}></span>
                     )}
                   </div>
                   <p style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0, textAlign: 'left', position: 'relative', zIndex: 1 }}>
@@ -1160,7 +1140,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '-4px', padding: showSimulation && simulationStep === 3 ? '12px 16px' : '0', borderRadius: showSimulation && simulationStep === 3 ? '16px' : '0', backgroundColor: showSimulation && simulationStep === 3 ? '#FFFFFF' : 'transparent' }}
               >
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-                  이번 주 {profile.location} 고등학생 필수 참여 공고
+                  {profile.location}에서 열리는 공고
                 </h3>
                 <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar h-scroll-desktop">
                   {announcements
@@ -1379,21 +1359,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 </span>
                               </div>
 
-                              {/* 매칭 추천 사유 문구 */}
-                              <div style={{
-                                fontSize: '11px',
-                                color: 'var(--color-indigo)',
-                                backgroundColor: 'rgba(20, 20, 20, 0.05)',
-                                padding: '5px 10px',
-                                borderRadius: '8px',
-                                fontWeight: 700,
-                                textAlign: 'left',
-                                marginTop: '12px',
-                                display: 'inline-block',
-                                width: 'fit-content'
-                              }}>
-                                {getRecommendationReason(ann)}
-                              </div>
 
                               {/* 카드 메인 본문 */}
                               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px', textAlign: 'left' }}>
@@ -1435,7 +1400,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                     title="인스타/카톡으로 공유하고 뱃지 받기"
                                   >
                                     <Share2 size={12} />
-                                    너한테 딱이다!
+                                    공유
                                   </button>
 
                                   {showSimulation && simulationStep === 5 ? (
@@ -1633,32 +1598,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             {/* VIEW MODE 2: 리스트 뷰 모드 및 기존 컨텐츠 */}
             {viewMode === 'list' && (
               <>
-                {!isGuest && (<>
-                {/* Gamification Stats Card */}
-                <div style={{
-                  background: 'var(--color-indigo)',
-                  borderRadius: '14px',
-                  padding: '20px',
-                  color: 'white',
-                  boxShadow: '0 8px 24px rgba(20, 20, 20, 0.15)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600, opacity: 0.9 }}>기회 획득 레벨</span>
-                    <span style={{ fontSize: '18px', fontWeight: 800 }}>Lv.{userLevel}</span>
-                  </div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, marginBottom: '6px' }}>{profile.xp} XP</div>
-                  
-                  {/* XP Progress Bar */}
-                  <div style={{ width: '100%', height: '8px', backgroundColor: 'rgba(255,255,255,0.25)', borderRadius: '4px', overflow: 'hidden', marginBottom: '6px' }}>
-                    <div style={{ width: `${(currentLevelXP / xpNeeded) * 100}%`, height: '100%', backgroundColor: '#FFFFFF', borderRadius: '4px', transition: 'width 0.4s ease' }} />
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', opacity: 0.8 }}>
-                    <span>다음 레벨까지 {xpNeeded - currentLevelXP} XP 필요</span>
-                    <span>{currentLevelXP}/{xpNeeded}</span>
-                  </div>
-                </div>
-
-                </>)}
                 {/* Horizontal Category Tag Filters */}
                 <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar h-scroll-desktop">
                   {categories.map((cat) => {
@@ -1690,67 +1629,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
 
                 {/* Announcements Grid */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {!isGuest && (<>
-                  {/* 비공개 프리미엄 공고를 리스트 최상단/하단에 노출하여 초대 가입 욕구 촉진 */}
-                  <div
-                    onClick={isPremiumUnlocked ? () => onSelectAnnouncement(premiumLockedAnnouncement) : undefined}
-                    className="premium-locked-card"
-                    style={{ position: 'relative' }}
-                  >
-                    {!isPremiumUnlocked && (
-                      <div className="premium-locked-overlay">
-                        <div className="lock-visual-badge">
-                          <Lock size={22} />
-                        </div>
-                        <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
-                          비공개 고급 멘토링 공고 잠김
-                        </h4>
-                        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0, padding: '0 16px' }}>
-                          친구 초대 1명 완료 시 락이 해제되어 내용을 열람할 수 있습니다.
-                        </p>
-                      </div>
-                    )}
-                    <div
-                      style={{
-                        backgroundColor: '#FFF1EC',
-                        borderRadius: '12px',
-                        padding: '20px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                        border: '2px solid #F0432C',
-                        boxShadow: '0 6px 20px rgba(240, 67, 44, 0.08)'
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{
-                          color: '#FFFFFF',
-                          background: '#F0432C',
-                          fontSize: '11px',
-                          fontWeight: 800,
-                          padding: '4px 10px',
-                          borderRadius: '30px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          <Lock size={11} /> 프리미엄 비공개
-                        </span>
-                        <span style={{ fontSize: '11px', color: '#F0432C', fontWeight: 700 }}>
-                          {getDDay(premiumLockedAnnouncement.deadline)}
-                        </span>
-                      </div>
-                      <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#171717' }}>
-                        {premiumLockedAnnouncement.title}
-                      </h3>
-                      <div style={{ display: 'flex', gap: '12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-                        <span>{premiumLockedAnnouncement.host}</span>
-                        <span>•</span>
-                        <span>{premiumLockedAnnouncement.location}</span>
-                      </div>
-                    </div>
-                  </div>
-                  </>)}
 
                   {studentMatchedAnnouncements
                     .filter(ann => ann.id !== 'ann-premium-locked') // 일반 리스트에서는 프리미엄 고정 락 카드는 하단에 별도 노출했으므로 중복 제거
@@ -1870,22 +1748,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             </div>
 
                             {!isGuest && (<>
-                            {/* 매칭 추천 사유 문구 */}
-                            <div style={{
-                              fontSize: '11.5px',
-                              color: 'var(--color-indigo)',
-                              backgroundColor: 'rgba(20, 20, 20, 0.05)',
-                              padding: '5px 10px',
-                              borderRadius: '8px',
-                              fontWeight: 700,
-                              textAlign: 'left',
-                              display: 'inline-block',
-                              width: 'fit-content',
-                              marginTop: '4px',
-                              marginBottom: '4px'
-                            }}>
-                              {getRecommendationReason(ann)}
-                            </div>
                             </>)}
 
                             <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35 }}>
@@ -2066,8 +1928,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         {activeTab === 'bookmarks' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내가 찜한 기회</h1>
-              <p>마감 시간이 촉박할 때 족집게 리마인드 푸시가 날아갑니다.</p>
+              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>찜한 공고</h1>
+              <p>찜한 공고와 저장한 구인글을 모아 봐요.</p>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -2145,8 +2007,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 })
               ) : (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-tertiary)' }}>
-                  아직 찜한 기회가 없어요.<br />
-                  매칭 피드에서 마음에 드는 기회에 별표를 눌러보세요!
+                  아직 찜한 공고가 없어요.<br />
+                  마음에 드는 공고에 별표를 눌러 보세요.
                 </div>
               )}
             </div>
@@ -2159,9 +2021,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         {activeTab === 'club' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
             <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>교내 동아리 리크루팅 SaaS</h1>
+              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>우리 학교 동아리</h1>
               <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-secondary)' }}>
-                내 학교인 <strong style={{ color: 'var(--color-indigo)' }}>{profile.school || '하나고등학교'}</strong>의 동아리 리스트를 조회하고 기장과 매칭됩니다.
+                <strong style={{ color: 'var(--color-indigo)' }}>{profile.school || '우리 학교'}</strong> 동아리 모집을 보고 바로 지원해요.
               </p>
             </div>
 
@@ -2210,7 +2072,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>모집 중인 동아리 ({clubAnnouncements.length})</h3>
-                  <span style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>내 Kkeul 프로필로 즉시 접수 가능</span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>내 끌 프로필로 바로 지원 가능</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -2280,7 +2142,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             }}
                           >
                             {hasApplied ? <Check size={14} /> : <Zap size={14} />}
-                            {hasApplied ? 'Kkeul 프로필로 지원 완료' : 'Kkeul 프로필로 1초 지원하기'}
+                            {hasApplied ? '지원 완료' : '끌 프로필로 지원하기'}
                           </button>
                           {myApp && (
                             <div
@@ -2565,10 +2427,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                  <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내 정보 및 스펙</h1>
+                  <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>내 정보</h1>
                   {onOpenAdmin && <button type="button" className="admin-entry" onClick={onOpenAdmin}>관리자</button>}
                 </div>
-                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)' }}>역량 진단 분석과 포트폴리오를 관리합니다.</p>
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)' }}>프로필과 활동 기록을 관리해요.</p>
               </div>
 
               {/* Sub-tab Navigation */}
@@ -2728,7 +2590,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                             const result = await Contacts.getContacts({
                               projection: { name: true, phones: true }
                             });
-                            await showAlert(`연락처 ${result.contacts.length}개를 성공적으로 불러왔습니다! Kkeul 친구 매칭을 시작합니다.`);
+                            await showAlert(`연락처 ${result.contacts.length}개를 성공적으로 불러왔습니다! 끌 친구 매칭을 시작합니다.`);
                           } else {
                             await showAlert('연락처 접근 권한이 필요합니다.');
                           }
@@ -2756,7 +2618,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       cursor: 'pointer',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                     }}>
-                    <Phone size={18} color="#2D4BFF" /> 연락처로 Kkeul 친구 찾기
+                    <Phone size={18} color="#2D4BFF" /> 연락처로 끌 친구 찾기
                   </button>
 
                   <div style={{ width: '100%', height: '1px', backgroundColor: '#E4DFD4', margin: '8px 0' }}></div>
@@ -2777,7 +2639,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '20px', border: '1px solid #E4DFD4', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                             <span style={{ fontSize: '11px', fontWeight: 700, color: '#2D4BFF', backgroundColor: '#E8F3FF', padding: '2px 6px', borderRadius: '4px' }}>STEP 1</span>
-                            <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#171717' }}>AI 역량 진단 완료</h4>
+                            <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#171717' }}>역량 진단</h4>
                           </div>
                           
 
@@ -2935,7 +2797,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                         try {
                           await Share.share({
                             title: '내 진로 로드맵 공유',
-                            text: `[Kkeul] ${profile.name}님의 인터랙티브 진로 로드맵과 스펙을 확인해보세요! #Kkeul #진로로드맵`,
+                            text: `[끌] ${profile.name}님의 프로필과 활동 기록을 확인해보세요! #Kkeul #진로로드맵`,
                             url: 'https://kkeul.telosix.co.kr' + '/p/' + profile.id.split('-')[0],
                             dialogTitle: '로드맵 공유하기'
                           });
@@ -2950,7 +2812,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                           if (navigator.share) {
                             await navigator.share({
                               title: '내 진로 로드맵 공유',
-                              text: `[Kkeul] ${profile.name}님의 인터랙티브 진로 로드맵과 스펙을 확인해보세요! #Kkeul #진로로드맵`,
+                              text: `[끌] ${profile.name}님의 프로필과 활동 기록을 확인해보세요! #Kkeul #진로로드맵`,
                               url: 'https://kkeul.telosix.co.kr' + '/p/' + profile.id.split('-')[0],
                             });
                           } else {
@@ -3240,7 +3102,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                   <span style={{ fontSize: '12px', fontWeight: 600, color: '#2D4BFF', background: 'rgba(49,130,246,0.1)', borderRadius: '6px', padding: '4px 8px' }}>Kkeul 개발 기관</span>
                 </div>
               </div>
-              <p style={{ fontSize: '14px', color: '#55504A', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌(Kkeul)을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
+              <p style={{ fontSize: '14px', color: '#55504A', margin: '0 0 16px 0', lineHeight: 1.5, letterSpacing: '-0.3px' }}>끌을 기획·개발한 청소년 주도 교육 기술 연구소입니다. 청소년이 더 나은 기회를 발견하고 성장할 수 있는 플랫폼을 만들어 갑니다.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <a href="https://telosix.co.kr" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#55504A', fontSize: '14px', fontWeight: 600, textDecoration: 'none', letterSpacing: '-0.3px' }}>
                   <span style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#F1EDE4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}><Globe size={13} /></span>
@@ -4309,7 +4171,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           <button type="button" onClick={() => setOpenLegalDoc('policy')} style={{ border: 'none', background: 'none', padding: 0, font: 'inherit', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>개인정보 처리방침</button>
         </div>
         <div style={{ marginTop: '4px' }}>
-          기회가 알아서 끌려오는 곳, 끌 (Kkeul) © 2026 Telosix. All rights reserved.
+          기회가 알아서 끌려오는 곳, 끌 © 2026 Telosix. All rights reserved.
         </div>
       </footer>
 
@@ -4729,7 +4591,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               <CalendarIcon size={22} strokeWidth={1.75} />
             </div>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
-              '끌(Kkeul)'이 달력에<br />접근하려고 합니다
+              '끌'이 달력에<br />접근하려고 합니다
             </h3>
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '24px' }}>
               대외활동 마감 일정 자동 기록 및 리마인더 푸시 예약을 위해 휴대폰 기본 캘린더 읽기/쓰기 권한 허용이 필요합니다.
@@ -4813,7 +4675,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             가이드 투어 완료
           </h2>
           <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '32px' }}>
-            축하합니다. 끌(Kkeul)의 모든 핵심 기능을 마스터하셨습니다.<br />
+            축하합니다. 끌의 모든 핵심 기능을 마스터하셨습니다.<br />
             보상으로 <strong>+100 XP</strong> 경험치와<br />
             <strong>&apos;끌 마스터&apos;</strong> 한정 업적 배지가 지급되었습니다.
           </p>
@@ -5185,7 +5047,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     }}>
                       <div style={{ flex: 1, minWidth: '240px' }}>
                         <span style={{ fontSize: '12.5px', color: '#1E1B4B', lineHeight: 1.5, fontWeight: 700 }}>
-                          <strong>진로지도 선생님을 위한 원클릭 보고서 추출:</strong> 끌(Kkeul) B2B 정식 계약 학교는 학생들이 제출한 실적과 AI 자동 요약 세특 문장을 한 번에 모아 생활기록부 기재 양식 엑셀 파일로 바로 출력할 수 있습니다.
+                          <strong>진로지도 선생님을 위한 원클릭 보고서 추출:</strong> 끌 B2B 정식 계약 학교는 학생들이 제출한 실적과 AI 자동 요약 세특 문장을 한 번에 모아 생활기록부 기재 양식 엑셀 파일로 바로 출력할 수 있습니다.
                         </span>
                       </div>
                       <button

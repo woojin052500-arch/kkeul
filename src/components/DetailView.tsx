@@ -55,6 +55,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
   }, [focusTeamBoard, announcement.id]);
 
   const [showCheckmark, setShowCheckmark] = useState<boolean>(false);
+  // 이미지를 못 불러온 공고 ID (다른 공고로 바뀌면 다시 시도)
+  const [posterFailedId, setPosterFailedId] = useState<string | null>(null);
+  const posterFailed = posterFailedId === announcement.id;
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
   const [showRedirectModal, setShowRedirectModal] = useState<boolean>(false);
   const [xpParticles, setXpParticles] = useState<{ id: number; x: number; y: number; text: string }[]>([]);
@@ -72,7 +75,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
   const startAutoApply = () => {
     if (isGuest) {
-      onRequireLogin?.('Kkeul 프로필로 지원하려면 먼저 가입해 주세요.');
+      onRequireLogin?.('끌 프로필로 지원하려면 먼저 가입해 주세요.');
       return;
     }
     setIsFillingForm(true);
@@ -279,7 +282,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
     const deadlineText = announcement.deadline
       ? `${new Date(announcement.deadline).toLocaleDateString()}까지`
       : '상세 정보 참조';
-    const shareText = `[끌(Kkeul) 기회 공유] ${announcement.title}\n마감: ${deadlineText}`;
+    const shareText = `[끌 기회 공유] ${announcement.title}\n마감: ${deadlineText}`;
     const shareUrl = announcement.apply_url || window.location.href;
 
     try {
@@ -330,7 +333,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
     const deadlineText = announcement.deadline
       ? `${new Date(announcement.deadline).toLocaleDateString()}까지`
       : '상세 정보 참조';
-    const textToCopy = `[끌(Kkeul) 기회 공유] ${announcement.title}\n마감: ${deadlineText}\n바로보기: ${announcement.apply_url || ''}`;
+    const textToCopy = `[끌 기회 공유] ${announcement.title}\n마감: ${deadlineText}\n바로보기: ${announcement.apply_url || ''}`;
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(textToCopy)
@@ -699,25 +702,25 @@ export const DetailView: React.FC<DetailViewProps> = ({
               </h1>
             </div>
 
-            {/* Poster Image */}
-            <div style={{
-              width: '100%',
-              height: '220px',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              backgroundColor: '#FBF9F5',
-              marginBottom: '24px',
-              border: '1px solid #F1EDE4'
-            }}>
-              <img
-                src={announcement.image_url}
-                alt={announcement.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=600&auto=format&fit=crop';
-                }}
-              />
-            </div>
+            {/* 포스터: 이미지가 없거나 못 불러오면 자리를 접는다 */}
+            {announcement.image_url && !posterFailed && (
+              <div style={{
+                width: '100%',
+                height: '220px',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                backgroundColor: '#FBF9F5',
+                marginBottom: '24px',
+                border: '1px solid #F1EDE4'
+              }}>
+                <img
+                  src={announcement.image_url}
+                  alt={announcement.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={() => setPosterFailedId(announcement.id)}
+                />
+              </div>
+            )}
 
             {/* Info Grid */}
             <div style={{
@@ -800,7 +803,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   gap: '4px'
                 }}
               >
-                Kkeul 합격 족보
+                끌 합격 족보
               </button>
             </div>
 
@@ -835,7 +838,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <FileText size={16} color="var(--color-indigo)" /> AI 세특(생기부) 핏 분석기
+                        <FileText size={16} color="var(--color-indigo)" /> 세특(생기부) 연계 분석
                       </h3>
                       <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', backgroundColor: '#F1EDE4', padding: '3px 8px', borderRadius: '6px' }}>
                         목표: {profile?.major || '컴퓨터공학'}
@@ -1115,7 +1118,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
           <button
             onClick={() => {
               if (isGuest) {
-                onRequireLogin?.('Kkeul 프로필로 지원하려면 먼저 가입해 주세요.');
+                onRequireLogin?.('끌 프로필로 지원하려면 먼저 가입해 주세요.');
                 return;
               }
               setShow1ClickModal(true);
@@ -1142,7 +1145,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               flexShrink: 0
             }}
           >
-            Kkeul 프로필로 지원
+            끌 프로필로 지원
           </button>
         )}
 
