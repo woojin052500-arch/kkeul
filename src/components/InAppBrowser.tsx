@@ -85,7 +85,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
               <h2 style={{ color: 'var(--text-primary)', fontWeight: 800 }}>지원서 제출 완료!</h2>
               <p style={{ color: 'var(--text-secondary)', maxWidth: '300px' }}>
                 축하합니다! Telosix 시스템을 통해 공식 접수 사이트로 지원서가 접수되었습니다.<br />
-                잠시 후 끌(Kkeul) 메인 화면으로 돌아갑니다.
+                잠시 후 끌 메인 화면으로 돌아갑니다.
               </p>
             </div>
           ) : (
@@ -140,7 +140,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
                     value={`${userGrade} (${userLocation} 거주)`}
                     style={{ padding: '12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', backgroundColor: '#FAF8F3', color: 'var(--text-secondary)' }}
                   />
-                  <p style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>끌(Kkeul) 프로필 정보로 자동 동기화되었습니다.</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>끌 프로필 정보로 자동 동기화되었습니다.</p>
                 </div>
 
                 {/* Reason */}

@@ -13,7 +13,7 @@ export const PremiumLogo: React.FC<PremiumLogoProps> = ({ size = 'md' }) => {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <img 
         src={logoImg} 
-        alt="끌(Kkeul) 로고" 
+        alt="끌 로고" 
         style={{ 
           height: logoHeight, 
           width: 'auto',

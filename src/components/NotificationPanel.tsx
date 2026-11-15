@@ -30,7 +30,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       setPermissionGranted(true);
-      onTriggerPush('알림 승인 완료', '이제 끌(Kkeul)에서 실시간으로 마감 알림을 보내드릴게요!');
+      onTriggerPush('알림 승인 완료', '이제 끌에서 실시간으로 마감 알림을 보내드릴게요!');
     }
   };
 
@@ -189,7 +189,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
           알고 계셨나요?
         </h4>
         <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-          끌(Kkeul)의 족집게 리마인드 푸시를 통해 공고 마감을 확인하고 외부 접수 사이트에 지원하면 최종 마감 누락 확률이 87%나 줄어듭니다!
+          끌 알림으로 공고 마감을 확인하고 외부 접수 사이트에 지원하면 최종 마감 누락 확률이 87%나 줄어듭니다!
         </p>
       </div>
 

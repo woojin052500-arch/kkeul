@@ -358,10 +358,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
             <div style={{ textAlign: 'center' }}>
               <div style={{ marginBottom: '20px' }}><PremiumLogo size="lg" /></div>
               <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '12px' }}>
-                당신의 잠재력,<br />끝까지 이끌어내다
+                대회 같이 나갈 팀원,<br />끌에서 찾아요
               </h1>
               <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
-                Kkeul(끌)에서 새로운 성장의 기회를 만나보세요.
+                청소년 공모전·대회를 보고, 팀원을 구하고, 생기부까지 챙겨요.
               </p>
             </div>
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>
