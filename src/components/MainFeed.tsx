@@ -26,6 +26,7 @@ import { getDDay, isClosed } from '../utils/dday';
 import { SchoolPicker } from './SchoolPicker';
 import { SavedTeamPosts } from './SavedTeamPosts';
 import { FitFinder } from './FitFinder';
+import { ReferralCard } from './ReferralCard';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -117,11 +118,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const [sessionSwipes, setSessionSwipes] = useState<number>(0);
 
   // 친구 초대 및 추천 가입 게이미피케이션 상태
-  const [invitationCode, setInvitationCode] = useState<string>('');
-  const [isNeonThemeUnlocked, setIsNeonThemeUnlocked] = useState<boolean>(() => {
+  const [isNeonThemeUnlocked] = useState<boolean>(() => {
     return localStorage.getItem('kkeul_neon_theme') === 'true';
   });
-  const [isPremiumUnlocked, setIsPremiumUnlocked] = useState<boolean>(() => {
+  const [isPremiumUnlocked] = useState<boolean>(() => {
     return localStorage.getItem('kkeul_premium_unlocked') === 'true';
   });
 
@@ -658,27 +658,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
     }
   };
 
-  // 딥링크 추천 코드 입력 및 잠금해제 시뮬레이터 (게이미피케이션)
-  const handleApplyReferral = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!invitationCode.trim()) return;
-
-    // 모의 딥링크 가입 및 초대장 매칭 시뮬레이터 작동
-    localStorage.setItem('kkeul_neon_theme', 'true');
-    localStorage.setItem('kkeul_premium_unlocked', 'true');
-    setIsNeonThemeUnlocked(true);
-    setIsPremiumUnlocked(true);
-
-    // 특별 배지 "인싸의 탄생" 및 100XP 보상 지급
-    const updatedBadges = profile.badges.includes('인싸의 탄생') ? profile.badges : [...profile.badges, '인싸의 탄생'];
-    db.saveProfile({
-      ...profile,
-      xp: profile.xp + 100,
-      badges: updatedBadges
-    }).then(() => {
-      onTriggerMockPush('초대 혜택 적용 완료', '추천인 코드 매칭이 완료되었습니다. 100 XP 적립 및 네온 핑크 스와이프 테마가 활성화되었습니다.');
-    });
-  };
 
   // 스마트 역량 매칭 큐레이션 및 추천 이유 로직
   const [matchingRecommendation, setMatchingRecommendation] = useState<string>('');
@@ -2625,6 +2604,9 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               </div>
 
                             {/* SUBTAB 1: PORTFOLIO */}
+              {/* 추천인 코드: 내 정보 첫 화면에서 바로 보이게 */}
+              {profileSubTab === 'portfolio' && <ReferralCard onXpChange={(xp) => onUpdateProfile({ ...profile, xp })} />}
+
               {profileSubTab === 'portfolio' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '20px' }}>
                   
@@ -3185,61 +3167,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       );
                     })}
                   </div>
-                </div>
-
-                {/* Gamification referral loop */}
-                <div style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '14px',
-                  border: '1px solid #E4DFD4',
-                  padding: '18px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Sparkles size={16} style={{ color: '#F0432C' }} />
-                    <span style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      친구 초대하고 특별 혜택 언락하기
-                    </span>
-                  </div>
-                  <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                    공유한 링크를 타고 친구가 가입하면 <strong>인싸의 탄생 뱃지</strong>, <strong>한정판 네온 핑크 스와이프 테마</strong>, 그리고 <strong>대기업 특별 멘토링 비공개 공고</strong> 열람 권한을 즉시 획득합니다!
-                  </p>
-                  
-                  <form onSubmit={handleApplyReferral} style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                    <input
-                      type="text"
-                      placeholder="초대 코드 또는 링크 입력"
-                      value={invitationCode}
-                      onChange={(e) => setInvitationCode(e.target.value)}
-                      style={{
-                        flex: 1,
-                        padding: '10px 12px',
-                        fontSize: '13px',
-                        border: '1px solid #E4DFD4',
-                        borderRadius: '8px',
-                        outline: 'none',
-                        backgroundColor: '#FBF9F5'
-                      }}
-                    />
-                    <button
-                      type="submit"
-                      className="spring-active"
-                      style={{
-                        padding: '10px 16px',
-                        fontSize: '12.5px',
-                        fontWeight: 700,
-                        backgroundColor: '#F0432C',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      적용
-                    </button>
-                  </form>
                 </div>
 
                 {/* Logout and withdraw actions */}

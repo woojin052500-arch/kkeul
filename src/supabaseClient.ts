@@ -830,6 +830,25 @@ export interface AdminUser {
   is_admin: boolean;
 }
 
+export interface ReferralStats {
+  code: string;
+  invited_count: number;
+  used_code: boolean;
+  invited: { name: string | null; created_at: string }[];
+}
+export interface ReferralResult {
+  ok: boolean;
+  reason?: 'login' | 'invalid' | 'already' | 'self' | 'mutual';
+  inviter_name?: string | null;
+  xp?: number;
+}
+export const referralErrorText = (reason?: string) =>
+  reason === 'already' ? '추천인 코드는 한 번만 넣을 수 있어요.'
+    : reason === 'self' ? '내 코드는 넣을 수 없어요.'
+    : reason === 'mutual' ? '서로의 코드를 넣을 수는 없어요.'
+    : reason === 'login' ? '로그인이 필요해요.'
+    : '없는 추천인 코드예요. 8자리를 다시 확인해 주세요.';
+
 export type TeamRole = '기획' | '디자인' | '개발';
 export interface InterestCount {
   total: number;
@@ -1395,6 +1414,21 @@ export const db = {
   // ------------------------------------------------------------------
 
   // 12. 팀 빌딩 구인글 목록 조회 (신고로 숨겨진 글·내가 차단한 사람의 글 제외)
+  // ---- 추천인 코드 ----
+  async getReferralStats(): Promise<ReferralStats | null> {
+    const uid = await getSessionUserId();
+    if (!uid) return null;
+    const { data, error } = await supabase.rpc('my_referral_stats');
+    if (error) throw new Error(error.message);
+    return data as ReferralStats;
+  },
+
+  async applyReferral(code: string): Promise<ReferralResult> {
+    const { data, error } = await supabase.rpc('apply_referral', { p_code: code });
+    if (error) throw new Error(error.message);
+    return (data || { ok: false, reason: 'invalid' }) as ReferralResult;
+  },
+
   // ---- "나도 나갈래요" ----
   // 대회별·역할별 인원수 (비회원도 조회 가능). 실패하면 빈 값.
   async getInterestCounts(announcementIds: string[]): Promise<Record<string, InterestCount>> {
