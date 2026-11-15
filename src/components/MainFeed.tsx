@@ -856,8 +856,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         }
         if (isClosed(ann.deadline)) return false;
 
-        // 스와이프 Pass(제외)한 공고 영구 제외
-        if (passedIds.includes(ann.id)) return false;
+        // 스와이프에서 넘긴(Pass) 공고는 스와이프 카드에서만 뺀다. 리스트에서는 계속 보여 준다.
+        if (viewMode === 'swipe' && passedIds.includes(ann.id)) return false;
 
         if (selectedCategory === '전체') {
           return true;
@@ -886,7 +886,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
         return dateB - dateA;
       });
-  }, [announcements, bookmarks, activeTab, selectedCategory, studentInterests, profile.location, passedIds, premiumLockedAnnouncement, getMatchScore]);
+  }, [announcements, bookmarks, activeTab, selectedCategory, studentInterests, profile.location, passedIds, viewMode, premiumLockedAnnouncement, getMatchScore]);
 
   // Host announcements (registered by this host)
   const hostAnnouncements = announcements.filter(ann => ann.host === profile.name);
@@ -1933,6 +1933,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                       관심 분야를 넓히거나 전체 탭을 확인해 보세요.
                     </div>
                   )}
+
+                  {!isGuest && selectedCategory === '추천' && (() => {
+                    // '추천'은 관심 분야·지역에 맞는 공고만 보여 주므로, 나머지가 있으면 전체로 가는 길을 알려 준다
+                    const allOpen = announcements.filter(ann => !isClosed(ann.deadline)).length;
+                    const shown = studentMatchedAnnouncements.filter(ann => ann.id !== 'ann-premium-locked').length;
+                    if (allOpen <= shown) return null;
+                    return (
+                      <button type="button" className="btn btn-secondary list-show-all" onClick={() => setSelectedCategory('전체')}>
+                        관심 분야 밖 공고 {(allOpen - shown).toLocaleString()}개 더 보기
+                      </button>
+                    );
+                  })()}
 
                   {isGuest && (() => {
                     const total = studentMatchedAnnouncements.filter(ann => ann.id !== 'ann-premium-locked').length;
