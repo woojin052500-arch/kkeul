@@ -81,3 +81,28 @@ export const clearDeepLinkFromUrl = () => {
     // 무시
   }
 };
+
+// 추천 링크(?ref=코드)로 들어오면 가입 화면에서 코드를 미리 채워 준다
+const REF_KEY = 'kkeul_ref_code';
+export const captureReferralFromUrl = () => {
+  try {
+    const ref = (new URLSearchParams(window.location.search).get('ref') || '').replace(/[^0-9a-fA-F]/g, '').slice(0, 8);
+    if (ref.length === 8) sessionStorage.setItem(REF_KEY, ref.toUpperCase());
+  } catch {
+    // 무시
+  }
+};
+export const getPendingReferral = (): string => {
+  try {
+    return sessionStorage.getItem(REF_KEY) || '';
+  } catch {
+    return '';
+  }
+};
+export const clearPendingReferral = () => {
+  try {
+    sessionStorage.removeItem(REF_KEY);
+  } catch {
+    // 무시
+  }
+};

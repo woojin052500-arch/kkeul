@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import type { Profile } from '../types';
 import { Check, Sparkles, ArrowLeft, Eye, EyeOff, User, ShieldCheck } from 'lucide-react';
 import { PremiumLogo } from './PremiumLogo';
-import { db } from '../supabaseClient';
+import { db, referralErrorText } from '../supabaseClient';
+import { clearPendingReferral, getPendingReferral } from '../utils/deepLink';
 import { LEGAL_DOCS, TERMS_VERSION, type LegalDoc } from '../legal/terms';
 import { LegalDocModal } from './LegalDocModal';
 import { SchoolPicker } from './SchoolPicker';
@@ -30,7 +31,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
   
   // Input states
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [invitationCode, setInvitationCode] = useState<string>('');
+  const [invitationCode, setInvitationCode] = useState<string>(() => getPendingReferral());
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -180,14 +181,28 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         school: school,
         interests: interests,
         play_style: { team_size: playStyleTeamSize.join(', '), duration: playStyleDuration, type: playStyleType },
-        xp: invitationCode.trim() ? 200 : 100,
+        xp: 100,
         badges: [],
         role: 'student',
         agreeDisclaimer: true,
         ...consentRecord()
       };
 
-      const saved = await db.saveProfile(newProfile);
+      let saved = await db.saveProfile(newProfile);
+      // 추천인 코드: 실제로 있는 코드일 때만 기록되고 두 사람 모두 100 XP 를 받는다
+      if (invitationCode.trim()) {
+        try {
+          const result = await db.applyReferral(invitationCode.trim());
+          if (result.ok) {
+            if (typeof result.xp === 'number') saved = { ...saved, xp: result.xp };
+          } else {
+            alert(`${referralErrorText(result.reason)}\n가입은 완료됐어요. 내 정보에서 다시 넣을 수 있어요.`);
+          }
+        } catch {
+          alert('추천인 코드를 확인하지 못했어요. 가입은 완료됐고, 내 정보에서 다시 넣을 수 있어요.');
+        }
+        clearPendingReferral();
+      }
       setWelcomeName(saved.name);
       setIsSubmitting(false);
       setShowWelcome(true);
@@ -750,7 +765,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
               추천인 코드가 있나요?
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-              초대코드를 입력하면 두 분 모두에게 100XP를 추가로 드립니다.
+              친구의 추천인 코드(8자리)를 넣으면 두 사람 모두 100XP를 받아요.
             </p>
             <div className="toss-input-group">
               <input
@@ -901,7 +916,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         )}
         {step === 14 && mode === 'signup' && (
           <button onClick={handleStudentFinish} className="btn btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? '가입 중...' : (invitationCode.trim() ? '100XP 추가 받고 가입하기' : '가입 완료')}
+            {isSubmitting ? '가입 중...' : (invitationCode.trim() ? '코드 넣고 가입하기' : '가입 완료')}
           </button>
         )}
         
