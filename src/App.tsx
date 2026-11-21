@@ -20,6 +20,7 @@ import {
   findAnnouncementForLink,
   savePendingDeepLink,
   takePendingDeepLink,
+  peekPendingDeepLink,
   clearDeepLinkFromUrl,
   type DeepLink
 } from './utils/deepLink';
@@ -133,9 +134,21 @@ function App() {
     }
   }, [initialDeepLink]);
 
+  // 링크로 들어온 비회원에게는 가입 안내를 한 번 띄운다. 링크는 가입 후에 열 수 있게 남겨 둔다.
+  const deepLinkPrompted = useRef(false);
+
   // 로그인해서 메인 화면에 들어오면 보관해 둔 대회의 팀 빌딩 게시판을 연다.
   useEffect(() => {
     if (isLoading || screen !== 'main' || announcements.length === 0) return;
+    if (!profile) {
+      const pending = peekPendingDeepLink();
+      if (pending && !deepLinkPrompted.current) {
+        deepLinkPrompted.current = true;
+        const target = findAnnouncementForLink(pending, announcements);
+        setLoginPrompt(target ? `'${target.title}' 상세와 팀원 모집 글은 가입하면 볼 수 있어요.` : '가입하면 대회 상세와 팀원 모집 글을 볼 수 있어요.');
+      }
+      return;
+    }
     const link = takePendingDeepLink();
     if (!link) return;
     const ann = findAnnouncementForLink(link, announcements);
@@ -147,7 +160,7 @@ function App() {
     } else {
       alert('끌에 아직 등록되지 않은 대회예요. 비슷한 대회를 홈에서 찾아보세요.');
     }
-  }, [isLoading, screen, announcements]);
+  }, [isLoading, screen, announcements, profile]);
   useEffect(() => { browserUrlRef.current = browserUrl; }, [browserUrl]);
   useEffect(() => { activeTabRef.current = activeTab; }, [activeTab]);
 
@@ -832,6 +845,12 @@ function App() {
             announcements={announcements}
             bookmarks={bookmarks}
             onSelectAnnouncement={(ann) => {
+              if (isGuest) {
+                // 대회 상세와 팀 게시판은 가입한 회원만. 가입하면 이 대회로 바로 돌아온다.
+                savePendingDeepLink({ kind: 'contest', id: ann.id });
+                requireLogin(`'${ann.title}' 상세와 팀원 모집 글은 가입하면 볼 수 있어요.`);
+                return;
+              }
               setSelectedAnnouncement(ann);
               setScreen('detail');
             }}
@@ -880,8 +899,9 @@ function App() {
           <div className="login-prompt" role="dialog" aria-modal="true" aria-labelledby="login-prompt-title" onClick={(e) => e.stopPropagation()}>
             <h2 id="login-prompt-title">가입하고 이어서 하기</h2>
             <p>{loginPrompt || '가입하면 전체 공고, 관심 분야 맞춤 스와이프, 대회별 팀원 찾기를 쓸 수 있어요.'}</p>
+            <p style={{ fontSize: '12.5px', color: 'var(--text-tertiary)' }}>무료 · 이메일만 있으면 1분 · 가입하면 보던 화면으로 바로 돌아와요.</p>
             <button type="button" className="btn btn-primary" onClick={goToSignup}>가입 · 로그인</button>
-            <button type="button" className="login-prompt-later" onClick={() => setLoginPrompt(null)}>계속 둘러보기</button>
+            <button type="button" className="login-prompt-later" onClick={() => setLoginPrompt(null)}>나중에 할게요</button>
           </div>
         </div>
       )}

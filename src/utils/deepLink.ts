@@ -64,6 +64,16 @@ export const savePendingDeepLink = (link: DeepLink) => {
   }
 };
 
+// 꺼내지 않고 확인만 한다 (비회원에게 가입 안내를 띄울 때 사용)
+export const peekPendingDeepLink = (): DeepLink | null => {
+  try {
+    const raw = sessionStorage.getItem(PENDING_KEY);
+    return raw ? (JSON.parse(raw) as DeepLink) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const takePendingDeepLink = (): DeepLink | null => {
   try {
     const raw = sessionStorage.getItem(PENDING_KEY);

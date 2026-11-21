@@ -970,15 +970,20 @@ export const db = {
     let remoteAnnouncements: Announcement[] = [];
     if (!useLocalFallback) {
       try {
-        const { data, error } = await supabase
-          .from('announcements')
-          .select('*')
-          .order('bid_amount', { ascending: false })
-          .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        if (data) {
-          remoteAnnouncements = data as Announcement[];
+        // DB는 한 번에 1,000개까지만 돌려주므로, 모두 받을 때까지 나눠서 가져온다
+        const PAGE = 1000;
+        for (let from = 0; from < 20000; from += PAGE) {
+          const { data, error } = await supabase
+            .from('announcements')
+            .select('*')
+            .order('bid_amount', { ascending: false })
+            .order('created_at', { ascending: false })
+            .order('id', { ascending: true })
+            .range(from, from + PAGE - 1);
+          if (error) throw error;
+          const rows = (data || []) as Announcement[];
+          remoteAnnouncements.push(...rows);
+          if (rows.length < PAGE) break;
         }
       } catch (err) {
         console.warn('Supabase 공고 로드 실패, 로컬 백업을 사용합니다.', err);

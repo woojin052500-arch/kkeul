@@ -15,6 +15,34 @@ interface OnboardingProps {
   onBrowse?: () => void;
 }
 
+// 홈의 "나한테 맞는 대회 찾기"에서 고른 값을 가입 화면에 미리 채운다
+const FIT_LEVEL_TO_GRADE: Record<string, string> = {
+  '중학생': '중학교 2학년',
+  '고1': '고등학교 1학년',
+  '고2': '고등학교 2학년',
+  '고3': '고등학교 3학년',
+  '대학생': '대학생/졸업생'
+};
+const FIT_TRACK_TO_INTERESTS: Record<string, string[]> = {
+  '공학·IT': ['IT/개발', '수학/과학'],
+  '자연·의약': ['수학/과학'],
+  '인문·사회': ['인문학', '기획/아이디어'],
+  '경영·경제': ['창업', '기획/아이디어'],
+  '예체능': ['예술/문화', '디자인'],
+  '교육': ['봉사활동', '인문학']
+};
+const prefillFromFit = (): { grade: string; interests: string[] } => {
+  try {
+    const raw = JSON.parse(localStorage.getItem('kkeul_fit_choice') || 'null') as { track?: string; level?: string } | null;
+    return {
+      grade: (raw?.level && FIT_LEVEL_TO_GRADE[raw.level]) || '',
+      interests: (raw?.track && FIT_TRACK_TO_INTERESTS[raw.track]) || []
+    };
+  } catch {
+    return { grade: '', interests: [] };
+  }
+};
+
 export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onBrowse }) => {
   // Mode: signup or login
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
@@ -36,10 +64,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
   const [password, setPassword] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [, setRole] = useState<'student' | 'host'>('student');
-  const [location, setLocation] = useState<string>('서울');
-  const [grade, setGrade] = useState<string>('고등학교 2학년');
+  // 가입 단계를 줄이기 위해 지역·학교는 묻지 않고 나중에 내 정보에서 고르게 한다
+  const [location, setLocation] = useState<string>('전국');
+  const [grade, setGrade] = useState<string>(() => prefillFromFit().grade || '고등학교 2학년');
   const [school, setSchool] = useState<string>('');
-  const [interests, setInterests] = useState<string[]>([]);
+  const [interests, setInterests] = useState<string[]>(() => prefillFromFit().interests);
   const [playStyleTeamSize, setPlayStyleTeamSize] = useState<string[]>(['다 같이 으쌰으쌰(팀전)']);
   const [playStyleDuration, setPlayStyleDuration] = useState<string>('무박 2일 하얗게 불태우기(해커톤)');
   const [playStyleType, setPlayStyleType] = useState<string>('방구석 100% 온라인');
@@ -264,8 +293,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
       // signup
       if (step === 10) {
         setStep(5); // Host name -> Role Selection
-      } else if (step === 6) {
-        setStep(5); // Student region -> Role Selection
+      } else if (step === 7) {
+        setStep(5); // 학년 -> 역할 선택
+      } else if (step === 9) {
+        setStep(7); // 관심 분야 -> 학년
       } else {
         setStep(prev => prev - 1);
       }
@@ -292,17 +323,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
   // Progress Bar Helper
   const getProgressPercent = () => {
     if (step === 0 || mode === 'login') return 0;
-    let total = 9; // email, password, name, agreements, role, region, grade, school, interests
-    let current = step;
-    
+    // 학생: 이메일, 비밀번호, 이름, 동의, 역할, 학년, 관심 분야 (7단계)
+    let total = 7;
+    let current = step === 7 ? 6 : step === 9 ? 7 : step;
+
     if (step >= 10) {
       // Host steps: 10 (institution), 11 (contact), 12 (done)
       total = 3;
       current = step - 9;
-    } else if (step === 13 || step === 14) {
-      // Student extra steps
-      total = 11;
-      current = step;
     }
     
     return Math.min(100, Math.round((current / total) * 100));
@@ -557,7 +585,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
             </h1>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div 
-                onClick={() => { setRole('student'); setStep(6); }}
+                onClick={() => { setRole('student'); setStep(7); }}
                 style={{
                   padding: '24px', borderRadius: '12px', backgroundColor: '#FBF9F5', border: '1px solid #E4DFD4',
                   display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s'
@@ -657,7 +685,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
               관심 분야를 모두 골라주세요
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-              선택한 분야의 대회를 추천해 드립니다.
+              {interests.length > 0 ? '고른 계열에 맞춰 미리 골라 뒀어요. 바꿀 수 있어요.' : '선택한 분야의 대회를 추천해 드립니다.'}
+              {invitationCode.trim() && <><br />추천인 코드 <strong>{invitationCode.trim().toUpperCase()}</strong>가 적용돼요. 두 사람 모두 100XP를 받아요.</>}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
               {['IT/개발', '디자인', '기획/아이디어', '창업', '수학/과학', '예술/문화', '인문학', '체육', '봉사활동', '외국어/어학'].map(interest => (
@@ -895,7 +924,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
           </button>
         )}
         {step === 7 && mode === 'signup' && (
-          <button onClick={() => setStep(8)} className="btn btn-primary">
+          <button onClick={() => setStep(9)} className="btn btn-primary">
             다음
           </button>
         )}
@@ -905,8 +934,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
           </button>
         )}
         {step === 9 && mode === 'signup' && (
-          <button onClick={() => setStep(13)} className="btn btn-primary" disabled={interests.length === 0}>
-            다음
+          <button onClick={handleStudentFinish} className="btn btn-primary" disabled={interests.length === 0 || isSubmitting}>
+            {isSubmitting ? '가입 중...' : '가입 완료'}
           </button>
         )}
         {step === 13 && mode === 'signup' && (
