@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     } catch {
       // DB 오류면 앱만 띄운다 (검색엔진에는 잠시 오류로)
       sendHtml(res, 503, renderPage(base, {
-        title: `${SITE_NAME} - 청소년 공모전·대회 팀원 찾기`,
+        title: `${SITE_NAME} - 공모전·대회 팀원 찾기`,
         description: '잠시 후 다시 시도해 주세요.',
         robots: 'noindex',
         body: ''

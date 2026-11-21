@@ -32,7 +32,9 @@ export const GuestHomeGate: React.FC<GuestHomeGateProps> = ({ announcements, onS
     <section className="guest-gate" style={{ alignItems: 'stretch', textAlign: 'left', gap: '14px' }}>
       <div>
         <strong style={{ fontSize: '20px', lineHeight: 1.4, display: 'block' }}>
-          지금 접수 중인 공고 <span style={{ color: 'var(--color-indigo)' }}>{total.toLocaleString()}개</span>
+          {total > 0
+            ? <>지금 접수 중인 공고 <span style={{ color: 'var(--color-indigo)' }}>{total.toLocaleString()}개</span></>
+            : '접수 중인 공고를 가입하면 볼 수 있어요'}
         </strong>
         <p style={{ marginTop: '4px' }}>가입하면 전부 볼 수 있어요. 가입은 이메일만 있으면 1분이면 돼요.</p>
       </div>

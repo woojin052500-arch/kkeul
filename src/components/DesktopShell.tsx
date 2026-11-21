@@ -104,7 +104,7 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
           <img src={logoImg} alt="" />
           <div>
             <strong>끌</strong>
-            <span>청소년 대회 팀원 찾기</span>
+            <span>대회 팀원 찾기</span>
           </div>
         </div>
 
@@ -144,7 +144,7 @@ export const DesktopShell: React.FC<DesktopShellProps> = ({
           <div className="desk-pitch">
             <h2>대회에 같이 나갈 팀원,<br />끌에서 찾으세요</h2>
             <ul>
-              <li>지금 접수 중인 청소년 공모전·대외활동</li>
+              <li>지금 접수 중인 공모전·대외활동</li>
               <li>대회별 팀원 모집 게시판</li>
               <li>우리 학교 동아리 모집과 지원</li>
             </ul>
