@@ -543,7 +543,7 @@ function App() {
     // 웰컴 푸시 발송
     triggerMockPush(
       '로그인 완료',
-      `${completedProfile.name}님만을 위한 청소년 맞춤 기회들을 지금 끌어왔어요!`
+      `${completedProfile.name}님만을 위한 맞춤 기회들을 지금 끌어왔어요!`
     );
   };
 
@@ -833,7 +833,8 @@ function App() {
         />
       )}
 
-      {(screen === 'main' || screen === 'detail') && (
+      {/* 공고를 다 받기 전에는 홈을 그리지 않는다 ("공고 0개" 같은 빈 숫자가 잠깐 보이지 않게) */}
+      {!isLoading && (screen === 'main' || screen === 'detail') && (
         <div style={{ display: screen === 'main' ? 'block' : 'none', height: '100%', width: '100%' }}>
           {/* 상세 화면이 열려 목록이 숨으면 목록의 광고는 내린다 (같은 광고가 한 화면에 두 번 뜨지 않게) */}
           <AdScope.Provider value={screen === 'main'}>

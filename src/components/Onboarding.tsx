@@ -389,7 +389,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                 대회 같이 나갈 팀원,<br />끌에서 찾아요
               </h1>
               <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
-                청소년 공모전·대회를 보고, 팀원을 구하고, 생기부까지 챙겨요.
+                공모전·대회를 보고, 팀원을 구하고, 생기부까지 챙겨요.
               </p>
             </div>
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>

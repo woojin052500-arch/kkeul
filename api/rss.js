@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>끌 - 청소년 공모전·대회 팀원 찾기</title>
+    <title>끌 - 공모전·대회 팀원 찾기</title>
     <link>${SITE_URL}/</link>
     <description>중·고·대학생 공모전, 해커톤, 경진대회와 대회별 팀원 모집</description>
     <language>ko</language>
