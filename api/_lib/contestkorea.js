@@ -111,7 +111,11 @@ export const toAnnouncement = (item, menu, now = Date.now()) => {
   };
 };
 
-export const fetchMenu = async (apiKey, menu, limit = 100) => {
+// 분야마다 최근 N건을 받는다. 100건이 넘으면 접수 중인 공고가 빠질 수 있어 기본을 늘리고,
+// API가 큰 값을 거부하면 100건으로 다시 시도한다.
+export const DEFAULT_LIMIT = 300;
+
+const fetchMenuOnce = async (apiKey, menu, limit) => {
   const url = `${API_BASE}?apikey=${encodeURIComponent(apiKey)}&Txt_bcode=${menu.code}&limitsu=${limit}`;
   const res = await fetch(url, { headers: { accept: 'application/json' } });
   if (!res.ok) throw new Error(`콘테스트코리아 응답 ${res.status} (${menu.name})`);
@@ -124,8 +128,17 @@ export const fetchMenu = async (apiKey, menu, limit = 100) => {
   return Array.isArray(body.Data) ? body.Data : [];
 };
 
+export const fetchMenu = async (apiKey, menu, limit = DEFAULT_LIMIT) => {
+  try {
+    return await fetchMenuOnce(apiKey, menu, limit);
+  } catch (err) {
+    if (limit <= 100) throw err;
+    return fetchMenuOnce(apiKey, menu, 100);
+  }
+};
+
 // 모든 분야를 받아 끌 공고 행으로 바꾼다. 여러 분야에 걸친 공고는 분야를 합친다.
-export const collectAnnouncements = async (apiKey, { limit = 100, now = Date.now() } = {}) => {
+export const collectAnnouncements = async (apiKey, { limit = DEFAULT_LIMIT, now = Date.now() } = {}) => {
   const byId = new Map();
   const errors = [];
   let fetched = 0;

@@ -26,6 +26,7 @@ import { getDDay, isClosed } from '../utils/dday';
 import { SchoolPicker } from './SchoolPicker';
 import { SavedTeamPosts } from './SavedTeamPosts';
 import { FitFinder } from './FitFinder';
+import { GuestHomeGate } from './GuestHomeGate';
 import { ReferralCard } from './ReferralCard';
 
 
@@ -104,14 +105,13 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   const { TossModal, showAlert, showPrompt } = useTossModal();
 
   // Student selected category state
-  const [selectedCategory, setSelectedCategory] = useState<string>('추천');
+  // 처음에는 접수 중인 공고를 모두 보여 준다. '추천'은 관심 분야·지역에 맞는 것만 추려서 보여 주는 탭이다.
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
 
   // B2C 학생용 뷰 모드: 'swipe' (토스형 스와이프 매칭) vs 'list' (리스트 뷰)
   // 스와이프 매칭은 회원 전용. 비회원은 항상 리스트로 본다.
   const [viewModeState, setViewMode] = useState<'swipe' | 'list'>('swipe');
   const viewMode: 'swipe' | 'list' = isGuest ? 'list' : viewModeState;
-  // 비회원이 리스트에서 볼 수 있는 공고 수
-  const GUEST_LIST_LIMIT = 5;
 
   // 스와이프 Pass 처리되어 영구 제외할 공고 ID 목록
   const [passedIds, setPassedIds] = useState<string[]>([]);
@@ -1078,10 +1078,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
               />
             )}
             {isGuest ? (
-              <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>
-                지금 접수 중인 공고<br />
-                <span style={{ color: 'var(--color-indigo)' }}>{studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').length}개</span>가 있어요.
-              </h1>
+              <GuestHomeGate announcements={announcements} onSignup={() => onRequireLogin?.('')} />
             ) : (
             <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>
                 지금 볼 만한 공고<br />
@@ -1596,7 +1593,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
             )}
 
             {/* VIEW MODE 2: 리스트 뷰 모드 및 기존 컨텐츠 */}
-            {viewMode === 'list' && (
+            {viewMode === 'list' && !isGuest && (
               <>
                 {/* Horizontal Category Tag Filters */}
                 <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }} className="no-scrollbar h-scroll-desktop">
@@ -1635,8 +1632,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     .length > 0 ? (
                     studentMatchedAnnouncements
                       .filter(ann => ann.id !== 'ann-premium-locked')
-                      .slice(0, isGuest ? GUEST_LIST_LIMIT : undefined)
-                      .map((ann, idx) => {
+                                      .map((ann, idx) => {
                         const isBookmarked = bookmarks.includes(ann.id);
                         const dday = getDDay(ann.deadline);
                         const showAd100 = idx === 3;
@@ -1787,17 +1783,6 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                     );
                   })()}
 
-                  {isGuest && (() => {
-                    const total = studentMatchedAnnouncements.filter(ann => ann.id !== 'ann-premium-locked').length;
-                    if (total <= GUEST_LIST_LIMIT) return null;
-                    return (
-                      <div className="guest-gate">
-                        <strong>공고가 {(total - GUEST_LIST_LIMIT).toLocaleString()}개 더 있어요</strong>
-                        <p>가입하면 전체 공고를 보고, 관심 분야에 맞춘 스와이프 매칭과 대회별 팀원 찾기를 쓸 수 있어요.</p>
-                        <button type="button" className="btn btn-primary" onClick={() => onRequireLogin?.('')}>가입하고 전체 보기</button>
-                      </div>
-                    );
-                  })()}
                 </div>
               </>
             )}
@@ -4174,6 +4159,14 @@ export const MainFeed: React.FC<MainFeedProps> = ({
           기회가 알아서 끌려오는 곳, 끌 © 2026 Telosix. All rights reserved.
         </div>
       </footer>
+
+      {/* 비회원: 어느 탭에서나 보이는 가입 안내 */}
+      {isGuest && (
+        <div className="guest-bar" role="region" aria-label="가입 안내">
+          <span>가입하면 전체 공고와 팀원 찾기를 무료로 써요</span>
+          <button type="button" onClick={() => onRequireLogin?.('')}>1분 가입</button>
+        </div>
+      )}
 
       {/* B2C / B2B Dynamic Tab Bar (PC에서는 왼쪽 사이드바가 대신함) */}
       <div className="kkeul-tabbar" style={{

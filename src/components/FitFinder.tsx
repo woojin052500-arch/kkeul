@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronRight, Copy, Check, Image as ImageIcon, RotateCcw, Search } from 'lucide-react';
+import { ChevronRight, Copy, Check, Image as ImageIcon, Lock, RotateCcw, Search } from 'lucide-react';
 import type { Announcement } from '../types';
 import { db, type InterestCount, type TeamRole } from '../supabaseClient';
 import { LEVELS, ROLES, TRACKS, findBestFits, type Level, type Role, type Track } from '../utils/fit';
@@ -167,6 +167,21 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
 
           {results.map((r, i) => {
             const a = r.announcement;
+            const locked = isGuest && i > 0;
+            if (locked) {
+              return (
+                <article key={a.id} className="fit-result" data-locked="true" style={{ border: '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-ink)', background: 'var(--color-bg-gray)', padding: '3px 8px', borderRadius: '6px' }}>핏 {i + 1}위 · {r.score}점</span>
+                    <Lock size={14} color="var(--text-tertiary)" />
+                  </div>
+                  <strong aria-hidden="true" style={{ fontSize: '15.5px', fontWeight: 800, filter: 'blur(6px)', userSelect: 'none', lineHeight: 1.4 }}>{a.title}</strong>
+                  <button type="button" onClick={() => onRequireLogin?.('핏 2·3위 대회와 이유는 가입하면 볼 수 있어요.')} style={{ border: '1px solid var(--color-ink)', background: '#FFFFFF', color: 'var(--color-ink)', fontSize: '13px', fontWeight: 800, height: '40px', borderRadius: '10px', cursor: 'pointer' }}>
+                    가입하고 {i + 1}위 대회 보기
+                  </button>
+                </article>
+              );
+            }
             return (
               <article key={a.id} className="fit-result" style={{ border: i === 0 ? '1.5px solid var(--color-ink)' : '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
@@ -191,6 +206,15 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
                     <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                       {r.points.map(p => <li key={p}>{p}</li>)}
                     </ul>
+                    {isGuest ? (
+                      <div style={{ position: 'relative', borderRadius: '10px', background: '#FFFFFF', border: '1px solid #E4DFD4', padding: '10px 12px', overflow: 'hidden' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px' }}>선생님께 드릴 활동 요약 초안</div>
+                        <p aria-hidden="true" style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55, filter: 'blur(5px)', userSelect: 'none' }}>{r.draft}</p>
+                        <button type="button" onClick={() => onRequireLogin?.('활동 요약 초안은 가입하면 볼 수 있고 복사할 수 있어요.')} style={{ position: 'absolute', inset: 0, border: 'none', background: 'rgba(255,255,255,0.55)', color: 'var(--color-ink)', fontSize: '12.5px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                          <Lock size={13} /> 가입하면 볼 수 있어요
+                        </button>
+                      </div>
+                    ) : (<>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>선생님께 드릴 활동 요약 초안</span>
                       <button type="button" onClick={() => copyDraft(a.id, r.draft)} style={{ border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
@@ -199,6 +223,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
                     </div>
                     <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{r.draft}</p>
                     <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-tertiary)' }}>대회에서 실제로 한 일에 맞게 고쳐서 쓰세요.</p>
+                    </>)}
                   </div>
                 )}
 
