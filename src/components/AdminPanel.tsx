@@ -266,7 +266,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
                     <div><dt>작성자</dt><dd>{p.user_name || '알 수 없음'}{p.author_suspended && <span className="admin-tag" data-kind="warn">정지됨</span>}</dd></div>
                     <div><dt>대회</dt><dd>{titleOf(p.announcement_id) || `(목록에 없는 대회 · ${p.announcement_id})`}</dd></div>
                     {(p.my_role || p.role_wanted) && <div><dt>역할</dt><dd>{[p.my_role && `내 역할 ${p.my_role}`, p.role_wanted && `구함 ${p.role_wanted}`].filter(Boolean).join(' · ')}</dd></div>}
-                    <div><dt>현황</dt><dd>합류 요청 {p.request_count}건{p.report_count > 0 ? ` · 신고 ${p.report_count}건` : ''}</dd></div>
+                    <div><dt>현황</dt><dd>모집 {p.slots ?? 1}명 중 {p.filled ?? 0}명 · 합류 요청 {p.request_count}건{p.report_count > 0 ? ` · 신고 ${p.report_count}건` : ''}</dd></div>
                   </dl>
                   <div className="admin-actions">
                     {p.is_hidden ? (

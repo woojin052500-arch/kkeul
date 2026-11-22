@@ -3,6 +3,7 @@ import type { JoinRequest, Profile, TeamPost } from '../types';
 import { Bookmark, Check, Flag, Plus, Share2, ShieldOff, Users } from 'lucide-react';
 import { db } from '../supabaseClient';
 import { shareLink, teamPostUrl } from '../utils/share';
+import { SlotMeter } from './SlotMeter';
 
 type Role = '기획' | '디자인' | '개발';
 
@@ -57,6 +58,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
   const [showModal, setShowModal] = useState(false);
   const [myRole, setMyRole] = useState<Role>('개발');
   const [wantedRole, setWantedRole] = useState<Role>('기획');
+  const [slots, setSlots] = useState(1);
   const [comment, setComment] = useState('');
   const [contact, setContact] = useState('');
 
@@ -188,7 +190,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
         user_name: profile.name,
         role_wanted: wantedRole,
         my_role: myRole,
-        comment: comment.trim()
+        comment: comment.trim(),
+        slots
       });
       setPosts(prev => [created, ...prev]);
       setIncoming(prev => ({ ...prev, [created.id]: [] }));
@@ -217,6 +220,13 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       setIncoming(prev => ({
         ...prev,
         [req.post_id]: (prev[req.post_id] || []).map(r => (r.id === req.id ? { ...r, status } : r))
+      }));
+      // 수락하면 채워진 자리가 하나 늘고, 수락했던 사람을 거절로 바꾸면 하나 준다
+      setPosts(prev => prev.map(p => {
+        if (p.id !== req.post_id) return p;
+        const was = req.status === 'accepted';
+        const delta = status === 'accepted' && !was ? 1 : status !== 'accepted' && was ? -1 : 0;
+        return { ...p, filled: Math.max(0, (p.filled ?? 0) + delta) };
       }));
       if (status === 'accepted') {
         const c = await db.getContact(req.user_id);
@@ -310,6 +320,9 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
 
               <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{post.comment}</p>
 
+              {/* 모집 인원과 남은 자리 */}
+              <SlotMeter slots={post.slots} filled={post.filled} />
+
               {/* 저장 · 공유 */}
               <div style={{ display: 'flex', gap: '6px' }}>
                 {!isMine && profile && (
@@ -369,11 +382,11 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                 <>
                   <button
                     onClick={() => handleJoin(post)}
-                    disabled={!!myReq || busy || !profile}
+                    disabled={!!myReq || busy || !profile || (post.filled ?? 0) >= (post.slots ?? 1)}
                     style={{ border: 'none', borderRadius: '8px', height: '36px', fontSize: '12px', fontWeight: 700, cursor: myReq ? 'default' : 'pointer', backgroundColor: myReq ? '#ECFDF5' : 'var(--color-indigo)', color: myReq ? '#10B981' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px' }}
                   >
                     {myReq ? <Check size={12} /> : null}
-                    {myReq ? `합류 요청 ${statusLabel[myReq.status || 'pending']}` : '팀 합류 요청 보내기'}
+                    {myReq ? `합류 요청 ${statusLabel[myReq.status || 'pending']}` : (post.filled ?? 0) >= (post.slots ?? 1) ? '모집 마감' : '팀 합류 요청 보내기'}
                   </button>
                   {myReq?.status === 'accepted' && (
                     <div style={{ fontSize: '12px', color: 'var(--text-primary)', background: '#ECFDF5', borderRadius: '8px', padding: '8px 10px' }}>
@@ -419,6 +432,13 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                   <option value="디자인">디자인</option>
                   <option value="개발">개발</option>
                 </select>
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                몇 명을 구하나요?
+                <select value={slots} onChange={(e) => setSlots(Number(e.target.value))} style={{ padding: '10px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', background: '#FFFFFF' }}>
+                  {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n}명</option>)}
+                </select>
+                <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-tertiary)' }}>수락한 인원이 차면 자동으로 모집이 마감돼요.</span>
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 한 줄 소개 및 포부

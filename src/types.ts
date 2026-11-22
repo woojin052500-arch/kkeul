@@ -73,6 +73,8 @@ export interface TeamPost {
   comment: string;
   contact?: string; // 예전 로컬 예시 데이터에만 있음. 연락처는 수락된 상대에게만 user_contacts 로 공개
   is_hidden?: boolean; // 신고되면 true
+  slots?: number; // 구하는 인원 (예전 글은 1명)
+  filled?: number; // 수락되어 채워진 자리
   created_at: string;
 }
 

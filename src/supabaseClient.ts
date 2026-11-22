@@ -858,6 +858,8 @@ export interface InterestCount {
 }
 
 export interface AdminTeamPost {
+  slots?: number;
+  filled?: number;
   id: string;
   announcement_id: string;
   user_id: string;
@@ -1501,9 +1503,25 @@ export const db = {
       .select('created_at, team_posts(*)')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return (data || [])
+    const posts = (data || [])
       .map((r: { team_posts: TeamPost | TeamPost[] | null }) => (Array.isArray(r.team_posts) ? r.team_posts[0] : r.team_posts))
       .filter((p): p is TeamPost => !!p && !p.is_hidden);
+    return db.withSlots(posts);
+  },
+
+  // 구인글에 모집 인원과 채워진 자리를 붙인다. 자리 수를 못 받아도 글은 그대로 보여 준다.
+  async withSlots(posts: TeamPost[]): Promise<TeamPost[]> {
+    if (posts.length === 0) return posts;
+    let counts: Record<string, number> = {};
+    try {
+      const { data, error } = await supabase.rpc('team_post_slot_counts', { p_post_ids: posts.map(p => p.id) });
+      if (!error) {
+        counts = Object.fromEntries(((data || []) as { post_id: string; filled: number }[]).map(r => [r.post_id, r.filled]));
+      }
+    } catch {
+      // 자리 수는 없는 것으로 본다
+    }
+    return posts.map(p => ({ ...p, slots: p.slots ?? 1, filled: counts[p.id] ?? 0 }));
   },
 
   async getTeamPosts(announcementId: string): Promise<TeamPost[]> {
@@ -1515,12 +1533,14 @@ export const db = {
         .eq('announcement_id', announcementId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data || []) as TeamPost[];
+      return db.withSlots((data || []) as TeamPost[]);
     }
     const blocked = readLocal<string[]>(LOCAL_KEYS.BLOCKS, []);
+    const accepted = readLocal<JoinRequest[]>('kkeul_join_requests', []).filter(r => r.status === 'accepted');
     return readLocal<TeamPost[]>('kkeul_team_posts', [])
       .filter(p => p.announcement_id === announcementId)
-      .filter(p => !p.is_hidden && !blocked.includes(p.user_id));
+      .filter(p => !p.is_hidden && !blocked.includes(p.user_id))
+      .map(p => ({ ...p, slots: p.slots ?? 1, filled: accepted.filter(r => r.post_id === p.id).length }));
   },
 
   // 12-1. 대회의 구인글 개수 (비회원 안내용. 글 내용은 주지 않는다)
@@ -1531,7 +1551,7 @@ export const db = {
   },
 
   // 13. 팀 빌딩 구인글 작성
-  async createTeamPost(post: Pick<TeamPost, 'announcement_id' | 'user_id' | 'user_name' | 'role_wanted' | 'my_role' | 'comment'>): Promise<TeamPost> {
+  async createTeamPost(post: Pick<TeamPost, 'announcement_id' | 'user_id' | 'user_name' | 'role_wanted' | 'my_role' | 'comment' | 'slots'>): Promise<TeamPost> {
     const uid = await getSessionUserId();
     if (uid) {
       const { data, error } = await supabase
@@ -1540,7 +1560,7 @@ export const db = {
         .select('*')
         .single();
       if (error) throw await explainWriteError(error);
-      return data as TeamPost;
+      return { ...(data as TeamPost), slots: (data as TeamPost).slots ?? post.slots ?? 1, filled: 0 };
     }
     const fullPost: TeamPost = { ...post, id: localId('team-post'), created_at: new Date().toISOString() };
     writeLocal('kkeul_team_posts', [fullPost, ...readLocal<TeamPost[]>('kkeul_team_posts', [])]);
@@ -1602,7 +1622,7 @@ export const db = {
         .update({ status, updated_at: new Date().toISOString() })
         .eq('id', requestId)
         .select('id');
-      if (error) throw error;
+      if (error) throw await explainWriteError(error);
       if (!data || data.length === 0) throw new Error('이 요청의 상태를 바꿀 권한이 없어요.');
       return;
     }
