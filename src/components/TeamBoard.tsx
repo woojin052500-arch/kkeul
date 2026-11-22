@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { JoinRequest, Profile, TeamPost } from '../types';
 import { Bookmark, Check, Flag, Plus, Share2, ShieldOff, Users } from 'lucide-react';
-import { db } from '../supabaseClient';
+import { db, type AuthorStat, type PostQuestion } from '../supabaseClient';
 import { shareLink, teamPostUrl } from '../utils/share';
 import { SlotMeter } from './SlotMeter';
+import { PostQuestions } from './PostQuestions';
 
 type Role = '기획' | '디자인' | '개발';
 
@@ -51,6 +52,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [stats, setStats] = useState<Record<string, AuthorStat>>({});
+  const [questions, setQuestions] = useState<PostQuestion[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -69,6 +72,10 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       setPosts(list);
       setLoaded(true);
       if (!profile) return;
+
+      // 글쓴이 활동 배지와 한 줄 질문 (못 받아도 게시판은 그대로 보여 준다)
+      db.getAuthorStats(list.map(p => p.user_id)).then(setStats);
+      db.getPostQuestions(list.map(p => p.id)).then(setQuestions).catch(() => {});
 
       const mine = await db.getMyJoinRequests(profile.id);
       setMyRequests(mine);
@@ -235,7 +242,11 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
     });
   };
 
-  const handleReport = (targetType: 'team_post' | 'join_request', targetId: string, postId?: string) => {
+  const reloadQuestions = () => {
+    db.getPostQuestions(posts.map(p => p.id)).then(setQuestions).catch(() => {});
+  };
+
+  const handleReport = (targetType: 'team_post' | 'join_request' | 'post_question', targetId: string, postId?: string) => {
     if (!profile) {
       alert('로그인 후 신고할 수 있어요.');
       return;
@@ -246,6 +257,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       await db.reportContent(targetType, targetId, reason.trim());
       if (targetType === 'team_post') {
         setPosts(prev => prev.filter(p => p.id !== targetId));
+      } else if (targetType === 'post_question') {
+        setQuestions(prev => prev.filter(q => q.id !== targetId));
       } else if (postId) {
         setIncoming(prev => ({ ...prev, [postId]: (prev[postId] || []).filter(r => r.id !== targetId) }));
       }
@@ -311,6 +324,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center', minWidth: 0 }}>
                   <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>{post.user_name}</span>
                   {isMine && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: '#F1EDE4', color: 'var(--text-secondary)', padding: '2px 5px', borderRadius: '4px' }}>내 구인글</span>}
+                  {isMine && questions.some(q => q.post_id === post.id && !q.answer) && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: 'var(--color-red)', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px' }}>새 질문 {questions.filter(q => q.post_id === post.id && !q.answer).length}</span>}
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                   <span style={{ fontSize: '9.5px', fontWeight: 700, backgroundColor: mineColor.bg, color: mineColor.txt, padding: '2px 6px', borderRadius: '4px' }}>직무: {post.my_role}</span>
@@ -322,6 +336,19 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
 
               {/* 모집 인원과 남은 자리 */}
               <SlotMeter slots={post.slots} filled={post.filled} />
+
+              {/* 글쓴이 활동: 구간으로만 보여 준다 */}
+              {!isMine && (stats[post.user_id]?.active || stats[post.user_id]?.reply) && (
+                <div className="author-activity" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '11.5px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                  {stats[post.user_id]?.active && (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <span aria-hidden="true" style={{ width: '7px', height: '7px', borderRadius: '50%', background: stats[post.user_id]?.active === 'today' ? '#10B981' : '#C9C3B6' }} />
+                      {stats[post.user_id]?.active === 'today' ? '오늘 활동' : '이번 주 활동'}
+                    </span>
+                  )}
+                  {stats[post.user_id]?.reply && <span>· {stats[post.user_id]?.reply === 'day' ? '보통 하루 안에 답해요' : '보통 3일 안에 답해요'}</span>}
+                </div>
+              )}
 
               {/* 저장 · 공유 */}
               <div style={{ display: 'flex', gap: '6px' }}>
@@ -377,9 +404,17 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                 </div>
               )}
 
+              {/* 내 구인글: 받은 한 줄 질문에 답하기 */}
+              {isMine && profile && (
+                <PostQuestions postId={post.id} isMine askerName={profile.name} questions={questions} onChanged={reloadQuestions} onReport={(qid) => handleReport('post_question', qid)} onBlock={(uid, name) => handleBlock(uid, name)} />
+              )}
+
               {/* 남의 구인글: 합류 요청 + 신고/차단 */}
               {!isMine && (
                 <>
+                  {profile && (
+                    <PostQuestions postId={post.id} isMine={false} askerName={profile.name} questions={questions} onChanged={reloadQuestions} onReport={(qid) => handleReport('post_question', qid)} onBlock={(uid, name) => handleBlock(uid, name)} />
+                  )}
                   <button
                     onClick={() => handleJoin(post)}
                     disabled={!!myReq || busy || !profile || (post.filled ?? 0) >= (post.slots ?? 1)}

@@ -72,6 +72,11 @@ function App() {
     setScreen('onboarding');
     window.scrollTo({ top: 0 });
   };
+  // 로그인한 회원이 앱을 열면 '최근 활동' 시각을 남긴다 (팀원 모집 글의 '오늘 활동' 표시에 쓰임)
+  useEffect(() => {
+    if (profile?.id) db.touchActivity();
+  }, [profile?.id]);
+
   // 관리자 계정이면 관리 화면 버튼을 보여 준다 (권한은 DB가 다시 확인)
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);

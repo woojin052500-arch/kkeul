@@ -801,7 +801,7 @@ if (!localStorage.getItem('kkeul_join_requests')) {
 }
 
 export interface AdminReport {
-  target_type: 'team_post' | 'join_request';
+  target_type: 'team_post' | 'join_request' | 'post_question';
   target_id: string;
   report_count: number;
   last_reported_at: string;
@@ -872,6 +872,21 @@ export interface AdminTeamPost {
   request_count: number;
   report_count: number;
   author_suspended: boolean;
+}
+
+export interface AuthorStat {
+  active: 'today' | 'week' | null;
+  reply: 'day' | 'three' | null;
+}
+export interface PostQuestion {
+  id: string;
+  post_id: string;
+  asker_id: string;
+  asker_name: string;
+  question: string;
+  answer: string | null;
+  answered_at: string | null;
+  created_at: string;
 }
 
 export interface AdminSuspendedUser {
@@ -1473,6 +1488,61 @@ export const db = {
     }
   },
 
+  // ---- 글쓴이 활동 배지, 한 줄 질문 ----
+  // 앱을 열 때 한 번 부른다. 실패해도 아무 일도 없다.
+  async touchActivity(): Promise<void> {
+    try {
+      const uid = await getSessionUserId();
+      if (uid) await supabase.rpc('touch_activity');
+    } catch {
+      // 활동 시각은 없어도 된다
+    }
+  },
+
+  // 글쓴이들의 활동 구간(오늘/이번 주)과 답장 속도. 못 받으면 빈 값.
+  async getAuthorStats(userIds: string[]): Promise<Record<string, AuthorStat>> {
+    const ids = [...new Set(userIds)].slice(0, 200);
+    if (ids.length === 0) return {};
+    try {
+      const { data, error } = await supabase.rpc('team_author_stats', { p_user_ids: ids });
+      if (error) return {};
+      return Object.fromEntries(((data || []) as { user_id: string; active: AuthorStat['active']; reply: AuthorStat['reply'] }[]).map(r => [r.user_id, { active: r.active, reply: r.reply }]));
+    } catch {
+      return {};
+    }
+  },
+
+  // 내가 보낸 질문과 내 글에 온 질문 (DB가 두 경우만 돌려줌)
+  async getPostQuestions(postIds: string[]): Promise<PostQuestion[]> {
+    const uid = await getSessionUserId();
+    if (!uid || postIds.length === 0) return [];
+    const { data, error } = await supabase
+      .from('post_questions')
+      .select('id, post_id, asker_id, asker_name, question, answer, answered_at, created_at')
+      .in('post_id', postIds)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return (data || []) as PostQuestion[];
+  },
+
+  async askQuestion(postId: string, askerName: string, question: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) throw new Error('로그인이 필요해요.');
+    const { error } = await supabase.from('post_questions').insert({ post_id: postId, asker_id: uid, asker_name: askerName, question });
+    if (error) throw await explainWriteError(error);
+  },
+
+  async answerQuestion(questionId: string, answer: string): Promise<void> {
+    const { data, error } = await supabase.from('post_questions').update({ answer }).eq('id', questionId).select('id');
+    if (error) throw await explainWriteError(error);
+    if (!data || data.length === 0) throw new Error('이 질문에 답할 수 없어요.');
+  },
+
+  async deleteQuestion(questionId: string): Promise<void> {
+    const { error } = await supabase.from('post_questions').delete().eq('id', questionId);
+    if (error) throw await explainWriteError(error);
+  },
+
   // ---- 구인글 저장 ----
   async getSavedTeamPostIds(): Promise<string[]> {
     const uid = await getSessionUserId();
@@ -1631,7 +1701,7 @@ export const db = {
   },
 
   // 15-3. 신고 → DB 트리거가 대상을 즉시 숨김
-  async reportContent(targetType: 'team_post' | 'join_request', targetId: string, reason: string): Promise<void> {
+  async reportContent(targetType: 'team_post' | 'join_request' | 'post_question', targetId: string, reason: string): Promise<void> {
     const uid = await getSessionUserId();
     if (uid) {
       const { error } = await supabase
@@ -1641,7 +1711,7 @@ export const db = {
       if (error && error.code !== '23505') throw error;
       return;
     }
-    const key = targetType === 'team_post' ? 'kkeul_team_posts' : 'kkeul_join_requests';
+    const key = targetType === 'team_post' ? 'kkeul_team_posts' : targetType === 'join_request' ? 'kkeul_join_requests' : 'kkeul_post_questions';
     const items = readLocal<Array<{ id: string; is_hidden?: boolean }>>(key, []);
     writeLocal(key, items.map(it => (it.id === targetId ? { ...it, is_hidden: true } : it)));
   },
