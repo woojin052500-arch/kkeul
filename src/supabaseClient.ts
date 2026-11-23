@@ -874,6 +874,12 @@ export interface AdminTeamPost {
   author_suspended: boolean;
 }
 
+export interface ContestActivity {
+  post_count: number;
+  latest_post_at: string | null;
+  interest_total: number;
+}
+
 export interface AuthorStat {
   active: 'today' | 'week' | null;
   reply: 'day' | 'three' | null;
@@ -1485,6 +1491,22 @@ export const db = {
     } else {
       const { error } = await supabase.from('contest_interests').delete().eq('user_id', uid).eq('announcement_id', announcementId);
       if (error) throw error;
+    }
+  },
+
+  // 대회 카드에 보여 줄 팀 모집 활동(글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
+  async getContestActivity(announcementIds: string[]): Promise<Record<string, ContestActivity>> {
+    const ids = [...new Set(announcementIds)].slice(0, 300);
+    if (ids.length === 0) return {};
+    try {
+      const { data, error } = await supabase.rpc('contest_activity', { p_ids: ids });
+      if (error) return {};
+      return Object.fromEntries(
+        ((data || []) as { announcement_id: string; post_count: number; latest_post_at: string | null; interest_total: number }[])
+          .map(r => [r.announcement_id, { post_count: r.post_count, latest_post_at: r.latest_post_at, interest_total: r.interest_total }])
+      );
+    } catch {
+      return {};
     }
   },
 

@@ -15,7 +15,7 @@ import partnerWellthy from '../assets/partner_wellthy.png';
 import partnerScentpulse from '../assets/partner_scentpulse.png';
 import partnerGNDevs from '../assets/partner_gndevs.svg';
 import { db } from '../supabaseClient';
-import type { ClubNetworking } from '../supabaseClient';
+import type { ClubNetworking, ContestActivity } from '../supabaseClient';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
@@ -27,6 +27,7 @@ import { SchoolPicker } from './SchoolPicker';
 import { SavedTeamPosts } from './SavedTeamPosts';
 import { FitFinder } from './FitFinder';
 import { GuestHomeGate } from './GuestHomeGate';
+import { ActivityLine } from './ActivityLine';
 import { ReferralCard } from './ReferralCard';
 
 
@@ -851,6 +852,22 @@ export const MainFeed: React.FC<MainFeedProps> = ({
         return dateB - dateA;
       });
   }, [announcements, bookmarks, activeTab, selectedCategory, studentInterests, profile.location, passedIds, viewMode, premiumLockedAnnouncement, getMatchScore]);
+
+  // 리스트에 보이는 대회들의 팀 모집 활동 (글 수, 나갈래요 수, 최근 새 글). 회원 리스트에서만 쓴다.
+  const [contestActivity, setContestActivity] = useState<Record<string, ContestActivity>>({});
+  const activityIds = useMemo(
+    () => studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').slice(0, 300).map(a => a.id),
+    [studentMatchedAnnouncements]
+  );
+  const activityKey = activityIds.join(',');
+  useEffect(() => {
+    if (isGuest || activeTab !== 'home' || viewMode !== 'list' || !activityKey) return;
+    let alive = true;
+    db.getContestActivity(activityKey.split(',')).then(a => alive && setContestActivity(prev => ({ ...prev, ...a })));
+    return () => {
+      alive = false;
+    };
+  }, [activityKey, isGuest, activeTab, viewMode]);
 
   // Host announcements (registered by this host)
   const hostAnnouncements = announcements.filter(ann => ann.host === profile.name);
@@ -1760,6 +1777,7 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 {ann.location}
                               </span>
                             </div>
+                            <ActivityLine activity={contestActivity[ann.id]} />
                           </div>
                           </React.Fragment>
                         );

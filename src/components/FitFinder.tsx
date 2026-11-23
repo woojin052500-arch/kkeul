@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronRight, Copy, Check, Image as ImageIcon, Lock, RotateCcw, Search } from 'lucide-react';
 import type { Announcement } from '../types';
-import { db, type InterestCount, type TeamRole } from '../supabaseClient';
+import { db, type ContestActivity, type InterestCount, type TeamRole } from '../supabaseClient';
+import { ActivityLine } from './ActivityLine';
 import { LEVELS, ROLES, TRACKS, findBestFits, type Level, type Role, type Track } from '../utils/fit';
 import { getDDay } from '../utils/dday';
 import { InterestBar } from './InterestBar';
@@ -44,12 +45,13 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
   const [choice, setChoice] = useState<Choice>(loadChoice);
   const [counts, setCounts] = useState<Record<string, InterestCount> | null>(null);
   const [mine, setMine] = useState<Record<string, TeamRole>>({});
+  const [activity, setActivity] = useState<Record<string, ContestActivity>>({});
   const [copied, setCopied] = useState<string | null>(null);
   const [story, setStory] = useState<{ id: string; data: StoryCardData } | null>(null);
 
-  const done = !!(choice.track && choice.level && choice.role);
+  const done = !!choice.track;
   const results = useMemo(
-    () => (done ? findBestFits(announcements, choice.track as Track, choice.level as Level, choice.role as Role) : []),
+    () => (done ? findBestFits(announcements, choice.track as Track, choice.level as Level | null, choice.role as Role | null) : []),
     [announcements, choice, done]
   );
   const ids = results.map(r => r.announcement.id).join(',');
@@ -65,6 +67,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
   useEffect(() => {
     if (!ids) return;
     let alive = true;
+    db.getContestActivity(ids.split(',')).then(a => alive && setActivity(a));
     Promise.all([
       db.getInterestCounts(ids.split(',')).catch(() => ({} as Record<string, InterestCount>)),
       isGuest ? Promise.resolve({} as Record<string, TeamRole>) : db.getMyInterests().catch(() => ({} as Record<string, TeamRole>))
@@ -117,34 +120,18 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
           <Search size={18} strokeWidth={2.6} /> 나한테 <span style={{ background: 'linear-gradient(transparent 58%, var(--color-highlight) 58%)', padding: '0 2px' }}>맞는 대회</span> 찾기
         </h2>
         <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
-          세 가지만 누르면 생기부에 맞는 대회와 같이 나갈 팀원을 바로 보여 드려요.
+          계열만 고르면 맞는 대회를 바로 보여 드려요. 학년과 역할을 고르면 더 정확해져요.
         </p>
       </div>
 
       {!done && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div>
-            <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>1. 희망 계열</div>
+            <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>희망 계열을 골라 주세요</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {TRACKS.map(t => <button key={t} type="button" style={optBtn(choice.track === t)} aria-pressed={choice.track === t} onClick={() => pick({ track: t })}>{t}</button>)}
             </div>
           </div>
-          {choice.track && (
-            <div>
-              <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>2. 학년</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {LEVELS.map(l => <button key={l} type="button" style={optBtn(choice.level === l)} aria-pressed={choice.level === l} onClick={() => pick({ level: l })}>{l}</button>)}
-              </div>
-            </div>
-          )}
-          {choice.track && choice.level && (
-            <div>
-              <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>3. 팀에서 맡고 싶은 역할</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {ROLES.map(r => <button key={r} type="button" style={optBtn(choice.role === r)} aria-pressed={choice.role === r} onClick={() => pick({ role: r })}>{r}</button>)}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -152,11 +139,22 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-indigo)', background: 'var(--color-indigo-light)', padding: '5px 10px', borderRadius: '8px' }}>
-              {choice.track} · {choice.level} · {choice.role}
+              {choice.track}
             </span>
             <button type="button" onClick={() => pick({ track: null, level: null, role: null })} style={{ border: 'none', background: 'none', color: 'var(--text-tertiary)', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
               <RotateCcw size={12} /> 다시 고르기
             </button>
+          </div>
+
+          <div className="fit-refine" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', width: '34px' }}>학년</span>
+              {LEVELS.map(l => <button key={l} type="button" style={{ ...optBtn(choice.level === l), fontSize: '12px', padding: '6px 9px' }} aria-pressed={choice.level === l} onClick={() => pick({ level: choice.level === l ? null : l })}>{l}</button>)}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', width: '34px' }}>역할</span>
+              {ROLES.map(r => <button key={r} type="button" style={{ ...optBtn(choice.role === r), fontSize: '12px', padding: '6px 9px' }} aria-pressed={choice.role === r} onClick={() => pick({ role: choice.role === r ? null : r })}>{r}</button>)}
+            </div>
           </div>
 
           {results.length === 0 && (
@@ -167,21 +165,6 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
 
           {results.map((r, i) => {
             const a = r.announcement;
-            const locked = isGuest && i > 0;
-            if (locked) {
-              return (
-                <article key={a.id} className="fit-result" data-locked="true" style={{ border: '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-ink)', background: 'var(--color-bg-gray)', padding: '3px 8px', borderRadius: '6px' }}>핏 {i + 1}위 · {r.score}점</span>
-                    <Lock size={14} color="var(--text-tertiary)" />
-                  </div>
-                  <strong aria-hidden="true" style={{ fontSize: '15.5px', fontWeight: 800, filter: 'blur(6px)', userSelect: 'none', lineHeight: 1.4 }}>{a.title}</strong>
-                  <button type="button" onClick={() => onRequireLogin?.('핏 2·3위 대회와 이유는 가입하면 볼 수 있어요.')} style={{ border: '1px solid var(--color-ink)', background: '#FFFFFF', color: 'var(--color-ink)', fontSize: '13px', fontWeight: 800, height: '40px', borderRadius: '10px', cursor: 'pointer' }}>
-                    가입하고 {i + 1}위 대회 보기
-                  </button>
-                </article>
-              );
-            }
             return (
               <article key={a.id} className="fit-result" style={{ border: i === 0 ? '1.5px solid var(--color-ink)' : '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
@@ -195,6 +178,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
                   <ChevronRight size={16} color="var(--text-tertiary)" style={{ flexShrink: 0 }} />
                 </button>
                 <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{a.host}</div>
+                <ActivityLine activity={activity[a.id]} />
 
                 <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
                   <strong style={{ color: 'var(--text-primary)' }}>이 점수인 이유</strong> {r.reasons.join(' · ')}
@@ -246,6 +230,17 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
               </article>
             );
           })}
+
+          {isGuest && results.length > 0 && (
+            <div className="fit-guest-cta" style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'var(--color-bg-gray)', borderRadius: '12px', padding: '14px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                <strong>대회 상세와 팀원 모집 글</strong>, 세특 활동 요약 초안은 가입하면 볼 수 있어요.
+              </div>
+              <button type="button" className="btn btn-primary" onClick={() => onRequireLogin?.('')} style={{ height: '44px', padding: '0 16px', fontSize: '14px' }}>
+                1분 가입하고 이어서 보기
+              </button>
+            </div>
+          )}
         </>
       )}
       {story && <StoryCardModal announcementId={story.id} data={story.data} onClose={() => setStory(null)} />}
