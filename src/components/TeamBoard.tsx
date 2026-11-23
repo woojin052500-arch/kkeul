@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { JoinRequest, Profile, TeamPost } from '../types';
 import { Bookmark, Check, Flag, Plus, Share2, ShieldOff, Users } from 'lucide-react';
-import { db } from '../supabaseClient';
+import { db, type AuthorStat, type PostQuestion } from '../supabaseClient';
 import { shareLink, teamPostUrl } from '../utils/share';
+import { SlotMeter } from './SlotMeter';
+import { PostQuestions } from './PostQuestions';
 
 type Role = '기획' | '디자인' | '개발';
 
@@ -50,6 +52,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [stats, setStats] = useState<Record<string, AuthorStat>>({});
+  const [questions, setQuestions] = useState<PostQuestion[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -57,6 +61,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
   const [showModal, setShowModal] = useState(false);
   const [myRole, setMyRole] = useState<Role>('개발');
   const [wantedRole, setWantedRole] = useState<Role>('기획');
+  const [slots, setSlots] = useState(1);
   const [comment, setComment] = useState('');
   const [contact, setContact] = useState('');
 
@@ -67,6 +72,10 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       setPosts(list);
       setLoaded(true);
       if (!profile) return;
+
+      // 글쓴이 활동 배지와 한 줄 질문 (못 받아도 게시판은 그대로 보여 준다)
+      db.getAuthorStats(list.map(p => p.user_id)).then(setStats);
+      db.getPostQuestions(list.map(p => p.id)).then(setQuestions).catch(() => {});
 
       const mine = await db.getMyJoinRequests(profile.id);
       setMyRequests(mine);
@@ -188,7 +197,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
         user_name: profile.name,
         role_wanted: wantedRole,
         my_role: myRole,
-        comment: comment.trim()
+        comment: comment.trim(),
+        slots
       });
       setPosts(prev => [created, ...prev]);
       setIncoming(prev => ({ ...prev, [created.id]: [] }));
@@ -218,6 +228,13 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
         ...prev,
         [req.post_id]: (prev[req.post_id] || []).map(r => (r.id === req.id ? { ...r, status } : r))
       }));
+      // 수락하면 채워진 자리가 하나 늘고, 수락했던 사람을 거절로 바꾸면 하나 준다
+      setPosts(prev => prev.map(p => {
+        if (p.id !== req.post_id) return p;
+        const was = req.status === 'accepted';
+        const delta = status === 'accepted' && !was ? 1 : status !== 'accepted' && was ? -1 : 0;
+        return { ...p, filled: Math.max(0, (p.filled ?? 0) + delta) };
+      }));
       if (status === 'accepted') {
         const c = await db.getContact(req.user_id);
         setContacts(prev => ({ ...prev, [req.user_id]: c }));
@@ -225,7 +242,11 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
     });
   };
 
-  const handleReport = (targetType: 'team_post' | 'join_request', targetId: string, postId?: string) => {
+  const reloadQuestions = () => {
+    db.getPostQuestions(posts.map(p => p.id)).then(setQuestions).catch(() => {});
+  };
+
+  const handleReport = (targetType: 'team_post' | 'join_request' | 'post_question', targetId: string, postId?: string) => {
     if (!profile) {
       alert('로그인 후 신고할 수 있어요.');
       return;
@@ -236,6 +257,8 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       await db.reportContent(targetType, targetId, reason.trim());
       if (targetType === 'team_post') {
         setPosts(prev => prev.filter(p => p.id !== targetId));
+      } else if (targetType === 'post_question') {
+        setQuestions(prev => prev.filter(q => q.id !== targetId));
       } else if (postId) {
         setIncoming(prev => ({ ...prev, [postId]: (prev[postId] || []).filter(r => r.id !== targetId) }));
       }
@@ -301,6 +324,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center', minWidth: 0 }}>
                   <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>{post.user_name}</span>
                   {isMine && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: '#F1EDE4', color: 'var(--text-secondary)', padding: '2px 5px', borderRadius: '4px' }}>내 구인글</span>}
+                  {isMine && questions.some(q => q.post_id === post.id && !q.answer) && <span style={{ fontSize: '9px', fontWeight: 800, backgroundColor: 'var(--color-red)', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px' }}>새 질문 {questions.filter(q => q.post_id === post.id && !q.answer).length}</span>}
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                   <span style={{ fontSize: '9.5px', fontWeight: 700, backgroundColor: mineColor.bg, color: mineColor.txt, padding: '2px 6px', borderRadius: '4px' }}>직무: {post.my_role}</span>
@@ -309,6 +333,22 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
               </div>
 
               <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{post.comment}</p>
+
+              {/* 모집 인원과 남은 자리 */}
+              <SlotMeter slots={post.slots} filled={post.filled} />
+
+              {/* 글쓴이 활동: 구간으로만 보여 준다 */}
+              {!isMine && (stats[post.user_id]?.active || stats[post.user_id]?.reply) && (
+                <div className="author-activity" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '11.5px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                  {stats[post.user_id]?.active && (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <span aria-hidden="true" style={{ width: '7px', height: '7px', borderRadius: '50%', background: stats[post.user_id]?.active === 'today' ? '#10B981' : '#C9C3B6' }} />
+                      {stats[post.user_id]?.active === 'today' ? '오늘 활동' : '이번 주 활동'}
+                    </span>
+                  )}
+                  {stats[post.user_id]?.reply && <span>· {stats[post.user_id]?.reply === 'day' ? '보통 하루 안에 답해요' : '보통 3일 안에 답해요'}</span>}
+                </div>
+              )}
 
               {/* 저장 · 공유 */}
               <div style={{ display: 'flex', gap: '6px' }}>
@@ -364,16 +404,24 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                 </div>
               )}
 
+              {/* 내 구인글: 받은 한 줄 질문에 답하기 */}
+              {isMine && profile && (
+                <PostQuestions postId={post.id} isMine askerName={profile.name} questions={questions} onChanged={reloadQuestions} onReport={(qid) => handleReport('post_question', qid)} onBlock={(uid, name) => handleBlock(uid, name)} />
+              )}
+
               {/* 남의 구인글: 합류 요청 + 신고/차단 */}
               {!isMine && (
                 <>
+                  {profile && (
+                    <PostQuestions postId={post.id} isMine={false} askerName={profile.name} questions={questions} onChanged={reloadQuestions} onReport={(qid) => handleReport('post_question', qid)} onBlock={(uid, name) => handleBlock(uid, name)} />
+                  )}
                   <button
                     onClick={() => handleJoin(post)}
-                    disabled={!!myReq || busy || !profile}
+                    disabled={!!myReq || busy || !profile || (post.filled ?? 0) >= (post.slots ?? 1)}
                     style={{ border: 'none', borderRadius: '8px', height: '36px', fontSize: '12px', fontWeight: 700, cursor: myReq ? 'default' : 'pointer', backgroundColor: myReq ? '#ECFDF5' : 'var(--color-indigo)', color: myReq ? '#10B981' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px' }}
                   >
                     {myReq ? <Check size={12} /> : null}
-                    {myReq ? `합류 요청 ${statusLabel[myReq.status || 'pending']}` : '팀 합류 요청 보내기'}
+                    {myReq ? `합류 요청 ${statusLabel[myReq.status || 'pending']}` : (post.filled ?? 0) >= (post.slots ?? 1) ? '모집 마감' : '팀 합류 요청 보내기'}
                   </button>
                   {myReq?.status === 'accepted' && (
                     <div style={{ fontSize: '12px', color: 'var(--text-primary)', background: '#ECFDF5', borderRadius: '8px', padding: '8px 10px' }}>
@@ -419,6 +467,13 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
                   <option value="디자인">디자인</option>
                   <option value="개발">개발</option>
                 </select>
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                몇 명을 구하나요?
+                <select value={slots} onChange={(e) => setSlots(Number(e.target.value))} style={{ padding: '10px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', background: '#FFFFFF' }}>
+                  {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n}명</option>)}
+                </select>
+                <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-tertiary)' }}>수락한 인원이 차면 자동으로 모집이 마감돼요.</span>
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 한 줄 소개 및 포부

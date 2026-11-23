@@ -93,7 +93,8 @@ const ROLE_DRAFT: Record<Role, string> = {
   기획: '문제를 정의하고 자료 조사와 역할 분담을 이끌어 팀의 방향을 잡음'
 };
 
-export const scoreAnnouncement = (a: Announcement, track: Track, level: Level, role: Role): FitResult | null => {
+// level, role 은 아직 고르지 않았으면 null. 계열만으로도 결과를 보여 주고, 고르면 더 정확해진다.
+export const scoreAnnouncement = (a: Announcement, track: Track, level: Level | null, role: Role | null): FitResult | null => {
   if (!a.deadline || isClosed(a.deadline)) return null;
   const cats = categoriesOf(a);
   const weights = TRACK_WEIGHTS[track];
@@ -108,17 +109,17 @@ export const scoreAnnouncement = (a: Announcement, track: Track, level: Level, r
   }
   if (best === 0) return null;
 
-  const fit = targetFit(a.target, level);
+  const fit = level ? targetFit(a.target, level) : 'open';
   if (fit === 'mismatch') return null;
 
   const reasons: string[] = [];
   let score = 50 + Math.round(35 * best);
   reasons.push(best >= 0.8 ? `${track} 계열과 잘 맞는 ${bestCat} 분야` : `${track} 계열과 이어지는 ${bestCat} 분야`);
 
-  if (fit === 'match') {
+  if (level && fit === 'match') {
     score += 6;
     reasons.push(`${level} 참가 가능`);
-  } else {
+  } else if (level) {
     score += 2;
     reasons.push('참가 대상 제한 없음');
   }
@@ -136,20 +137,22 @@ export const scoreAnnouncement = (a: Announcement, track: Track, level: Level, r
     }
   }
 
-  if (cats.some(c => ROLE_CATEGORIES[role].includes(c))) {
+  if (role && cats.some(c => ROLE_CATEGORIES[role].includes(c))) {
     score += 3;
     reasons.push(`${role} 역할이 필요한 대회`);
   }
 
   score = Math.min(score, 99);
 
-  const points = [...(POINTS[bestCat] || POINTS['기획/아이디어']), ROLE_POINT[role]].slice(0, 3);
-  const draft = `${a.title}에 참가하여 ${ROLE_DRAFT[role]}. 이 과정에서 ${TRACK_SUBJECT[track]} 교과에서 배운 내용을 실제 문제에 적용함.`;
+  const basePoints = POINTS[bestCat] || POINTS['기획/아이디어'];
+  const points = (role ? [...basePoints, ROLE_POINT[role]] : basePoints).slice(0, 3);
+  const doing = role ? ROLE_DRAFT[role] : '팀원들과 역할을 나누어 과제를 해결하는 과정에 참여함';
+  const draft = `${a.title}에 참가하여 ${doing}. 이 과정에서 ${TRACK_SUBJECT[track]} 교과에서 배운 내용을 실제 문제에 적용함.`;
 
   return { announcement: a, score, reasons, points, draft };
 };
 
-export const findBestFits = (announcements: Announcement[], track: Track, level: Level, role: Role, limit = 3): FitResult[] =>
+export const findBestFits = (announcements: Announcement[], track: Track, level: Level | null, role: Role | null, limit = 3): FitResult[] =>
   announcements
     .map(a => scoreAnnouncement(a, track, level, role))
     .filter((r): r is FitResult => !!r)

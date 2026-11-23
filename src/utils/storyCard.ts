@@ -150,7 +150,7 @@ export const drawStoryCard = async (data: StoryCardData): Promise<HTMLCanvasElem
   // 내가 고른 값
   let x = left + foundW + 40;
   ctx.font = `700 32px ${FONT}`;
-  for (const chip of [data.track, data.level, data.role]) {
+  for (const chip of [data.track, data.level, data.role].filter(Boolean)) {
     const w = ctx.measureText(chip).width + 44;
     if (x + w > right) break;
     ctx.lineWidth = 4;

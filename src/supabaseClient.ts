@@ -801,7 +801,7 @@ if (!localStorage.getItem('kkeul_join_requests')) {
 }
 
 export interface AdminReport {
-  target_type: 'team_post' | 'join_request';
+  target_type: 'team_post' | 'join_request' | 'post_question';
   target_id: string;
   report_count: number;
   last_reported_at: string;
@@ -858,6 +858,8 @@ export interface InterestCount {
 }
 
 export interface AdminTeamPost {
+  slots?: number;
+  filled?: number;
   id: string;
   announcement_id: string;
   user_id: string;
@@ -870,6 +872,27 @@ export interface AdminTeamPost {
   request_count: number;
   report_count: number;
   author_suspended: boolean;
+}
+
+export interface ContestActivity {
+  post_count: number;
+  latest_post_at: string | null;
+  interest_total: number;
+}
+
+export interface AuthorStat {
+  active: 'today' | 'week' | null;
+  reply: 'day' | 'three' | null;
+}
+export interface PostQuestion {
+  id: string;
+  post_id: string;
+  asker_id: string;
+  asker_name: string;
+  question: string;
+  answer: string | null;
+  answered_at: string | null;
+  created_at: string;
 }
 
 export interface AdminSuspendedUser {
@@ -1471,6 +1494,77 @@ export const db = {
     }
   },
 
+  // 대회 카드에 보여 줄 팀 모집 활동(글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
+  async getContestActivity(announcementIds: string[]): Promise<Record<string, ContestActivity>> {
+    const ids = [...new Set(announcementIds)].slice(0, 300);
+    if (ids.length === 0) return {};
+    try {
+      const { data, error } = await supabase.rpc('contest_activity', { p_ids: ids });
+      if (error) return {};
+      return Object.fromEntries(
+        ((data || []) as { announcement_id: string; post_count: number; latest_post_at: string | null; interest_total: number }[])
+          .map(r => [r.announcement_id, { post_count: r.post_count, latest_post_at: r.latest_post_at, interest_total: r.interest_total }])
+      );
+    } catch {
+      return {};
+    }
+  },
+
+  // ---- 글쓴이 활동 배지, 한 줄 질문 ----
+  // 앱을 열 때 한 번 부른다. 실패해도 아무 일도 없다.
+  async touchActivity(): Promise<void> {
+    try {
+      const uid = await getSessionUserId();
+      if (uid) await supabase.rpc('touch_activity');
+    } catch {
+      // 활동 시각은 없어도 된다
+    }
+  },
+
+  // 글쓴이들의 활동 구간(오늘/이번 주)과 답장 속도. 못 받으면 빈 값.
+  async getAuthorStats(userIds: string[]): Promise<Record<string, AuthorStat>> {
+    const ids = [...new Set(userIds)].slice(0, 200);
+    if (ids.length === 0) return {};
+    try {
+      const { data, error } = await supabase.rpc('team_author_stats', { p_user_ids: ids });
+      if (error) return {};
+      return Object.fromEntries(((data || []) as { user_id: string; active: AuthorStat['active']; reply: AuthorStat['reply'] }[]).map(r => [r.user_id, { active: r.active, reply: r.reply }]));
+    } catch {
+      return {};
+    }
+  },
+
+  // 내가 보낸 질문과 내 글에 온 질문 (DB가 두 경우만 돌려줌)
+  async getPostQuestions(postIds: string[]): Promise<PostQuestion[]> {
+    const uid = await getSessionUserId();
+    if (!uid || postIds.length === 0) return [];
+    const { data, error } = await supabase
+      .from('post_questions')
+      .select('id, post_id, asker_id, asker_name, question, answer, answered_at, created_at')
+      .in('post_id', postIds)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return (data || []) as PostQuestion[];
+  },
+
+  async askQuestion(postId: string, askerName: string, question: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) throw new Error('로그인이 필요해요.');
+    const { error } = await supabase.from('post_questions').insert({ post_id: postId, asker_id: uid, asker_name: askerName, question });
+    if (error) throw await explainWriteError(error);
+  },
+
+  async answerQuestion(questionId: string, answer: string): Promise<void> {
+    const { data, error } = await supabase.from('post_questions').update({ answer }).eq('id', questionId).select('id');
+    if (error) throw await explainWriteError(error);
+    if (!data || data.length === 0) throw new Error('이 질문에 답할 수 없어요.');
+  },
+
+  async deleteQuestion(questionId: string): Promise<void> {
+    const { error } = await supabase.from('post_questions').delete().eq('id', questionId);
+    if (error) throw await explainWriteError(error);
+  },
+
   // ---- 구인글 저장 ----
   async getSavedTeamPostIds(): Promise<string[]> {
     const uid = await getSessionUserId();
@@ -1501,9 +1595,25 @@ export const db = {
       .select('created_at, team_posts(*)')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return (data || [])
+    const posts = (data || [])
       .map((r: { team_posts: TeamPost | TeamPost[] | null }) => (Array.isArray(r.team_posts) ? r.team_posts[0] : r.team_posts))
       .filter((p): p is TeamPost => !!p && !p.is_hidden);
+    return db.withSlots(posts);
+  },
+
+  // 구인글에 모집 인원과 채워진 자리를 붙인다. 자리 수를 못 받아도 글은 그대로 보여 준다.
+  async withSlots(posts: TeamPost[]): Promise<TeamPost[]> {
+    if (posts.length === 0) return posts;
+    let counts: Record<string, number> = {};
+    try {
+      const { data, error } = await supabase.rpc('team_post_slot_counts', { p_post_ids: posts.map(p => p.id) });
+      if (!error) {
+        counts = Object.fromEntries(((data || []) as { post_id: string; filled: number }[]).map(r => [r.post_id, r.filled]));
+      }
+    } catch {
+      // 자리 수는 없는 것으로 본다
+    }
+    return posts.map(p => ({ ...p, slots: p.slots ?? 1, filled: counts[p.id] ?? 0 }));
   },
 
   async getTeamPosts(announcementId: string): Promise<TeamPost[]> {
@@ -1515,12 +1625,14 @@ export const db = {
         .eq('announcement_id', announcementId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data || []) as TeamPost[];
+      return db.withSlots((data || []) as TeamPost[]);
     }
     const blocked = readLocal<string[]>(LOCAL_KEYS.BLOCKS, []);
+    const accepted = readLocal<JoinRequest[]>('kkeul_join_requests', []).filter(r => r.status === 'accepted');
     return readLocal<TeamPost[]>('kkeul_team_posts', [])
       .filter(p => p.announcement_id === announcementId)
-      .filter(p => !p.is_hidden && !blocked.includes(p.user_id));
+      .filter(p => !p.is_hidden && !blocked.includes(p.user_id))
+      .map(p => ({ ...p, slots: p.slots ?? 1, filled: accepted.filter(r => r.post_id === p.id).length }));
   },
 
   // 12-1. 대회의 구인글 개수 (비회원 안내용. 글 내용은 주지 않는다)
@@ -1531,7 +1643,7 @@ export const db = {
   },
 
   // 13. 팀 빌딩 구인글 작성
-  async createTeamPost(post: Pick<TeamPost, 'announcement_id' | 'user_id' | 'user_name' | 'role_wanted' | 'my_role' | 'comment'>): Promise<TeamPost> {
+  async createTeamPost(post: Pick<TeamPost, 'announcement_id' | 'user_id' | 'user_name' | 'role_wanted' | 'my_role' | 'comment' | 'slots'>): Promise<TeamPost> {
     const uid = await getSessionUserId();
     if (uid) {
       const { data, error } = await supabase
@@ -1540,7 +1652,7 @@ export const db = {
         .select('*')
         .single();
       if (error) throw await explainWriteError(error);
-      return data as TeamPost;
+      return { ...(data as TeamPost), slots: (data as TeamPost).slots ?? post.slots ?? 1, filled: 0 };
     }
     const fullPost: TeamPost = { ...post, id: localId('team-post'), created_at: new Date().toISOString() };
     writeLocal('kkeul_team_posts', [fullPost, ...readLocal<TeamPost[]>('kkeul_team_posts', [])]);
@@ -1602,7 +1714,7 @@ export const db = {
         .update({ status, updated_at: new Date().toISOString() })
         .eq('id', requestId)
         .select('id');
-      if (error) throw error;
+      if (error) throw await explainWriteError(error);
       if (!data || data.length === 0) throw new Error('이 요청의 상태를 바꿀 권한이 없어요.');
       return;
     }
@@ -1611,7 +1723,7 @@ export const db = {
   },
 
   // 15-3. 신고 → DB 트리거가 대상을 즉시 숨김
-  async reportContent(targetType: 'team_post' | 'join_request', targetId: string, reason: string): Promise<void> {
+  async reportContent(targetType: 'team_post' | 'join_request' | 'post_question', targetId: string, reason: string): Promise<void> {
     const uid = await getSessionUserId();
     if (uid) {
       const { error } = await supabase
@@ -1621,7 +1733,7 @@ export const db = {
       if (error && error.code !== '23505') throw error;
       return;
     }
-    const key = targetType === 'team_post' ? 'kkeul_team_posts' : 'kkeul_join_requests';
+    const key = targetType === 'team_post' ? 'kkeul_team_posts' : targetType === 'join_request' ? 'kkeul_join_requests' : 'kkeul_post_questions';
     const items = readLocal<Array<{ id: string; is_hidden?: boolean }>>(key, []);
     writeLocal(key, items.map(it => (it.id === targetId ? { ...it, is_hidden: true } : it)));
   },

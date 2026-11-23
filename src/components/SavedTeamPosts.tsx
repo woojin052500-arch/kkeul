@@ -4,6 +4,7 @@ import type { Announcement, TeamPost } from '../types';
 import { db } from '../supabaseClient';
 import { shareLink, teamPostUrl } from '../utils/share';
 import { getDDay } from '../utils/dday';
+import { SlotMeter } from './SlotMeter';
 
 interface SavedTeamPostsProps {
   announcements: Announcement[];
@@ -99,6 +100,7 @@ export const SavedTeamPosts: React.FC<SavedTeamPostsProps> = ({ announcements, o
               {post.role_wanted} 팀원 구해요 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>· {post.user_name} ({post.my_role})</span>
             </div>
             <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{post.comment}</p>
+            <SlotMeter slots={post.slots} filled={post.filled} compact />
             <div style={{ display: 'flex', gap: '6px' }} onClick={(e) => e.stopPropagation()}>
               <button type="button" style={smallBtn} onClick={() => share(post)}><Share2 size={11} /> {copied === post.id ? '링크 복사됨' : '공유'}</button>
               <button type="button" style={smallBtn} onClick={() => unsave(post)}><Bookmark size={11} fill="currentColor" /> 저장 취소</button>
