@@ -211,7 +211,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ announcements, onAnnounc
               {reports.map(r => (
                 <article key={`${r.target_type}-${r.target_id}`} className="admin-card">
                   <div className="admin-card-top">
-                    <span className="admin-tag">{r.target_type === 'team_post' ? '구인글' : r.target_type === 'post_question' ? '한 줄 질문' : '합류 요청'}</span>
+                    <span className="admin-tag">{r.target_type === 'team_post' ? '구인글' : r.target_type === 'post_question' ? '한 줄 질문' : r.target_type === 'contest_interest' ? '명단 소개' : r.target_type === 'teamup_request' ? '같이 나갈래요 메시지' : '합류 요청'}</span>
                     <span className="admin-meta">신고 {r.report_count}건 · {formatDate(r.last_reported_at)}</span>
                   </div>
                   <p className="admin-content">{r.target_exists ? r.content || '(내용 없음)' : '(이미 삭제된 글)'}</p>

@@ -3,6 +3,7 @@ import type { Announcement, Profile } from '../types';
 import { TeamBoard } from './TeamBoard';
 import { GuestTeamTeaser } from './GuestTeamTeaser';
 import { InterestBar } from './InterestBar';
+import { TeamupRoster } from './TeamupRoster';
 import { AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
 import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Copy, Zap, FileText } from 'lucide-react';
@@ -55,6 +56,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
   }, [focusTeamBoard, announcement.id]);
 
   const [showCheckmark, setShowCheckmark] = useState<boolean>(false);
+  // 나도 나갈래요가 바뀔 때마다 올라가는 값 (함께 나갈 사람 명단을 다시 불러온다)
+  const [interestTick, setInterestTick] = useState(0);
   // 이미지를 못 불러온 공고 ID (다른 공고로 바뀌면 다시 시도)
   const [posterFailedId, setPosterFailedId] = useState<string | null>(null);
   const posterFailed = posterFailedId === announcement.id;
@@ -957,8 +960,10 @@ export const DetailView: React.FC<DetailViewProps> = ({
                     announcementId={announcement.id}
                     isGuest={isGuest}
                     onRequireLogin={(reason) => onRequireLogin?.(reason)}
+                    onChanged={() => setInterestTick(t => t + 1)}
                   />
                 )}
+                {!isHostUser && !isGuest && profile && <TeamupRoster key={announcement.id} announcementId={announcement.id} profile={profile} tick={interestTick} />}
                 {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={focusPostId} />}
                 {!isHostUser && isGuest && <GuestTeamTeaser announcementId={announcement.id} onRequireLogin={(reason) => onRequireLogin?.(reason)} />}
               </div>

@@ -801,7 +801,7 @@ if (!localStorage.getItem('kkeul_join_requests')) {
 }
 
 export interface AdminReport {
-  target_type: 'team_post' | 'join_request' | 'post_question';
+  target_type: 'team_post' | 'join_request' | 'post_question' | 'contest_interest' | 'teamup_request';
   target_id: string;
   report_count: number;
   last_reported_at: string;
@@ -878,6 +878,30 @@ export interface ContestActivity {
   post_count: number;
   latest_post_at: string | null;
   interest_total: number;
+}
+
+export interface RosterEntry {
+  id: string;
+  user_id: string;
+  user_name: string;
+  role: TeamRole;
+  intro: string;
+  created_at: string;
+}
+export interface TeamupRequest {
+  id: string;
+  announcement_id: string;
+  from_user_id: string;
+  from_name: string;
+  to_user_id: string;
+  message: string | null;
+  status: 'pending' | 'accepted' | 'declined';
+  created_at: string;
+}
+export interface MyInterestInfo {
+  role: TeamRole;
+  intro: string | null;
+  listed: boolean;
 }
 
 export interface AuthorStat {
@@ -1494,6 +1518,83 @@ export const db = {
     }
   },
 
+  // ---- 함께 나갈 사람 명단, 같이 나갈래요 ----
+  // 한 줄 소개를 올린 사람만 나온다 (회원만 조회 가능, 나·차단·정지된 사람은 DB가 뺌)
+  async getRoster(announcementId: string): Promise<RosterEntry[]> {
+    const uid = await getSessionUserId();
+    if (!uid) return [];
+    const { data, error } = await supabase.rpc('contest_roster', { p_announcement_id: announcementId });
+    if (error) throw new Error(error.message);
+    return (data || []) as RosterEntry[];
+  },
+
+  async getMyInterestInfo(announcementId: string): Promise<MyInterestInfo | null> {
+    const uid = await getSessionUserId();
+    if (!uid) return null;
+    const { data, error } = await supabase
+      .from('contest_interests')
+      .select('role, intro, listed')
+      .eq('announcement_id', announcementId)
+      .maybeSingle();
+    if (error) throw error;
+    return data ? (data as MyInterestInfo) : null;
+  },
+
+  // 소개를 쓰면 명단에 올라가고, 비우면 명단에서 내려간다
+  async setMyIntro(announcementId: string, intro: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) throw new Error('로그인이 필요해요.');
+    const text = intro.trim();
+    const { data, error } = await supabase
+      .from('contest_interests')
+      .update({ intro: text || null, listed: !!text })
+      .eq('announcement_id', announcementId)
+      .select('announcement_id');
+    if (error) throw await explainWriteError(error);
+    if (!data || data.length === 0) throw new Error('먼저 "나도 나갈래요"를 눌러 주세요.');
+  },
+
+  // 내가 보낸 요청과 나에게 온 요청 (DB가 두 경우만 돌려줌)
+  async getTeamupRequests(announcementId: string): Promise<TeamupRequest[]> {
+    const uid = await getSessionUserId();
+    if (!uid) return [];
+    const { data, error } = await supabase
+      .from('teamup_requests')
+      .select('id, announcement_id, from_user_id, from_name, to_user_id, message, status, created_at')
+      .eq('announcement_id', announcementId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data || []) as TeamupRequest[];
+  },
+
+  async sendTeamupRequest(announcementId: string, toUserId: string, fromName: string, message: string): Promise<void> {
+    const uid = await getSessionUserId();
+    if (!uid) throw new Error('로그인이 필요해요.');
+    const { error } = await supabase.from('teamup_requests').insert({
+      announcement_id: announcementId,
+      from_user_id: uid,
+      from_name: fromName,
+      to_user_id: toUserId,
+      message: message.trim() || null
+    });
+    if (error) throw await explainWriteError(error);
+  },
+
+  async respondTeamup(requestId: string, status: 'accepted' | 'declined'): Promise<void> {
+    const { data, error } = await supabase
+      .from('teamup_requests')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', requestId)
+      .select('id');
+    if (error) throw await explainWriteError(error);
+    if (!data || data.length === 0) throw new Error('이 요청에 답할 수 없어요.');
+  },
+
+  async cancelTeamup(requestId: string): Promise<void> {
+    const { error } = await supabase.from('teamup_requests').delete().eq('id', requestId);
+    if (error) throw await explainWriteError(error);
+  },
+
   // 대회 카드에 보여 줄 팀 모집 활동(글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
   async getContestActivity(announcementIds: string[]): Promise<Record<string, ContestActivity>> {
     const ids = [...new Set(announcementIds)].slice(0, 300);
@@ -1723,7 +1824,7 @@ export const db = {
   },
 
   // 15-3. 신고 → DB 트리거가 대상을 즉시 숨김
-  async reportContent(targetType: 'team_post' | 'join_request' | 'post_question', targetId: string, reason: string): Promise<void> {
+  async reportContent(targetType: 'team_post' | 'join_request' | 'post_question' | 'contest_interest' | 'teamup_request', targetId: string, reason: string): Promise<void> {
     const uid = await getSessionUserId();
     if (uid) {
       const { error } = await supabase
@@ -1733,7 +1834,7 @@ export const db = {
       if (error && error.code !== '23505') throw error;
       return;
     }
-    const key = targetType === 'team_post' ? 'kkeul_team_posts' : targetType === 'join_request' ? 'kkeul_join_requests' : 'kkeul_post_questions';
+    const key = targetType === 'team_post' ? 'kkeul_team_posts' : targetType === 'join_request' ? 'kkeul_join_requests' : targetType === 'post_question' ? 'kkeul_post_questions' : 'kkeul_teamup';
     const items = readLocal<Array<{ id: string; is_hidden?: boolean }>>(key, []);
     writeLocal(key, items.map(it => (it.id === targetId ? { ...it, is_hidden: true } : it)));
   },

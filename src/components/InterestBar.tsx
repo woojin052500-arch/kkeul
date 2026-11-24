@@ -15,6 +15,8 @@ interface InterestBarProps {
   initialCount?: InterestCount;
   initialRole?: TeamRole | null;
   compact?: boolean;
+  // 나갈래요를 누르거나 취소해서 값이 바뀐 뒤에 부른다 (함께 나갈 사람 명단을 다시 불러오는 데 쓴다)
+  onChanged?: () => void;
 }
 
 const chip: React.CSSProperties = {
@@ -24,7 +26,7 @@ const chip: React.CSSProperties = {
 
 // "나도 나갈래요": 구인글을 쓰지 않아도 한 번 눌러 이 대회에 나갈 사람으로 표시한다.
 // 다른 사람에게는 역할별 인원수만 보인다.
-export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGuest = false, onRequireLogin, defaultRole, initialCount, initialRole, compact = false }) => {
+export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGuest = false, onRequireLogin, defaultRole, initialCount, initialRole, compact = false, onChanged }) => {
   const [count, setCount] = useState<InterestCount>(initialCount || EMPTY);
   const [myRole, setMyRole] = useState<TeamRole | null>(initialRole ?? null);
   const [picking, setPicking] = useState(false);
@@ -65,6 +67,7 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
     setBusy(true);
     try {
       await db.setInterest(announcementId, role);
+      onChanged?.();
     } catch (err) {
       setMyRole(prevRole);
       setCount(prevCount);
