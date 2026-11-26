@@ -25,6 +25,8 @@ interface DetailViewProps {
   focusTeamBoard?: boolean;
   // 공유 링크로 들어온 구인글
   focusPostId?: string | null;
+  // 카드에서 '첫 팀장 되기'로 들어왔을 때: 팀 빌딩 게시판의 구인글 작성창을 바로 연다
+  composeTeamPost?: boolean;
   // 가입하지 않고 둘러보는 중
   isGuest?: boolean;
   onRequireLogin?: (reason: string) => void;
@@ -43,6 +45,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
   backRef,
   focusTeamBoard,
   focusPostId,
+  composeTeamPost,
   isGuest = false,
   onRequireLogin
 }) => {
@@ -959,7 +962,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                     onRequireLogin={(reason) => onRequireLogin?.(reason)}
                   />
                 )}
-                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={focusPostId} />}
+                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={focusPostId} autoCompose={composeTeamPost} />}
                 {!isHostUser && isGuest && <GuestTeamTeaser announcementId={announcement.id} onRequireLogin={(reason) => onRequireLogin?.(reason)} />}
               </div>
             )}

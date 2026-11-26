@@ -65,6 +65,10 @@ interface MainFeedProps {
   onSelectAnnouncement: (announcement: Announcement) => void;
   // 저장한 구인글을 눌렀을 때 그 대회의 팀 빌딩 게시판으로
   onOpenTeamPost?: (announcementId: string, postId: string) => void;
+  // 카드의 '팀원 모집 N건'을 눌렀을 때 그 대회의 팀원 모집 목록으로
+  onOpenTeamBoard?: (announcement: Announcement) => void;
+  // 카드의 '첫 팀장 되기'를 눌렀을 때 그 대회로 팀원 모집 글을 쓰도록
+  onComposeTeamPost?: (announcement: Announcement) => void;
   onToggleBookmark: (id: string) => void;
   onLogout: () => void;
   onWithdraw: () => void;
@@ -89,6 +93,8 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   bookmarks,
   onSelectAnnouncement,
   onOpenTeamPost,
+  onOpenTeamBoard,
+  onComposeTeamPost,
   onToggleBookmark,
   onLogout,
   onWithdraw,
@@ -853,8 +859,10 @@ export const MainFeed: React.FC<MainFeedProps> = ({
       });
   }, [announcements, bookmarks, activeTab, selectedCategory, studentInterests, profile.location, passedIds, viewMode, premiumLockedAnnouncement, getMatchScore]);
 
-  // 리스트에 보이는 대회들의 팀 모집 활동 (글 수, 나갈래요 수, 최근 새 글). 회원 리스트에서만 쓴다.
+  // 리스트에 보이는 대회들의 팀 모집 활동 (모집 중인 글 수, 나갈래요 수, 최근 새 글). 회원 리스트에서만 쓴다.
   const [contestActivity, setContestActivity] = useState<Record<string, ContestActivity>>({});
+  // 지금 목록의 활동 집계를 다 받았는지. 못 받은 상태에서 '0건'으로 단정하지 않으려고 둔다.
+  const [activityLoadedKey, setActivityLoadedKey] = useState<string | null>(null);
   const activityIds = useMemo(
     () => studentMatchedAnnouncements.filter(a => a.id !== 'ann-premium-locked').slice(0, 300).map(a => a.id),
     [studentMatchedAnnouncements]
@@ -863,11 +871,18 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   useEffect(() => {
     if (isGuest || activeTab !== 'home' || viewMode !== 'list' || !activityKey) return;
     let alive = true;
-    db.getContestActivity(activityKey.split(',')).then(a => alive && setContestActivity(prev => ({ ...prev, ...a })));
+    db.getContestActivity(activityKey.split(',')).then(({ ok, byId }) => {
+      if (!alive) return;
+      if (ok) {
+        setContestActivity(prev => ({ ...prev, ...byId }));
+        setActivityLoadedKey(activityKey);
+      }
+    });
     return () => {
       alive = false;
     };
   }, [activityKey, isGuest, activeTab, viewMode]);
+  const activityReady = activityLoadedKey === activityKey;
 
   // Host announcements (registered by this host)
   const hostAnnouncements = announcements.filter(ann => ann.host === profile.name);
@@ -1777,7 +1792,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                                 {ann.location}
                               </span>
                             </div>
-                            <ActivityLine activity={contestActivity[ann.id]} />
+                            <ActivityLine
+                              activity={contestActivity[ann.id]}
+                              allowStart={!isClosed(ann.deadline)}
+                              onOpenRoster={activityReady && onOpenTeamBoard ? () => onOpenTeamBoard(ann) : undefined}
+                              onStartTeam={activityReady && onComposeTeamPost ? () => onComposeTeamPost(ann) : undefined}
+                            />
                           </div>
                           </React.Fragment>
                         );
