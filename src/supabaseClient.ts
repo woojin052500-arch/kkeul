@@ -875,7 +875,10 @@ export interface AdminTeamPost {
 }
 
 export interface ContestActivity {
+  // 그 대회에 올라온 구인글 전체 (숨김·정지 글 제외)
   post_count: number;
+  // 그중 아직 자리가 남아 모집 중인 글
+  open_post_count: number;
   latest_post_at: string | null;
   interest_total: number;
 }
@@ -1494,16 +1497,21 @@ export const db = {
     }
   },
 
-  // 대회 카드에 보여 줄 팀 모집 활동(글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
+  // 대회 카드에 보여 줄 팀 모집 활동(모집 중인 글 수, 글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
   async getContestActivity(announcementIds: string[]): Promise<Record<string, ContestActivity>> {
     const ids = [...new Set(announcementIds)].slice(0, 300);
     if (ids.length === 0) return {};
     try {
-      const { data, error } = await supabase.rpc('contest_activity', { p_ids: ids });
+      const { data, error } = await supabase.rpc('contest_team_signal', { p_ids: ids });
       if (error) return {};
+      type Row = { announcement_id: string; post_count: number; open_post_count: number; latest_post_at: string | null; interest_total: number };
       return Object.fromEntries(
-        ((data || []) as { announcement_id: string; post_count: number; latest_post_at: string | null; interest_total: number }[])
-          .map(r => [r.announcement_id, { post_count: r.post_count, latest_post_at: r.latest_post_at, interest_total: r.interest_total }])
+        ((data || []) as Row[]).map(r => [r.announcement_id, {
+          post_count: r.post_count,
+          open_post_count: r.open_post_count,
+          latest_post_at: r.latest_post_at,
+          interest_total: r.interest_total
+        }])
       );
     } catch {
       return {};

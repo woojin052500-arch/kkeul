@@ -5,7 +5,7 @@ import type { Announcement } from '../types';
 //   /team?name=<대회명>            → 대회명으로 찾아서 팀 빌딩 게시판 (콘테스트코리아 연동용)
 //   /p/<프로필 ID 앞 8자리>         → 명함 QR 공개 프로필
 export type DeepLink =
-  | { kind: 'contest'; id: string; postId?: string }
+  | { kind: 'contest'; id: string; postId?: string; compose?: boolean }
   | { kind: 'team'; name: string }
   | { kind: 'profile'; shortId: string };
 
