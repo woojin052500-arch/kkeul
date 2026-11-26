@@ -28,7 +28,7 @@ const badgeBase: React.CSSProperties = {
 
 // 대회 카드 아래 한 줄: 지금 모집 중인 팀원 글 수, 나갈래요 수, 최근 새 글.
 // 모집 중인 글이 있으면 그 대회의 팀원 모집 목록으로, 없으면 이 대회 첫 팀장이 되는 글로 이어진다.
-// 활동 집계를 아직 못 받았거나 글이 하나도 없는 대회는 "모집 중인 글 0건"으로 본다.
+// 집계 행이 없는 대회는 글이 없는 대회로 본다. 집계 자체를 못 받았을 때는 호출부가 버튼을 넘기지 않는다.
 export const ActivityLine: React.FC<ActivityLineProps> = ({ activity, allowStart = true, onOpenRoster, onStartTeam }) => {
   const openCount = activity?.open_post_count ?? 0;
   const postCount = activity?.post_count ?? 0;
@@ -37,7 +37,7 @@ export const ActivityLine: React.FC<ActivityLineProps> = ({ activity, allowStart
 
   const showRoster = openCount > 0;
   const showStart = !showRoster && allowStart && !!onStartTeam;
-  if (!showRoster && !showStart && interestTotal <= 0) return null;
+  if (!showRoster && !showStart && interestTotal <= 0 && postCount <= 0) return null;
 
   const handle = (e: React.MouseEvent, action?: () => void) => {
     // 카드 전체를 누르면 상세로 가는 기존 동선을 건드리지 않는다
