@@ -1497,15 +1497,16 @@ export const db = {
     }
   },
 
-  // 대회 카드에 보여 줄 팀 모집 활동(모집 중인 글 수, 글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
-  async getContestActivity(announcementIds: string[]): Promise<Record<string, ContestActivity>> {
+  // 대회 카드에 보여 줄 팀 모집 활동(모집 중인 글 수, 글 수, 나갈래요 수, 최근 글).
+  // ok 는 집계를 실제로 받았는지다. 못 받았을 때 "모집 중인 글 0건"으로 단정하지 않으려고 함께 돌려준다.
+  async getContestActivity(announcementIds: string[]): Promise<{ ok: boolean; byId: Record<string, ContestActivity> }> {
     const ids = [...new Set(announcementIds)].slice(0, 300);
-    if (ids.length === 0) return {};
+    if (ids.length === 0) return { ok: false, byId: {} };
     try {
       const { data, error } = await supabase.rpc('contest_team_signal', { p_ids: ids });
-      if (error) return {};
+      if (error) return { ok: false, byId: {} };
       type Row = { announcement_id: string; post_count: number; open_post_count: number; latest_post_at: string | null; interest_total: number };
-      return Object.fromEntries(
+      const byId: Record<string, ContestActivity> = Object.fromEntries(
         ((data || []) as Row[]).map(r => [r.announcement_id, {
           post_count: r.post_count,
           open_post_count: r.open_post_count,
@@ -1513,8 +1514,9 @@ export const db = {
           interest_total: r.interest_total
         }])
       );
+      return { ok: true, byId };
     } catch {
-      return {};
+      return { ok: false, byId: {} };
     }
   },
 

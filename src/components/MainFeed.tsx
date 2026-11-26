@@ -871,10 +871,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
   useEffect(() => {
     if (isGuest || activeTab !== 'home' || viewMode !== 'list' || !activityKey) return;
     let alive = true;
-    db.getContestActivity(activityKey.split(',')).then(a => {
+    db.getContestActivity(activityKey.split(',')).then(({ ok, byId }) => {
       if (!alive) return;
-      setContestActivity(prev => ({ ...prev, ...a }));
-      setActivityLoadedKey(activityKey);
+      if (ok) {
+        setContestActivity(prev => ({ ...prev, ...byId }));
+        setActivityLoadedKey(activityKey);
+      }
     });
     return () => {
       alive = false;
