@@ -29,6 +29,7 @@ import { FitFinder } from './FitFinder';
 import { GuestHomeGate } from './GuestHomeGate';
 import { ActivityLine } from './ActivityLine';
 import { ReferralCard } from './ReferralCard';
+import { WeeklyPopularRanking } from './WeeklyPopularRanking';
 
 
 const BADGE_DETAILS: Record<string, { emoji: React.ReactNode; color: string; neonColor: string; criteria: string }> = {
@@ -1106,6 +1107,12 @@ export const MainFeed: React.FC<MainFeedProps> = ({
                 announcements={announcements}
                 isGuest={isGuest}
                 onRequireLogin={onRequireLogin}
+                onSelectAnnouncement={onSelectAnnouncement}
+              />
+            )}
+            {!showSimulation && (
+              <WeeklyPopularRanking
+                announcements={announcements}
                 onSelectAnnouncement={onSelectAnnouncement}
               />
             )}
