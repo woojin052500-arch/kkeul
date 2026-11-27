@@ -60,6 +60,8 @@ function App() {
   const [focusPostId, setFocusPostId] = useState<string | null>(null);
   // 대회 카드의 '첫 팀장 되기'로 들어와 구인글 작성창을 바로 여는 중인지
   const [composeTeamPost, setComposeTeamPost] = useState(false);
+  // 친구 초대 링크로 들어온 경우: 어느 대회의 초대인지 (그 대회 상세에서만 배너를 띄운다)
+  const [inviteTarget, setInviteTarget] = useState<{ announcementId: string; inviterName?: string; postId?: string } | null>(null);
   // 가입하지 않은 방문자는 둘러보기(비회원) 모드로 본다
   const isGuest = !profile;
   const viewProfile = profile ?? GUEST_PROFILE;
@@ -153,7 +155,14 @@ function App() {
       if (pending && !deepLinkPrompted.current) {
         deepLinkPrompted.current = true;
         const target = findAnnouncementForLink(pending, announcements);
-        setLoginPrompt(target ? `'${target.title}' 상세와 팀원 모집 글은 가입하면 볼 수 있어요.` : '가입하면 대회 상세와 팀원 모집 글을 볼 수 있어요.');
+        const invited = pending.kind === 'contest' && pending.invite === true;
+        if (target && invited) {
+          // 친구가 보낸 초대 링크: 누가 불렀는지 먼저 말해 준다
+          const who = pending.kind === 'contest' && pending.inviterName ? `${pending.inviterName}님이 ` : '친구가 ';
+          setLoginPrompt(`${who}'${target.title}'에 같이 나가자고 초대했어요. 가입하면 바로 열려요.`);
+        } else {
+          setLoginPrompt(target ? `'${target.title}' 상세와 팀원 모집 글은 가입하면 볼 수 있어요.` : '가입하면 대회 상세와 팀원 모집 글을 볼 수 있어요.');
+        }
       }
       return;
     }
@@ -161,10 +170,13 @@ function App() {
     if (!link) return;
     const ann = findAnnouncementForLink(link, announcements);
     if (ann) {
+      // 초대 링크면 상세 위쪽 배너로 안내한다 (게시판으로 바로 내려가지 않는다)
+      const invited = link.kind === 'contest' && link.invite === true;
       setSelectedAnnouncement(ann);
-      setFocusTeamBoard(true);
-      setFocusPostId(link.kind === 'contest' ? link.postId || null : null);
-      setComposeTeamPost(link.kind === 'contest' && link.compose === true);
+      setInviteTarget(invited ? { announcementId: ann.id, inviterName: link.inviterName, postId: link.postId } : null);
+      setFocusTeamBoard(!invited);
+      setFocusPostId(invited ? null : link.kind === 'contest' ? link.postId || null : null);
+      setComposeTeamPost(!invited && link.kind === 'contest' && link.compose === true);
       setScreen('detail');
     } else {
       alert('끌에 아직 등록되지 않은 대회예요. 비슷한 대회를 홈에서 찾아보세요.');
@@ -773,6 +785,7 @@ function App() {
           }}
           onOpenAnnouncement={(ann) => {
             setSelectedAnnouncement(ann);
+            setInviteTarget(null);
             setFocusTeamBoard(false);
             setFocusPostId(null);
             setComposeTeamPost(false);
@@ -864,6 +877,7 @@ function App() {
                 return;
               }
               setSelectedAnnouncement(ann);
+              setInviteTarget(null);
               setScreen('detail');
             }}
             onOpenTeamBoard={(ann) => {
@@ -874,6 +888,7 @@ function App() {
                 return;
               }
               setSelectedAnnouncement(ann);
+              setInviteTarget(null);
               setFocusTeamBoard(true);
               setFocusPostId(null);
               setComposeTeamPost(false);
@@ -887,6 +902,7 @@ function App() {
                 return;
               }
               setSelectedAnnouncement(ann);
+              setInviteTarget(null);
               setFocusTeamBoard(true);
               setFocusPostId(null);
               setComposeTeamPost(true);
@@ -899,6 +915,7 @@ function App() {
                 return;
               }
               setSelectedAnnouncement(ann);
+              setInviteTarget(null);
               setFocusTeamBoard(true);
               setFocusPostId(postId);
               setComposeTeamPost(false);
@@ -971,8 +988,14 @@ function App() {
           composeTeamPost={composeTeamPost}
           isGuest={isGuest}
           onRequireLogin={requireLogin}
+          invite={
+            inviteTarget && inviteTarget.announcementId === selectedAnnouncement.id
+              ? { inviterName: inviteTarget.inviterName, postId: inviteTarget.postId }
+              : null
+          }
           onBack={() => {
             setSelectedAnnouncement(null);
+            setInviteTarget(null);
             setFocusTeamBoard(false);
             setFocusPostId(null);
             setComposeTeamPost(false);

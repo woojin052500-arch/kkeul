@@ -16,6 +16,8 @@ interface TeamBoardProps {
   focusPostId?: string | null;
   // 카드의 '첫 팀장 되기'로 들어왔을 때: 이 대회가 채워진 구인글 작성창을 바로 연다
   autoCompose?: boolean;
+  // 구인글을 올린 직후 (친구 초대 카드를 띄우는 데 쓴다)
+  onPostCreated?: (post: TeamPost) => void;
 }
 
 const roleColor = (role: string) => {
@@ -46,7 +48,7 @@ const smallBtn: React.CSSProperties = {
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요.');
 
-export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announcementTitle, profile, focusPostId, autoCompose }) => {
+export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announcementTitle, profile, focusPostId, autoCompose, onPostCreated }) => {
   const [posts, setPosts] = useState<TeamPost[]>([]);
   const [myRequests, setMyRequests] = useState<JoinRequest[]>([]);
   const [incoming, setIncoming] = useState<Record<string, JoinRequest[]>>({});
@@ -215,6 +217,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       setIncoming(prev => ({ ...prev, [created.id]: [] }));
       setComment('');
       setShowModal(false);
+      onPostCreated?.(created);
     });
   };
 
