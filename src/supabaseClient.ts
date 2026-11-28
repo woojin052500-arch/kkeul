@@ -875,7 +875,10 @@ export interface AdminTeamPost {
 }
 
 export interface ContestActivity {
+  // 그 대회에 올라온 구인글 전체 (숨김·정지 글 제외)
   post_count: number;
+  // 그중 아직 자리가 남아 모집 중인 글
+  open_post_count: number;
   latest_post_at: string | null;
   interest_total: number;
 }
@@ -902,6 +905,23 @@ export interface MyInterestInfo {
   role: TeamRole;
   intro: string | null;
   listed: boolean;
+}
+
+// 홈 '이번 주 많이 본 공고·팀' 에 쓰는 이번 주 활동과 어제 같은 시각의 활동.
+// contest_weekly_signal 이 아직 없는 DB에서는 받지 못하고, 앱은 ContestActivity 로 넘어간다.
+export interface ContestWeeklySignal {
+  // 최근 7일 새로 눌린 '나도 나갈래요' 수
+  week_interest: number;
+  // 최근 7일 올라온 팀원 모집 글 수
+  week_posts: number;
+  // 지금 자리가 남아 있는 모집 글 수
+  open_post_count: number;
+  // 지금까지 누적 '나도 나갈래요' 수
+  interest_total: number;
+  latest_post_at: string | null;
+  // 어제 같은 시각 기준 최근 7일 활동 (순위 변화 계산용)
+  prev_week_interest: number;
+  prev_week_posts: number;
 }
 
 export interface AuthorStat {
@@ -1595,19 +1615,67 @@ export const db = {
     if (error) throw await explainWriteError(error);
   },
 
-  // 대회 카드에 보여 줄 팀 모집 활동(글 수, 나갈래요 수, 최근 글). 못 받으면 빈 값.
-  async getContestActivity(announcementIds: string[]): Promise<Record<string, ContestActivity>> {
+  // 대회 카드에 보여 줄 팀 모집 활동(모집 중인 글 수, 글 수, 나갈래요 수, 최근 글).
+  // ok 는 집계를 실제로 받았는지다. 못 받았을 때 "모집 중인 글 0건"으로 단정하지 않으려고 함께 돌려준다.
+  async getContestActivity(announcementIds: string[]): Promise<{ ok: boolean; byId: Record<string, ContestActivity> }> {
     const ids = [...new Set(announcementIds)].slice(0, 300);
-    if (ids.length === 0) return {};
+    if (ids.length === 0) return { ok: false, byId: {} };
     try {
-      const { data, error } = await supabase.rpc('contest_activity', { p_ids: ids });
-      if (error) return {};
-      return Object.fromEntries(
-        ((data || []) as { announcement_id: string; post_count: number; latest_post_at: string | null; interest_total: number }[])
-          .map(r => [r.announcement_id, { post_count: r.post_count, latest_post_at: r.latest_post_at, interest_total: r.interest_total }])
+      const { data, error } = await supabase.rpc('contest_team_signal', { p_ids: ids });
+      if (error) return { ok: false, byId: {} };
+      type Row = { announcement_id: string; post_count: number; open_post_count: number; latest_post_at: string | null; interest_total: number };
+      const byId: Record<string, ContestActivity> = Object.fromEntries(
+        ((data || []) as Row[]).map(r => [r.announcement_id, {
+          post_count: r.post_count,
+          open_post_count: r.open_post_count,
+          latest_post_at: r.latest_post_at,
+          interest_total: r.interest_total
+        }])
       );
+      return { ok: true, byId };
     } catch {
-      return {};
+      return { ok: false, byId: {} };
+    }
+  },
+
+  // 홈 '이번 주 많이 본 공고·팀' 집계. 최근 7일 활동과 어제 같은 시각의 활동을 함께 받는다.
+  // ok 가 false 면 함수가 아직 없는 DB이거나 집계를 못 받은 것이다. 그때는 getContestActivity 로 넘어간다.
+  async getContestWeeklySignal(
+    announcementIds: string[],
+    days = 7
+  ): Promise<{ ok: boolean; byId: Record<string, ContestWeeklySignal> }> {
+    const ids = [...new Set(announcementIds)].slice(0, 300);
+    if (ids.length === 0) return { ok: false, byId: {} };
+    try {
+      const { data, error } = await supabase.rpc('contest_weekly_signal', {
+        p_ids: ids,
+        p_days: Math.min(Math.max(Math.round(days), 1), 30)
+      });
+      if (error) return { ok: false, byId: {} };
+      type Row = {
+        announcement_id: string;
+        week_interest: number;
+        week_posts: number;
+        open_post_count: number;
+        interest_total: number;
+        latest_post_at: string | null;
+        prev_week_interest: number;
+        prev_week_posts: number;
+      };
+      const byId: Record<string, ContestWeeklySignal> = Object.fromEntries(
+        ((data || []) as Row[]).map(r => [r.announcement_id, {
+          week_interest: r.week_interest ?? 0,
+          week_posts: r.week_posts ?? 0,
+          open_post_count: r.open_post_count ?? 0,
+          interest_total: r.interest_total ?? 0,
+          latest_post_at: r.latest_post_at ?? null,
+          prev_week_interest: r.prev_week_interest ?? 0,
+          prev_week_posts: r.prev_week_posts ?? 0
+        }])
+      );
+      return { ok: true, byId };
+    } catch {
+      return { ok: false, byId: {} };
     }
   },
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { JoinRequest, Profile, TeamPost } from '../types';
 import { Bookmark, Check, Flag, Plus, Share2, ShieldOff, Users } from 'lucide-react';
 import { db, type AuthorStat, type PostQuestion } from '../supabaseClient';
@@ -14,6 +14,10 @@ interface TeamBoardProps {
   profile?: Profile;
   // 공유 링크로 들어왔을 때 이 구인글로 이동해 강조한다
   focusPostId?: string | null;
+  // 카드의 '첫 팀장 되기'로 들어왔을 때: 이 대회가 채워진 구인글 작성창을 바로 연다
+  autoCompose?: boolean;
+  // 구인글을 올린 직후 (친구 초대 카드를 띄우는 데 쓴다)
+  onPostCreated?: (post: TeamPost) => void;
 }
 
 const roleColor = (role: string) => {
@@ -44,7 +48,7 @@ const smallBtn: React.CSSProperties = {
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요.');
 
-export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announcementTitle, profile, focusPostId }) => {
+export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announcementTitle, profile, focusPostId, autoCompose, onPostCreated }) => {
   const [posts, setPosts] = useState<TeamPost[]>([]);
   const [myRequests, setMyRequests] = useState<JoinRequest[]>([]);
   const [incoming, setIncoming] = useState<Record<string, JoinRequest[]>>({});
@@ -108,6 +112,15 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
   useEffect(() => {
     load();
   }, [load]);
+
+  // 대회 카드의 '첫 팀장 되기'로 들어오면 이 대회의 구인글 작성창을 한 번 바로 연다
+  const autoComposeDone = useRef(false);
+  useEffect(() => {
+    if (!autoCompose || autoComposeDone.current || !profile) return;
+    autoComposeDone.current = true;
+    setContact(profile.contact || '');
+    setShowModal(true);
+  }, [autoCompose, profile]);
 
   // 저장한 구인글 (실패해도 게시판은 그대로 보여 준다)
   useEffect(() => {
@@ -204,6 +217,7 @@ export const TeamBoard: React.FC<TeamBoardProps> = ({ announcementId, announceme
       setIncoming(prev => ({ ...prev, [created.id]: [] }));
       setComment('');
       setShowModal(false);
+      onPostCreated?.(created);
     });
   };
 

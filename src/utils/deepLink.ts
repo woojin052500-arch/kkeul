@@ -2,14 +2,24 @@ import type { Announcement } from '../types';
 
 // 외부에서 끌로 들어오는 링크
 //   /contest/<끌 공고 ID>          → 그 대회의 팀 빌딩 게시판 (?post=<구인글 ID> 면 그 글로 이동)
+//   /contest/<ID>?invite=1&from=<이름> → 친구 초대 링크 (상세 위에 초대 안내 배너)
 //   /team?name=<대회명>            → 대회명으로 찾아서 팀 빌딩 게시판 (콘테스트코리아 연동용)
 //   /p/<프로필 ID 앞 8자리>         → 명함 QR 공개 프로필
 export type DeepLink =
-  | { kind: 'contest'; id: string; postId?: string }
+  | { kind: 'contest'; id: string; postId?: string; compose?: boolean; invite?: boolean; inviterName?: string }
   | { kind: 'team'; name: string }
   | { kind: 'profile'; shortId: string };
 
 const PENDING_KEY = 'kkeul_pending_deeplink';
+
+// 링크에 실어 보내는 이름은 한글·영문·숫자·띄어쓰기와 몇 가지 기호만 남긴다 (20자까지)
+export const cleanInviterName = (raw: string) =>
+  (raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 20)
+    .replace(/[^0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ ._·-]/g, '')
+    .trim();
 
 export const parseDeepLink = (loc: Pick<Location, 'pathname' | 'search'>): DeepLink | null => {
   const path = decodeURIComponent(loc.pathname).replace(/\/+$/, '');
@@ -18,7 +28,12 @@ export const parseDeepLink = (loc: Pick<Location, 'pathname' | 'search'>): DeepL
   const contest = /^\/contest\/([^/]+)$/.exec(path);
   if (contest) {
     const postId = (params.get('post') || '').trim();
-    return /^[0-9a-f-]{36}$/i.test(postId) ? { kind: 'contest', id: contest[1], postId } : { kind: 'contest', id: contest[1] };
+    const base = { kind: 'contest' as const, id: contest[1], ...(/^[0-9a-f-]{36}$/i.test(postId) ? { postId } : {}) };
+    // 친구 초대 링크 (?invite=1). 보낸 사람 이름이 있으면 배너에 그대로 쓴다.
+    const invite = ['1', 'true', 'yes'].includes((params.get('invite') || '').toLowerCase());
+    if (!invite) return base;
+    const inviterName = cleanInviterName(params.get('from') || '');
+    return { ...base, invite: true, ...(inviterName ? { inviterName } : {}) };
   }
 
   if (path === '/team') {

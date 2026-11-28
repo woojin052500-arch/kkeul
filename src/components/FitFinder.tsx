@@ -67,7 +67,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
   useEffect(() => {
     if (!ids) return;
     let alive = true;
-    db.getContestActivity(ids.split(',')).then(a => alive && setActivity(a));
+    db.getContestActivity(ids.split(',')).then(r => alive && setActivity(r.byId));
     Promise.all([
       db.getInterestCounts(ids.split(',')).catch(() => ({} as Record<string, InterestCount>)),
       isGuest ? Promise.resolve({} as Record<string, TeamRole>) : db.getMyInterests().catch(() => ({} as Record<string, TeamRole>))

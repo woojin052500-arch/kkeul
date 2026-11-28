@@ -4,6 +4,7 @@ import { TeamBoard } from './TeamBoard';
 import { GuestTeamTeaser } from './GuestTeamTeaser';
 import { InterestBar } from './InterestBar';
 import { TeamupRoster } from './TeamupRoster';
+import { InviteFriendCard, InviteLandingBanner } from './ContestInvite';
 import { AdSlot } from './AdFit';
 import { getDDay, isClosed } from '../utils/dday';
 import { ArrowLeft, Share2, Calendar as CalendarIcon, ExternalLink, Edit, Trash2, Link, Check, Copy, Zap, FileText } from 'lucide-react';
@@ -26,9 +27,13 @@ interface DetailViewProps {
   focusTeamBoard?: boolean;
   // 공유 링크로 들어온 구인글
   focusPostId?: string | null;
+  // 카드에서 '첫 팀장 되기'로 들어왔을 때: 팀 빌딩 게시판의 구인글 작성창을 바로 연다
+  composeTeamPost?: boolean;
   // 가입하지 않고 둘러보는 중
   isGuest?: boolean;
   onRequireLogin?: (reason: string) => void;
+  // 친구 초대 링크로 들어왔을 때 (보낸 사람 이름, 그 사람의 구인글)
+  invite?: { inviterName?: string; postId?: string } | null;
 }
 
 export const DetailView: React.FC<DetailViewProps> = ({
@@ -44,8 +49,10 @@ export const DetailView: React.FC<DetailViewProps> = ({
   backRef,
   focusTeamBoard,
   focusPostId,
+  composeTeamPost,
   isGuest = false,
-  onRequireLogin
+  onRequireLogin,
+  invite
 }) => {
   useEffect(() => {
     if (!focusTeamBoard) return;
@@ -62,6 +69,30 @@ export const DetailView: React.FC<DetailViewProps> = ({
   const [posterFailedId, setPosterFailedId] = useState<string | null>(null);
   const posterFailed = posterFailedId === announcement.id;
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
+  // 친구 초대: 카드를 띄울지, 들어온 친구에게 보여 줄 배너를 닫았는지.
+  // 대회를 바꾸면 아래에서 계산한 값이 자동으로 초기 상태가 된다.
+  const [friendInvite, setFriendInvite] = useState<{ announcementId: string; postId?: string } | null>(null);
+  const [inviteDismissedFor, setInviteDismissedFor] = useState<string | null>(null);
+  const [joinPromptFor, setJoinPromptFor] = useState<{ announcementId: string; n: number } | null>(null);
+  const [boardFocusFor, setBoardFocusFor] = useState<{ announcementId: string; postId: string } | null>(null);
+  const inviteCard = friendInvite?.announcementId === announcement.id ? friendInvite : null;
+  const joinPrompt = joinPromptFor?.announcementId === announcement.id ? joinPromptFor.n : 0;
+  const boardFocusId = boardFocusFor?.announcementId === announcement.id ? boardFocusFor.postId : null;
+
+  // 초대 카드가 뜨면 그 자리로 스크롤한다 (누른 버튼 아래쪽이라 놓치기 쉽다)
+  useEffect(() => {
+    if (!inviteCard) return;
+    const t = window.setTimeout(() => {
+      document.getElementById('friend-invite-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+    return () => window.clearTimeout(t);
+  }, [inviteCard]);
+
+  const scrollToId = (id: string) => {
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  };
   const [showRedirectModal, setShowRedirectModal] = useState<boolean>(false);
   const [xpParticles, setXpParticles] = useState<{ id: number; x: number; y: number; text: string }[]>([]);
   const [particleId, setParticleId] = useState<number>(0);
@@ -473,6 +504,27 @@ export const DetailView: React.FC<DetailViewProps> = ({
           <Share2 size={22} />
         </button>
       </div>
+
+      {/* 초대받고 들어온 친구에게 보여 주는 안내 배너 */}
+      {invite && inviteDismissedFor !== announcement.id && !inviteCard && !isEditing && (
+        <InviteLandingBanner
+          announcementTitle={announcement.title}
+          inviterName={invite.inviterName}
+          onJoin={() => {
+            if (isGuest) {
+              onRequireLogin?.('가입하면 이 대회에 같이 나갈 사람으로 표시할 수 있어요.');
+              return;
+            }
+            setJoinPromptFor(prev => ({ announcementId: announcement.id, n: (prev?.announcementId === announcement.id ? prev.n : 0) + 1 }));
+            scrollToId('interest-bar');
+          }}
+          onSeePosts={() => {
+            if (invite.postId) setBoardFocusFor({ announcementId: announcement.id, postId: invite.postId });
+            scrollToId('team-board');
+          }}
+          onDismiss={() => setInviteDismissedFor(announcement.id)}
+        />
+      )}
 
       {/* Detail Content Scroll Area */}
       <div style={{ padding: '24px 20px 120px 20px', overflowY: 'auto' }}>
@@ -955,16 +1007,29 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 {/* 대회 팀원 매칭 (Team-building) */}
                 {!isHostUser && <AdSlot placement="detail" style={{ margin: '4px 0' }} />}
                 {!isHostUser && (
-                  <InterestBar
-                    key={announcement.id}
+                  <div id="interest-bar" style={{ scrollMarginTop: '72px' }}>
+                    <InterestBar
+                      key={announcement.id}
+                      announcementId={announcement.id}
+                      isGuest={isGuest}
+                      onRequireLogin={(reason) => onRequireLogin?.(reason)}
+                      onChanged={() => setInterestTick(t => t + 1)}
+                      onJoined={() => setFriendInvite({ announcementId: announcement.id })}
+                      joinPrompt={joinPrompt}
+                    />
+                  </div>
+                )}
+                {!isHostUser && inviteCard && (
+                  <InviteFriendCard
                     announcementId={announcement.id}
-                    isGuest={isGuest}
-                    onRequireLogin={(reason) => onRequireLogin?.(reason)}
-                    onChanged={() => setInterestTick(t => t + 1)}
+                    announcementTitle={announcement.title}
+                    inviterName={profile?.name}
+                    postId={inviteCard.postId}
+                    onClose={() => setFriendInvite(null)}
                   />
                 )}
                 {!isHostUser && !isGuest && profile && <TeamupRoster key={announcement.id} announcementId={announcement.id} profile={profile} tick={interestTick} />}
-                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={focusPostId} />}
+                {!isHostUser && !isGuest && <TeamBoard announcementId={announcement.id} announcementTitle={announcement.title} profile={profile} focusPostId={boardFocusId || focusPostId} autoCompose={composeTeamPost} onPostCreated={(post) => setFriendInvite({ announcementId: announcement.id, postId: post.id })} />}
                 {!isHostUser && isGuest && <GuestTeamTeaser announcementId={announcement.id} onRequireLogin={(reason) => onRequireLogin?.(reason)} />}
               </div>
             )}

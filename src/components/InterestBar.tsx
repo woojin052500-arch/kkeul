@@ -17,6 +17,10 @@ interface InterestBarProps {
   compact?: boolean;
   // 나갈래요를 누르거나 취소해서 값이 바뀐 뒤에 부른다 (함께 나갈 사람 명단을 다시 불러오는 데 쓴다)
   onChanged?: () => void;
+  // '나도 나갈래요'를 처음 누르고 역할이 정해졌을 때 (친구 초대 카드를 띄우는 데 쓴다)
+  onJoined?: (role: TeamRole) => void;
+  // 값이 바뀔 때마다 역할 고르기를 다시 연다 (초대 배너의 '나도 나갈래요')
+  joinPrompt?: number;
 }
 
 const chip: React.CSSProperties = {
@@ -26,11 +30,14 @@ const chip: React.CSSProperties = {
 
 // "나도 나갈래요": 구인글을 쓰지 않아도 한 번 눌러 이 대회에 나갈 사람으로 표시한다.
 // 다른 사람에게는 역할별 인원수만 보인다.
-export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGuest = false, onRequireLogin, defaultRole, initialCount, initialRole, compact = false, onChanged }) => {
+export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGuest = false, onRequireLogin, defaultRole, initialCount, initialRole, compact = false, onChanged, onJoined, joinPrompt = 0 }) => {
   const [count, setCount] = useState<InterestCount>(initialCount || EMPTY);
   const [myRole, setMyRole] = useState<TeamRole | null>(initialRole ?? null);
   const [picking, setPicking] = useState(false);
+  // 초대 배너가 열어 달라고 한 역할 고르기 중 이미 처리한 횟수 (effect 없이 계산)
+  const [handledPrompt, setHandledPrompt] = useState(0);
   const [busy, setBusy] = useState(false);
+  const showPicker = !myRole && (picking || joinPrompt > handledPrompt);
 
   useEffect(() => {
     if (initialCount !== undefined || initialRole !== undefined) return;
@@ -64,10 +71,13 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
     setMyRole(role);
     setCount(next);
     setPicking(false);
+    setHandledPrompt(joinPrompt);
     setBusy(true);
     try {
       await db.setInterest(announcementId, role);
       onChanged?.();
+      // 이 대회에 처음 나가겠다고 표시했으면 친구 초대 카드를 띄운다
+      if (role && !prevRole) onJoined?.(role);
     } catch (err) {
       setMyRole(prevRole);
       setCount(prevCount);
@@ -112,12 +122,13 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
           </span>
           <button type="button" disabled={busy} onClick={() => apply(null)} style={{ ...chip, fontWeight: 600 }}>취소</button>
         </div>
-      ) : picking ? (
+      ) : showPicker ? (
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
           <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>어떤 역할로 나갈래요?</span>
           {ROLES.map(r => (
             <button key={r} type="button" disabled={busy} onClick={() => apply(r)} style={{ ...chip, color: 'var(--color-indigo)', borderColor: 'var(--color-indigo)' }}>{r}</button>
           ))}
+          <button type="button" disabled={busy} onClick={() => { setPicking(false); setHandledPrompt(joinPrompt); }} style={{ ...chip, fontWeight: 600, color: 'var(--text-tertiary)' }}>취소</button>
         </div>
       ) : (
         <button type="button" disabled={busy} onClick={onJoin} className="btn btn-primary" style={{ height: '42px', borderRadius: '10px', fontSize: '13.5px', fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
