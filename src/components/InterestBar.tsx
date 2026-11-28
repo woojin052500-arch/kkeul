@@ -24,7 +24,7 @@ interface InterestBarProps {
 }
 
 const chip: React.CSSProperties = {
-  border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 700,
+  border: '1px solid #E5E7EB', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 700,
   padding: '7px 12px', borderRadius: '8px', cursor: 'pointer'
 };
 
@@ -100,14 +100,14 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
   const wanted = count.total >= 2 ? ROLES.filter(r => count[r] === 0) : [];
 
   return (
-    <div className="interest-bar" data-compact={compact ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: compact ? 'transparent' : '#FFFFFF', border: compact ? 'none' : '1px solid #E4DFD4', borderRadius: '12px', padding: compact ? 0 : '16px', textAlign: 'left' }}>
+    <div className="interest-bar" data-compact={compact ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: compact ? 'transparent' : '#FFFFFF', border: compact ? 'none' : '1px solid #E5E7EB', borderRadius: '12px', padding: compact ? 0 : '16px', textAlign: 'left' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-secondary)' }}>
         {count.total > 0 ? (
           <>
             <strong style={{ color: 'var(--text-primary)' }}>같이 나갈 사람 {count.total}명</strong>
             <span>· {ROLES.map(r => `${r} ${count[r]}`).join(' · ')}</span>
             {wanted.map(r => (
-              <span key={r} style={{ fontSize: '11px', fontWeight: 800, color: 'var(--color-red)', background: 'var(--color-red-light)', padding: '2px 6px', borderRadius: '5px' }}>{r} 급구</span>
+              <span key={r} style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-red)', background: 'var(--color-red-light)', padding: '2px 6px', borderRadius: '5px' }}>{r} 급구</span>
             ))}
           </>
         ) : (
@@ -117,21 +117,21 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
 
       {myRole ? (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 800, color: '#059669', background: '#ECFDF5', padding: '8px 12px', borderRadius: '10px' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '8px 12px', borderRadius: '10px' }}>
             <Check size={14} /> {myRole} 역할로 나갈래요
           </span>
           <button type="button" disabled={busy} onClick={() => apply(null)} style={{ ...chip, fontWeight: 600 }}>취소</button>
         </div>
       ) : showPicker ? (
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>어떤 역할로 나갈래요?</span>
+          <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>어떤 역할로 나갈래요?</span>
           {ROLES.map(r => (
             <button key={r} type="button" disabled={busy} onClick={() => apply(r)} style={{ ...chip, color: 'var(--color-indigo)', borderColor: 'var(--color-indigo)' }}>{r}</button>
           ))}
           <button type="button" disabled={busy} onClick={() => { setPicking(false); setHandledPrompt(joinPrompt); }} style={{ ...chip, fontWeight: 600, color: 'var(--text-tertiary)' }}>취소</button>
         </div>
       ) : (
-        <button type="button" disabled={busy} onClick={onJoin} className="btn btn-primary" style={{ height: '42px', borderRadius: '10px', fontSize: '13.5px', fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+        <button type="button" disabled={busy} onClick={onJoin} className="btn btn-primary" style={{ height: '42px', borderRadius: '10px', fontSize: '14px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           <Hand size={15} /> 나도 나갈래요
         </button>
       )}

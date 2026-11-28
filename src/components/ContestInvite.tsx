@@ -72,7 +72,7 @@ export const InviteFriendCard: React.FC<{
       style={{
         scrollMarginTop: '80px',
         borderRadius: '14px',
-        border: '1px solid #C9D3FF',
+        border: '1px solid #CBD8FB',
         backgroundColor: 'var(--color-indigo-light)',
         padding: '16px',
         display: 'flex',
@@ -83,10 +83,10 @@ export const InviteFriendCard: React.FC<{
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', minWidth: 0 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '14.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>
             <Users size={15} color="var(--color-indigo)" /> 이 대회 같이 나갈 친구 부르기
           </span>
-          <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+          <span style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
             {postId ? '방금 올린 구인글로 바로 들어와요.' : '보낸 친구는 이 대회 상세를 바로 열어요.'}
           </span>
         </div>
@@ -109,8 +109,8 @@ export const InviteFriendCard: React.FC<{
         flexDirection: 'column',
         gap: '4px'
       }}>
-        <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{message}</span>
-        <span style={{ fontSize: '11.5px', color: 'var(--color-indigo)', fontWeight: 600, wordBreak: 'break-all' }}>{url}</span>
+        <span style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{message}</span>
+        <span style={{ fontSize: '12px', color: 'var(--color-indigo)', fontWeight: 600, wordBreak: 'break-all' }}>{url}</span>
       </div>
 
       <div style={{ display: 'flex', gap: '8px' }}>
@@ -124,7 +124,7 @@ export const InviteFriendCard: React.FC<{
             height: '42px',
             borderRadius: '10px',
             fontSize: '13px',
-            fontWeight: 800,
+            fontWeight: 700,
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -154,7 +154,7 @@ export const InviteFriendCard: React.FC<{
               justifyContent: 'center',
               gap: '4px',
               backgroundColor: '#FFFFFF',
-              border: '1px solid #C9D3FF'
+              border: '1px solid #CBD8FB'
             }}
           >
             <Send size={13} /> 친구에게 보내기
@@ -178,7 +178,7 @@ export const InviteLandingBanner: React.FC<{
     style={{
       margin: '12px 20px 0 20px',
       borderRadius: '14px',
-      border: '1px solid #C9D3FF',
+      border: '1px solid #CBD8FB',
       backgroundColor: 'var(--color-indigo-light)',
       padding: '14px 16px',
       display: 'flex',
@@ -189,10 +189,10 @@ export const InviteLandingBanner: React.FC<{
   >
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
           <Link2 size={15} color="var(--color-indigo)" /> 친구가 같이 나가자고 초대했어요
         </span>
-        <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+        <span style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
           {inviterName
             ? `${inviterName}님이 '${announcementTitle}'에 함께 나가자고 불렀어요.`
             : `'${announcementTitle}'에 함께 나가자고 초대받았어요.`}
@@ -213,7 +213,7 @@ export const InviteLandingBanner: React.FC<{
         type="button"
         onClick={onJoin}
         className="btn btn-primary"
-        style={{ flex: 1, height: '40px', borderRadius: '10px', fontSize: '13px', fontWeight: 800 }}
+        style={{ flex: 1, height: '40px', borderRadius: '10px', fontSize: '13px', fontWeight: 700 }}
       >
         나도 나갈래요
       </button>
@@ -228,7 +228,7 @@ export const InviteLandingBanner: React.FC<{
           fontSize: '13px',
           fontWeight: 700,
           backgroundColor: '#FFFFFF',
-          border: '1px solid #C9D3FF'
+          border: '1px solid #CBD8FB'
         }}
       >
         팀원 글 보기

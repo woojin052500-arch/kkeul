@@ -24,14 +24,14 @@ export const SlotMeter: React.FC<SlotMeterProps> = ({ slots = 1, filled = 0, com
               width: compact ? '9px' : '12px',
               height: compact ? '9px' : '12px',
               borderRadius: '50%',
-              border: '1.5px solid var(--color-ink)',
-              background: i < taken ? 'var(--color-ink)' : 'transparent',
+              border: `1px solid ${i < taken ? 'var(--color-indigo)' : '#D1D5DB'}`,
+              background: i < taken ? 'var(--color-indigo)' : 'transparent',
               boxSizing: 'border-box'
             }}
           />
         ))}
       </span>
-      <span style={{ fontSize: compact ? '11.5px' : '12px', fontWeight: 800, color: left === 0 ? 'var(--text-tertiary)' : left === 1 ? 'var(--color-red)' : 'var(--text-primary)' }}>
+      <span style={{ fontSize: compact ? '11.5px' : '12px', fontWeight: 700, color: left === 0 ? 'var(--text-tertiary)' : left === 1 ? 'var(--color-red)' : 'var(--text-primary)' }}>
         {text}
       </span>
     </div>

@@ -34,7 +34,7 @@ const loadChoice = (): Choice => {
 };
 
 const optBtn = (on: boolean): React.CSSProperties => ({
-  border: on ? '1.5px solid var(--color-indigo)' : '1px solid #E4DFD4',
+  border: on ? '1.5px solid var(--color-indigo)' : '1px solid #E5E7EB',
   background: on ? 'var(--color-indigo-light)' : '#FFFFFF',
   color: on ? 'var(--color-indigo)' : 'var(--text-secondary)',
   fontSize: '13px', fontWeight: on ? 800 : 600, padding: '9px 12px', borderRadius: '10px', cursor: 'pointer'
@@ -114,10 +114,10 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
   };
 
   return (
-    <section className="fit-finder" style={{ background: '#FFFFFF', border: '1.5px solid var(--color-ink)', boxShadow: '4px 4px 0 var(--color-ink)', borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
+    <section className="fit-finder" style={{ background: '#FFFFFF', border: '1px solid var(--line)', boxShadow: 'var(--shadow-card)', borderRadius: '18px', padding: '22px 20px', display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
       <div>
-        <h2 style={{ fontSize: '19px', fontWeight: 800, margin: 0, lineHeight: 1.35, display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Search size={18} strokeWidth={2.6} /> 나한테 <span style={{ background: 'linear-gradient(transparent 58%, var(--color-highlight) 58%)', padding: '0 2px' }}>맞는 대회</span> 찾기
+        <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, letterSpacing: '-0.022em', lineHeight: 1.4, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Search size={18} strokeWidth={2.4} color="var(--color-indigo)" /> 나한테 <span style={{ background: 'linear-gradient(transparent 64%, var(--color-highlight) 64%)', padding: '0 1px' }}>맞는 대회</span> 찾기
         </h2>
         <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
           계열만 고르면 맞는 대회를 바로 보여 드려요. 학년과 역할을 고르면 더 정확해져요.
@@ -127,7 +127,7 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
       {!done && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div>
-            <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>희망 계열을 골라 주세요</div>
+            <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>희망 계열을 골라 주세요</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {TRACKS.map(t => <button key={t} type="button" style={optBtn(choice.track === t)} aria-pressed={choice.track === t} onClick={() => pick({ track: t })}>{t}</button>)}
             </div>
@@ -138,10 +138,10 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
       {done && (
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-indigo)', background: 'var(--color-indigo-light)', padding: '5px 10px', borderRadius: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-indigo)', background: 'var(--color-indigo-light)', padding: '5px 10px', borderRadius: '8px' }}>
               {choice.track}
             </span>
-            <button type="button" onClick={() => pick({ track: null, level: null, role: null })} style={{ border: 'none', background: 'none', color: 'var(--text-tertiary)', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+            <button type="button" onClick={() => pick({ track: null, level: null, role: null })} style={{ border: 'none', background: 'none', color: 'var(--text-tertiary)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
               <RotateCcw size={12} /> 다시 고르기
             </button>
           </div>
@@ -166,52 +166,52 @@ export const FitFinder: React.FC<FitFinderProps> = ({ announcements, isGuest = f
           {results.map((r, i) => {
             const a = r.announcement;
             return (
-              <article key={a.id} className="fit-result" style={{ border: i === 0 ? '1.5px solid var(--color-ink)' : '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <article key={a.id} className="fit-result" style={{ border: i === 0 ? '1px solid #CBD8FB' : '1px solid var(--line)', borderLeft: i === 0 ? '3px solid var(--color-indigo)' : '1px solid var(--line)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', background: i === 0 ? '#FCFDFF' : '#FFFFFF' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 800, color: i === 0 ? '#FFFFFF' : 'var(--color-ink)', background: i === 0 ? 'var(--color-ink)' : 'var(--color-bg-gray)', padding: '3px 8px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: i === 0 ? '#FFFFFF' : 'var(--text-secondary)', background: i === 0 ? 'var(--color-indigo)' : 'var(--surface-soft)', border: i === 0 ? '1px solid var(--color-indigo)' : '1px solid var(--line)', padding: '3px 8px', borderRadius: '8px', fontVariantNumeric: 'tabular-nums' }}>
                     핏 {i + 1}위 · {r.score}점
                   </span>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-red)' }}>{getDDay(a.deadline)}</span>
                 </div>
                 <button type="button" onClick={() => onSelectAnnouncement(a)} style={{ border: 'none', background: 'none', padding: 0, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <strong style={{ fontSize: '15.5px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.4 }}>{a.title}</strong>
+                  <strong style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.4 }}>{a.title}</strong>
                   <ChevronRight size={16} color="var(--text-tertiary)" style={{ flexShrink: 0 }} />
                 </button>
-                <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{a.host}</div>
+                <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{a.host}</div>
                 <ActivityLine activity={activity[a.id]} />
 
-                <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
                   <strong style={{ color: 'var(--text-primary)' }}>이 점수인 이유</strong> {r.reasons.join(' · ')}
                 </div>
 
                 {i === 0 && (
-                  <div style={{ background: '#FAF8F3', borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>생기부에 남기기 좋은 점</div>
-                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>생기부에 남기기 좋은 점</div>
+                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                       {r.points.map(p => <li key={p}>{p}</li>)}
                     </ul>
                     {isGuest ? (
-                      <div style={{ position: 'relative', borderRadius: '10px', background: '#FFFFFF', border: '1px solid #E4DFD4', padding: '10px 12px', overflow: 'hidden' }}>
+                      <div style={{ position: 'relative', borderRadius: '10px', background: '#FFFFFF', border: '1px solid #E5E7EB', padding: '10px 12px', overflow: 'hidden' }}>
                         <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px' }}>선생님께 드릴 활동 요약 초안</div>
-                        <p aria-hidden="true" style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55, filter: 'blur(5px)', userSelect: 'none' }}>{r.draft}</p>
-                        <button type="button" onClick={() => onRequireLogin?.('활동 요약 초안은 가입하면 볼 수 있고 복사할 수 있어요.')} style={{ position: 'absolute', inset: 0, border: 'none', background: 'rgba(255,255,255,0.55)', color: 'var(--color-ink)', fontSize: '12.5px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <p aria-hidden="true" style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.55, filter: 'blur(5px)', userSelect: 'none' }}>{r.draft}</p>
+                        <button type="button" onClick={() => onRequireLogin?.('활동 요약 초안은 가입하면 볼 수 있고 복사할 수 있어요.')} style={{ position: 'absolute', inset: 0, border: 'none', background: 'rgba(255,255,255,0.55)', color: 'var(--color-ink)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                           <Lock size={13} /> 가입하면 볼 수 있어요
                         </button>
                       </div>
                     ) : (<>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>선생님께 드릴 활동 요약 초안</span>
-                      <button type="button" onClick={() => copyDraft(a.id, r.draft)} style={{ border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                      <button type="button" onClick={() => copyDraft(a.id, r.draft)} style={{ border: '1px solid #E5E7EB', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                         {copied === a.id ? <Check size={11} color="#10B981" /> : <Copy size={11} />} {copied === a.id ? '복사됨' : '복사'}
                       </button>
                     </div>
-                    <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{r.draft}</p>
+                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{r.draft}</p>
                     <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-tertiary)' }}>대회에서 실제로 한 일에 맞게 고쳐서 쓰세요.</p>
                     </>)}
                   </div>
                 )}
 
-                <button type="button" onClick={() => openStory(r, i + 1)} style={{ border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 700, height: '40px', borderRadius: '10px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <button type="button" onClick={() => openStory(r, i + 1)} style={{ border: '1px solid #E5E7EB', background: '#FFFFFF', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 700, height: '40px', borderRadius: '10px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                   <ImageIcon size={15} color="var(--color-indigo)" /> 인스타 스토리 카드 만들기
                 </button>
 

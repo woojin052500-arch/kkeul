@@ -58,10 +58,10 @@ export const PublicProfile: React.FC<{ shortId: string }> = ({ shortId }) => {
         )}
 
         {state === 'found' && data && (
-          <div style={{ background: '#FBF9F5', border: `1px solid ${rule}`, borderRadius: '14px', padding: '22px', color: ink, display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ background: '#FAFBFC', border: `1px solid ${rule}`, borderRadius: '14px', padding: '22px', color: ink, display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div>
               <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, letterSpacing: '-0.02em' }}>{data.name}</h1>
-              {data.bio && <p style={{ margin: '6px 0 0', fontSize: '14px', color: '#4A453E', lineHeight: 1.5 }}>{data.bio}</p>}
+              {data.bio && <p style={{ margin: '6px 0 0', fontSize: '14px', color: '#374151', lineHeight: 1.5 }}>{data.bio}</p>}
             </div>
             <div style={{ borderTop: `1px solid ${rule}`, paddingTop: '12px', fontSize: '13px', color: muted, display: 'flex', flexDirection: 'column', gap: '4px' }}>
               {data.grade && <div style={{ color: ink, fontWeight: 500 }}>{data.grade}</div>}
@@ -71,7 +71,7 @@ export const PublicProfile: React.FC<{ shortId: string }> = ({ shortId }) => {
             {data.awards.length > 0 && (
               <section>
                 <h2 style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 6px', color: ink }}>활동 및 수상</h2>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#4A453E', lineHeight: 1.6 }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#374151', lineHeight: 1.6 }}>
                   {data.awards.map((a, i) => (
                     <li key={i}>{a.title}{a.date ? ` (${a.date})` : ''}</li>
                   ))}

@@ -101,14 +101,14 @@ export function useTossModal() {
           boxShadow: '0 -4px 24px rgba(0,0,0,0.1)'
         }} onClick={e => e.stopPropagation()}>
           
-          <div style={{ width: '40px', height: '4px', backgroundColor: '#E4DFD4', borderRadius: '2px', margin: '0 auto 20px auto' }} />
+          <div style={{ width: '40px', height: '4px', backgroundColor: '#E5E7EB', borderRadius: '2px', margin: '0 auto 20px auto' }} />
 
-          <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#171717', margin: '0 0 8px 0', wordBreak: 'keep-all' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0', wordBreak: 'keep-all' }}>
             {modalState.title}
           </h3>
           
           {modalState.message && (
-            <p style={{ fontSize: '15px', color: '#55504A', margin: '0 0 20px 0', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+            <p style={{ fontSize: '15px', color: '#4B5563', margin: '0 0 20px 0', lineHeight: 1.5, wordBreak: 'keep-all' }}>
               {modalState.message}
             </p>
           )}
@@ -124,11 +124,11 @@ export function useTossModal() {
                 style={{
                   width: '100%',
                   padding: '16px',
-                  backgroundColor: '#F1EDE4',
+                  backgroundColor: '#F1F5F9',
                   border: 'none',
                   borderRadius: '12px',
                   fontSize: '16px',
-                  color: '#171717',
+                  color: '#111827',
                   fontWeight: 600,
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -145,8 +145,8 @@ export function useTossModal() {
                 style={{
                   flex: 1,
                   padding: '16px',
-                  backgroundColor: '#F1EDE4',
-                  color: '#55504A',
+                  backgroundColor: '#F1F5F9',
+                  color: '#4B5563',
                   border: 'none',
                   borderRadius: '12px',
                   fontSize: '16px',
@@ -162,7 +162,7 @@ export function useTossModal() {
               style={{
                 flex: 2,
                 padding: '16px',
-                backgroundColor: '#2D4BFF',
+                backgroundColor: '#2563EB',
                 color: '#FFFFFF',
                 border: 'none',
                 borderRadius: '12px',
