@@ -15,6 +15,8 @@ interface InterestBarProps {
   initialCount?: InterestCount;
   initialRole?: TeamRole | null;
   compact?: boolean;
+  // 나갈래요를 누르거나 취소해서 값이 바뀐 뒤에 부른다 (함께 나갈 사람 명단을 다시 불러오는 데 쓴다)
+  onChanged?: () => void;
   // '나도 나갈래요'를 처음 누르고 역할이 정해졌을 때 (친구 초대 카드를 띄우는 데 쓴다)
   onJoined?: (role: TeamRole) => void;
   // 값이 바뀔 때마다 역할 고르기를 다시 연다 (초대 배너의 '나도 나갈래요')
@@ -28,7 +30,7 @@ const chip: React.CSSProperties = {
 
 // "나도 나갈래요": 구인글을 쓰지 않아도 한 번 눌러 이 대회에 나갈 사람으로 표시한다.
 // 다른 사람에게는 역할별 인원수만 보인다.
-export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGuest = false, onRequireLogin, defaultRole, initialCount, initialRole, compact = false, onJoined, joinPrompt = 0 }) => {
+export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGuest = false, onRequireLogin, defaultRole, initialCount, initialRole, compact = false, onChanged, onJoined, joinPrompt = 0 }) => {
   const [count, setCount] = useState<InterestCount>(initialCount || EMPTY);
   const [myRole, setMyRole] = useState<TeamRole | null>(initialRole ?? null);
   const [picking, setPicking] = useState(false);
@@ -73,6 +75,7 @@ export const InterestBar: React.FC<InterestBarProps> = ({ announcementId, isGues
     setBusy(true);
     try {
       await db.setInterest(announcementId, role);
+      onChanged?.();
       // 이 대회에 처음 나가겠다고 표시했으면 친구 초대 카드를 띄운다
       if (role && !prevRole) onJoined?.(role);
     } catch (err) {
