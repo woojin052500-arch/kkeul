@@ -82,7 +82,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
               gap: '16px'
             }}>
               <CheckCircle2 size={64} style={{ color: 'var(--color-indigo)' }} />
-              <h2 style={{ color: 'var(--text-primary)', fontWeight: 800 }}>지원서 제출 완료!</h2>
+              <h2 style={{ color: 'var(--text-primary)', fontWeight: 700 }}>지원서 제출 완료!</h2>
               <p style={{ color: 'var(--text-secondary)', maxWidth: '300px' }}>
                 축하합니다! Telosix 시스템을 통해 공식 접수 사이트로 지원서가 접수되었습니다.<br />
                 잠시 후 끌 메인 화면으로 돌아갑니다.
@@ -98,7 +98,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
                 borderTop: '8px solid var(--color-indigo)',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
               }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '6px' }}>{title} 온라인 지원</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '6px' }}>{title} 온라인 지원</h3>
                 <p style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
                   주최 측에서 등록한 공식 지원 신청 양식입니다. 내용을 정확히 기재해 주세요.
                 </p>
@@ -114,7 +114,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
                     required
                     value={applicantName}
                     onChange={(e) => setApplicantName(e.target.value)}
-                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
+                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }}
                   />
                 </div>
 
@@ -127,7 +127,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
                     placeholder="010-0000-0000"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none' }}
+                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }}
                   />
                 </div>
 
@@ -138,7 +138,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
                     type="text"
                     disabled
                     value={`${userGrade} (${userLocation} 거주)`}
-                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', backgroundColor: '#FAF8F3', color: 'var(--text-secondary)' }}
+                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E5E7EB', borderRadius: '8px', backgroundColor: '#F8FAFC', color: 'var(--text-secondary)' }}
                   />
                   <p style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>끌 프로필 정보로 자동 동기화되었습니다.</p>
                 </div>
@@ -152,7 +152,7 @@ export const InAppBrowser: React.FC<InAppBrowserProps> = ({
                     placeholder="대회/공고에 지원하는 포부를 짧게 적어주세요."
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
-                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none', resize: 'vertical', fontFamily: 'inherit' }}
+                    style={{ padding: '12px', fontSize: '14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', resize: 'vertical', fontFamily: 'inherit' }}
                   />
                 </div>
 

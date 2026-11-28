@@ -66,9 +66,9 @@ const wrap = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, max
 
 const INK = '#141414';
 const PAPER = '#F3EFE6';
-const YELLOW = '#FFE14A';
-const BLUE = '#2D4BFF';
-const RED = '#F0432C';
+const YELLOW = '#FDE68A';
+const BLUE = '#2563EB';
+const RED = '#DC2626';
 const NUM = `'Outfit', ${FONT}`;
 
 // 번짐 없는 그림자가 달린 상자 (종이를 오려 붙인 느낌)

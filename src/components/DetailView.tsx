@@ -438,7 +438,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontWeight: 900,
+              fontWeight: 700,
               fontSize: '24px',
               color: '#371C1D',
               marginBottom: '16px'
@@ -466,7 +466,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 16px',
-        borderBottom: '1px solid #F1EDE4',
+        borderBottom: '1px solid #F1F5F9',
         position: 'sticky',
         top: 0,
         backgroundColor: '#FFFFFF',
@@ -530,7 +530,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
       <div style={{ padding: '24px 20px 120px 20px', overflowY: 'auto' }}>
         {isEditing ? (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 800 }}>공고 정보 수정</h2>
+            <h2 style={{ fontSize: '18px', fontWeight: 700 }}>공고 정보 수정</h2>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>공고 제목</label>
@@ -538,7 +538,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
+                style={{ padding: '12px', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
@@ -548,7 +548,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 type="text"
                 value={editApplyUrl}
                 onChange={(e) => setEditApplyUrl(e.target.value)}
-                style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
+                style={{ padding: '12px', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
@@ -558,7 +558,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 <select
                   value={editLocation}
                   onChange={(e) => setEditLocation(e.target.value)}
-                  style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none', backgroundColor: '#FFFFFF' }}
+                  style={{ padding: '12px', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '14px', outline: 'none', backgroundColor: '#FFFFFF' }}
                 >
                   {['전국', '서울', '경기', '인천', '부산', '대구', '대전', '광주', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'].map(loc => (
                     <option key={loc} value={loc}>{loc}</option>
@@ -592,8 +592,8 @@ export const DetailView: React.FC<DetailViewProps> = ({
                           fontSize: '12px',
                           fontWeight: 600,
                           borderRadius: '10px',
-                          border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                          backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FBF9F5',
+                          border: isSelected ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                          backgroundColor: isSelected ? 'var(--color-indigo-light)' : '#FAFBFC',
                           color: isSelected ? 'var(--color-indigo)' : 'var(--text-secondary)',
                           cursor: 'pointer',
                           textAlign: 'center',
@@ -618,7 +618,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   step="500"
                   value={editBidAmount}
                   onChange={(e) => setEditBidAmount(Number(e.target.value))}
-                  style={{ flex: 1, padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none', fontWeight: 700 }}
+                  style={{ flex: 1, padding: '12px', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '14px', outline: 'none', fontWeight: 700 }}
                 />
                 <span style={{ fontWeight: 700 }}>원</span>
               </div>
@@ -633,7 +633,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 value={editDetails}
                 onChange={(e) => setEditDetails(e.target.value)}
                 rows={6}
-                style={{ padding: '12px', border: '1px solid #E4DFD4', borderRadius: '10px', fontSize: '14px', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                style={{ padding: '12px', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '14px', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
               />
             </div>
 
@@ -680,7 +680,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                backgroundColor: '#EEF1FF',
+                backgroundColor: '#EFF4FF',
                 borderRadius: '12px',
                 padding: '14px 18px',
                 marginBottom: '20px',
@@ -688,7 +688,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               }}>
                 <div>
                   <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>공고 관리자 패널</span>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--color-indigo)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-indigo)', marginTop: '2px' }}>
                     현재 입찰: {announcement.bid_amount ? `${announcement.bid_amount.toLocaleString()}원` : '0원 (무료)'}
                   </div>
                 </div>
@@ -752,7 +752,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               }}>
                 {announcement.category}
               </span>
-              <h1 style={{ fontSize: '22px', fontWeight: 800, lineHeight: 1.35, letterSpacing: '-0.3px' }}>
+              <h1 style={{ fontSize: '22px', fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.015em' }}>
                 {announcement.title}
               </h1>
             </div>
@@ -764,9 +764,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 height: '220px',
                 borderRadius: '12px',
                 overflow: 'hidden',
-                backgroundColor: '#FBF9F5',
+                backgroundColor: '#FAFBFC',
                 marginBottom: '24px',
-                border: '1px solid #F1EDE4'
+                border: '1px solid #F1F5F9'
               }}>
                 <img
                   src={announcement.image_url}
@@ -782,7 +782,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               display: 'flex',
               flexDirection: 'column',
               gap: '12px',
-              backgroundColor: '#FAF8F3',
+              backgroundColor: '#F8FAFC',
               borderRadius: '12px',
               padding: '16px',
               marginBottom: '24px'
@@ -796,7 +796,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 <span style={{ color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', fontWeight: 700 }}>
                   {getFormattedDate(announcement.deadline)}
                 </span>
-                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 800, padding: '1px 8px', borderRadius: '6px', color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', backgroundColor: isClosed(announcement.deadline) ? '#F1EDE4' : 'var(--color-red-light)' }}>
+                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 700, padding: '1px 8px', borderRadius: '6px', color: isClosed(announcement.deadline) ? 'var(--text-tertiary)' : 'var(--color-red)', backgroundColor: isClosed(announcement.deadline) ? '#F1F5F9' : 'var(--color-red-light)' }}>
                   {getDDay(announcement.deadline)}
                 </span>
               </div>
@@ -821,7 +821,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
             {/* Tab Switcher: 모집 요강 vs 합격 족보 */}
             <div style={{
               display: 'flex',
-              borderBottom: '1px solid #E4DFD4',
+              borderBottom: '1px solid #E5E7EB',
               marginBottom: '20px',
               gap: '16px'
             }}>
@@ -829,7 +829,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 onClick={() => setActiveDetailTab('info')}
                 style={{
                   padding: '10px 4px',
-                  fontSize: '15.5px',
+                  fontSize: '16px',
                   fontWeight: activeDetailTab === 'info' ? 800 : 500,
                   color: activeDetailTab === 'info' ? 'var(--color-indigo)' : 'var(--text-secondary)',
                   borderBottom: activeDetailTab === 'info' ? '2.5px solid var(--color-indigo)' : 'none',
@@ -845,7 +845,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 onClick={() => setActiveDetailTab('jokbo')}
                 style={{
                   padding: '10px 4px',
-                  fontSize: '15.5px',
+                  fontSize: '16px',
                   fontWeight: activeDetailTab === 'jokbo' ? 800 : 500,
                   color: activeDetailTab === 'jokbo' ? 'var(--color-indigo)' : 'var(--text-secondary)',
                   borderBottom: activeDetailTab === 'jokbo' ? '2.5px solid var(--color-indigo)' : 'none',
@@ -867,9 +867,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', textAlign: 'left' }}>
                 {/* Details Text Section */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h2 style={{ fontSize: '16px', fontWeight: 800, borderLeft: '4px solid var(--color-indigo)', paddingLeft: '8px', margin: 0 }}>상세 모집 요강</h2>
+                  <h2 style={{ fontSize: '16px', fontWeight: 700, borderLeft: '4px solid var(--color-indigo)', paddingLeft: '8px', margin: 0 }}>상세 모집 요강</h2>
                   <p style={{
-                    fontSize: '14.5px',
+                    fontSize: '15px',
                     color: 'var(--text-secondary)',
                     lineHeight: 1.65,
                     whiteSpace: 'pre-wrap',
@@ -885,17 +885,17 @@ export const DetailView: React.FC<DetailViewProps> = ({
                     backgroundColor: '#FFFFFF',
                     borderRadius: '14px',
                     padding: '20px',
-                    border: '1px solid #E4DFD4',
+                    border: '1px solid #E5E7EB',
                     boxShadow: '0 4px 14px rgba(0,0,0,0.02)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '14px'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <FileText size={16} color="var(--color-indigo)" /> 세특(생기부) 연계 분석
                       </h3>
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', backgroundColor: '#F1EDE4', padding: '3px 8px', borderRadius: '6px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', backgroundColor: '#F1F5F9', padding: '3px 8px', borderRadius: '6px' }}>
                         목표: {profile?.major || '컴퓨터공학'}
                       </span>
                     </div>
@@ -953,9 +953,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                               <span style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 600 }}>생기부 세특 연계 적합도</span>
-                              <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-indigo)' }}>{score}%</span>
+                              <span style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-indigo)' }}>{score}%</span>
                             </div>
-                            <div style={{ width: '100%', height: '8px', backgroundColor: '#F1EDE4', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ width: '100%', height: '8px', backgroundColor: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
                               <div style={{ width: `${score}%`, height: '100%', backgroundColor: 'var(--color-indigo)', borderRadius: '4px' }} />
                             </div>
                           </div>
@@ -970,7 +970,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                           </div>
 
                           {/* Insight box */}
-                          <div style={{ backgroundColor: '#FAF8F3', borderRadius: '12px', border: '1px solid #F1EDE4', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div style={{ backgroundColor: '#F8FAFC', borderRadius: '12px', border: '1px solid #F1F5F9', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 700 }}>추천 세특 서술식 단락</span>
                               <button
@@ -982,7 +982,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                                   fontWeight: 700,
                                   padding: '4px 8px',
                                   borderRadius: '6px',
-                                  border: '1px solid #E4DFD4',
+                                  border: '1px solid #E5E7EB',
                                   cursor: 'pointer',
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -994,7 +994,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                                 {copied ? '복사 완료' : '문장 복사'}
                               </button>
                             </div>
-                            <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55, fontStyle: 'italic', wordBreak: 'keep-all' }}>
+                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.55, fontStyle: 'italic', wordBreak: 'keep-all' }}>
                               &ldquo;{insight}&rdquo;
                             </p>
                           </div>
@@ -1038,7 +1038,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
             {activeDetailTab === 'jokbo' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }} className="animate-fade-in">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <h2 style={{ fontSize: '16px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <h2 style={{ fontSize: '16px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
                     선배들의 합격 족보 & 역설계
                   </h2>
                   <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4 }}>
@@ -1076,17 +1076,17 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       backgroundColor: '#FFFFFF',
                       borderRadius: '14px',
                       padding: '20px',
-                      border: '1px solid #E4DFD4',
+                      border: '1px solid #E5E7EB',
                       boxShadow: '0 4px 14px rgba(0,0,0,0.02)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '14px'
                     }}>
                       <div>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#D97706', backgroundColor: '#FFFBEB', padding: '3px 8px', borderRadius: '6px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#D97706', backgroundColor: '#FFFBEB', padding: '3px 8px', borderRadius: '6px' }}>
                           {winnerTitle}
                         </span>
-                        <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: 'var(--text-primary)', margin: '8px 0 0 0', lineHeight: 1.4 }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: '8px 0 0 0', lineHeight: 1.4 }}>
                           {projectName}
                         </h4>
                       </div>
@@ -1096,7 +1096,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                         <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 700, display: 'block', marginBottom: '6px' }}>활용 기술 & 툴</span>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                           {stackList.map(stk => (
-                            <span key={stk} style={{ fontSize: '11.5px', fontWeight: 600, color: '#059669', backgroundColor: '#ECFDF5', padding: '3px 8px', borderRadius: '6px' }}>
+                            <span key={stk} style={{ fontSize: '12px', fontWeight: 600, color: '#059669', backgroundColor: '#ECFDF5', padding: '3px 8px', borderRadius: '6px' }}>
                               {stk}
                             </span>
                           ))}
@@ -1104,11 +1104,11 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       </div>
 
                       {/* Key point */}
-                      <div style={{ borderTop: '1px solid #F1EDE4', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                           수상 선배의 합격 치트키
                         </span>
-                        <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.55, wordBreak: 'keep-all' }}>
+                        <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.55, wordBreak: 'keep-all' }}>
                           {successPoint}
                         </p>
                       </div>
@@ -1132,7 +1132,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
         height: '84px',
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(10px)',
-        borderTop: '1px solid #E4DFD4',
+        borderTop: '1px solid #E5E7EB',
         display: 'flex',
         alignItems: 'center',
         padding: '0 16px',
@@ -1202,9 +1202,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
               padding: '0 12px',
               borderRadius: '10px',
               border: '1px solid var(--color-indigo)',
-              backgroundColor: '#EEF1FF',
+              backgroundColor: '#EFF4FF',
               color: 'var(--color-indigo)',
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: '12px',
               display: 'inline-flex',
               alignItems: 'center',
@@ -1256,7 +1256,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               width: '56px',
               height: '56px',
               borderRadius: '12px',
-              backgroundColor: '#F1EDE4',
+              backgroundColor: '#F1F5F9',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -1264,7 +1264,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
             }}>
               <Link size={24} color="var(--text-secondary)" />
             </div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', textAlign: 'center' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', textAlign: 'center' }}>
               외부 사이트로 이동할까요?
             </h3>
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.5, marginBottom: '20px' }}>
@@ -1274,12 +1274,12 @@ export const DetailView: React.FC<DetailViewProps> = ({
             {/* Domain Info Card */}
             <div style={{
               width: '100%',
-              backgroundColor: '#FBF9F5',
+              backgroundColor: '#FAFBFC',
               borderRadius: '14px',
               padding: '12px 14px',
               fontSize: '12px',
               color: 'var(--text-secondary)',
-              border: '1px solid #F1EDE4',
+              border: '1px solid #F1F5F9',
               marginBottom: '24px',
               textAlign: 'left',
               wordBreak: 'break-all',
@@ -1333,7 +1333,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 }}>
                   ✓
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>지원 서류 제출 완료!</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>지원 서류 제출 완료!</h3>
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0, textAlign: 'center' }}>
                   스마트 포트폴리오를 기반으로 한 입사 서류가 주최 기관에 정상 전달되었습니다.<br />
                   <strong style={{ color: 'var(--color-indigo)' }}>+10 XP 리워드</strong>를 획득했습니다!
@@ -1355,7 +1355,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                 <div style={{
                   width: '40px',
                   height: '40px',
-                  border: '3px solid #E4DFD4',
+                  border: '3px solid #E5E7EB',
                   borderTop: '3px solid var(--color-indigo)',
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite'
@@ -1365,7 +1365,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                     <span>{fillingStepMessage}</span>
                     <span>{applyProgress}%</span>
                   </div>
-                  <div style={{ width: '100%', height: '6px', backgroundColor: '#E4DFD4', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '6px', backgroundColor: '#E5E7EB', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{ width: `${applyProgress}%`, height: '100%', backgroundColor: 'var(--color-indigo)', borderRadius: '3px', transition: 'width 0.1s linear' }} />
                   </div>
                 </div>
@@ -1377,7 +1377,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Zap size={16} color="var(--color-indigo)" />
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                     1초 서류 자동 완성
                   </h3>
                 </div>
@@ -1387,36 +1387,36 @@ export const DetailView: React.FC<DetailViewProps> = ({
 
                 {/* Auto-filled details panel */}
                 <div style={{
-                  backgroundColor: '#FAF8F3',
+                  backgroundColor: '#F8FAFC',
                   borderRadius: '14px',
                   padding: '14px',
-                  border: '1px solid #E4DFD4',
+                  border: '1px solid #E5E7EB',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px',
-                  fontSize: '12.5px'
+                  fontSize: '13px'
                 }}>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>이름</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{profile?.name || '홍길동'}</span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>소속 학적</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
                       {profile?.school ? `${profile.school} (${profile.grade || '고등2'})` : `고등학교 (${profile?.grade || '2학년'})`}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>연락처</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{profile?.contact || profile?.email || '미입력'}</span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>매칭 역량</span>
                     <span style={{ color: 'var(--color-indigo)', fontWeight: 700 }}>
                       Figma, VS Code, Git
                     </span>
                   </div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid #F1EDE4', paddingBottom: '6px' }}>
+                  <div style={{ display: 'flex', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
                     <span style={{ width: '90px', color: 'var(--text-tertiary)', fontWeight: 600 }}>대표 수상경력</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
                       교내 정보올림피아드 (최우수상)
@@ -1432,7 +1432,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       backgroundColor: '#FFFFFF',
                       padding: '8px',
                       borderRadius: '6px',
-                      border: '1px solid #E4DFD4',
+                      border: '1px solid #E5E7EB',
                       fontStyle: 'italic'
                     }}>
                       "저는 기획/개발/디자인 스택을 다룰 수 있는 청소년입니다. 교내 대회 등에서 수상하며 협업과 문제 해결 능력을 검증받았으며, 향후 프로젝트에서 성과를 내기 위해 지원합니다."
@@ -1455,7 +1455,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
                       flex: 2,
                       height: '44px',
                       borderRadius: '10px',
-                      fontWeight: 800,
+                      fontWeight: 700,
                       fontSize: '13px',
                       background: 'var(--color-indigo)',
                       boxShadow: '0 4px 14px rgba(20, 20, 20, 0.3)'

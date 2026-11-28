@@ -13,11 +13,11 @@ interface TeamupRosterProps {
 const errText = (err: unknown) => (err instanceof Error ? err.message : '처리하지 못했어요. 잠시 후 다시 시도해 주세요.');
 
 const smallBtn: React.CSSProperties = {
-  border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600,
+  border: '1px solid #E5E7EB', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600,
   padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px'
 };
 const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '9px 10px', fontSize: '13px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none', background: '#FBF9F5'
+  width: '100%', padding: '9px 10px', fontSize: '13px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', background: '#FAFBFC'
 };
 const roleColors: Record<string, { bg: string; txt: string }> = {
   개발: { bg: '#E5F6FF', txt: '#0070F3' },
@@ -146,9 +146,9 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
   const sentTo = (userId: string) => requests.find(r => r.from_user_id === profile.id && r.to_user_id === userId);
 
   return (
-    <section className="teamup-roster" style={{ background: '#FFFFFF', border: '1px solid #E4DFD4', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+    <section className="teamup-roster" style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
       <div>
-        <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
           <UserPlus size={16} color="var(--color-indigo)" /> 함께 나갈 사람
         </h3>
         <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -158,7 +158,7 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
 
       {/* 내 소개 */}
       {mine ? (
-        <div className="roster-mine" style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#FAF8F3', borderRadius: '10px', padding: '10px' }}>
+        <div className="roster-mine" style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#F8FAFC', borderRadius: '10px', padding: '10px' }}>
           <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }} htmlFor="roster-intro">
             내 한 줄 소개 {mine.listed && <span style={{ color: '#047857' }}>· 명단에 올라가 있어요</span>}
           </label>
@@ -174,24 +174,24 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
           </div>
         </div>
       ) : (
-        <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', background: '#FAF8F3', borderRadius: '10px', padding: '10px' }}>
+        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', background: '#F8FAFC', borderRadius: '10px', padding: '10px' }}>
           위의 <strong>나도 나갈래요</strong>를 누르면 내 소개를 명단에 올릴 수 있어요.
         </div>
       )}
 
       {/* 받은 요청 */}
       {(pendingIn.length > 0 || acceptedIn.length > 0) && (
-        <div className="teamup-received" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1EDE4', paddingTop: '10px' }}>
-          <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="teamup-received" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1F5F9', paddingTop: '10px' }}>
+          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
             받은 같이 나갈래요
-            {pendingIn.length > 0 && <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#FFFFFF', background: 'var(--color-red)', padding: '1px 6px', borderRadius: '8px' }}>대기 {pendingIn.length}</span>}
+            {pendingIn.length > 0 && <span style={{ fontSize: '11px', fontWeight: 700, color: '#FFFFFF', background: 'var(--color-red)', padding: '1px 6px', borderRadius: '8px' }}>대기 {pendingIn.length}</span>}
           </div>
           {pendingIn.length > 0 && (
             <input value={contact} onChange={(e) => setContact(e.target.value)} placeholder="내 연락처 (수락한 사람에게만 보여요)" aria-label="내 연락처" style={inputStyle} />
           )}
           {pendingIn.map(req => (
-            <div key={req.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#FAF8F3', borderRadius: '10px', padding: '10px' }}>
-              <div style={{ fontSize: '12.5px', color: 'var(--text-primary)' }}><strong>{req.from_name}</strong>{req.message ? ` · ${req.message}` : ' · 같이 나가요!'}</div>
+            <div key={req.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#F8FAFC', borderRadius: '10px', padding: '10px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-primary)' }}><strong>{req.from_name}</strong>{req.message ? ` · ${req.message}` : ' · 같이 나가요!'}</div>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 <button type="button" disabled={busy} onClick={() => respond(req, 'accepted')} style={{ ...smallBtn, background: 'var(--color-indigo)', color: '#FFFFFF', border: 'none' }}>수락</button>
                 <button type="button" disabled={busy} onClick={() => respond(req, 'declined')} style={smallBtn}>거절</button>
@@ -201,7 +201,7 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
             </div>
           ))}
           {acceptedIn.map(req => (
-            <div key={req.id} style={{ fontSize: '12.5px', color: 'var(--text-primary)', background: '#ECFDF5', borderRadius: '10px', padding: '10px' }}>
+            <div key={req.id} style={{ fontSize: '13px', color: 'var(--text-primary)', background: '#ECFDF5', borderRadius: '10px', padding: '10px' }}>
               <strong>{req.from_name}</strong> 님과 같이 나가요 · 연락처: <strong>{contacts[req.from_user_id] || '상대가 연락처를 적지 않았어요'}</strong>
             </div>
           ))}
@@ -209,9 +209,9 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
       )}
 
       {/* 명단 */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1EDE4', paddingTop: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1F5F9', paddingTop: '10px' }}>
         {roster.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '14px 0', fontSize: '12.5px', color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
+          <div style={{ textAlign: 'center', padding: '14px 0', fontSize: '13px', color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
             아직 명단에 오른 사람이 없어요.<br />먼저 소개를 올리면 같은 대회를 준비하는 사람이 찾아와요.
           </div>
         )}
@@ -219,15 +219,15 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
           const sent = sentTo(entry.user_id);
           const color = roleColors[entry.role] || roleColors.기획;
           return (
-            <div key={entry.id} className="roster-entry" style={{ display: 'flex', flexDirection: 'column', gap: '6px', border: '1px solid #E4DFD4', borderRadius: '10px', padding: '12px' }}>
+            <div key={entry.id} className="roster-entry" style={{ display: 'flex', flexDirection: 'column', gap: '6px', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <strong style={{ fontSize: '13px' }}>{entry.user_name}</strong>
-                <span style={{ fontSize: '10px', fontWeight: 800, background: color.bg, color: color.txt, padding: '2px 6px', borderRadius: '4px' }}>{entry.role}</span>
+                <span style={{ fontSize: '10px', fontWeight: 700, background: color.bg, color: color.txt, padding: '2px 6px', borderRadius: '4px' }}>{entry.role}</span>
               </div>
-              <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{entry.intro}</div>
+              <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{entry.intro}</div>
 
               {sent?.status === 'accepted' ? (
-                <div style={{ fontSize: '12.5px', background: '#ECFDF5', borderRadius: '8px', padding: '8px 10px' }}>
+                <div style={{ fontSize: '13px', background: '#ECFDF5', borderRadius: '8px', padding: '8px 10px' }}>
                   수락됐어요 · 연락처: <strong>{contacts[entry.user_id] || '상대가 연락처를 적지 않았어요'}</strong>
                 </div>
               ) : sent?.status === 'declined' ? (
@@ -238,7 +238,7 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
                   <button type="button" disabled={busy} onClick={() => run(async () => { await db.cancelTeamup(sent.id); await load(); })} style={smallBtn}>취소</button>
                 </div>
               ) : openId === entry.id ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#FAF8F3', borderRadius: '8px', padding: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#F8FAFC', borderRadius: '8px', padding: '10px' }}>
                   <input value={message} maxLength={60} onChange={(e) => setMessage(e.target.value)} placeholder="한마디 (선택) 예: 기획 맡을게요" aria-label="한마디" style={inputStyle} />
                   <input value={contact} onChange={(e) => setContact(e.target.value)} placeholder="내 연락처 (수락한 사람에게만 보여요)" aria-label="내 연락처" style={inputStyle} />
                   <div style={{ display: 'flex', gap: '6px' }}>
@@ -249,7 +249,7 @@ export const TeamupRoster: React.FC<TeamupRosterProps> = ({ announcementId, prof
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  <button type="button" onClick={() => { setOpenId(entry.id); setMessage(''); }} className="btn btn-primary" style={{ width: 'auto', height: '34px', padding: '0 14px', fontSize: '12.5px', borderRadius: '8px' }}>같이 나갈래요</button>
+                  <button type="button" onClick={() => { setOpenId(entry.id); setMessage(''); }} className="btn btn-primary" style={{ width: 'auto', height: '34px', padding: '0 14px', fontSize: '13px', borderRadius: '8px' }}>같이 나갈래요</button>
                   <button type="button" disabled={busy} onClick={() => report('contest_interest', entry.id)} style={smallBtn}><Flag size={11} /> 신고</button>
                   <button type="button" disabled={busy} onClick={() => block(entry.user_id, entry.user_name)} style={smallBtn}><ShieldOff size={11} /> 차단</button>
                 </div>

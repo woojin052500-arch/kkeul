@@ -119,8 +119,8 @@ const RankChange: React.FC<{ move: RankMove | undefined }> = ({ move }) => {
         flex: '0 0 auto',
         minWidth: '32px',
         marginTop: '1px',
-        fontSize: '10.5px',
-        fontWeight: 800,
+        fontSize: '11px',
+        fontWeight: 700,
         letterSpacing: '-0.01em',
         lineHeight: '17px',
         color: moveColor(move),
@@ -253,7 +253,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
       aria-labelledby="weekly-popular-title"
       style={{
         backgroundColor: '#FFFFFF',
-        border: '1px solid #E4DFD4',
+        border: '1px solid #E5E7EB',
         borderRadius: '14px',
         padding: '16px 16px 4px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)'
@@ -262,7 +262,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
         <h2
           id="weekly-popular-title"
-          style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}
+          style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}
         >
           {TITLES[mode]}
         </h2>
@@ -270,7 +270,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
           {SCALES[mode]}
         </span>
       </div>
-      <p style={{ margin: '5px 0 4px', fontSize: '11.5px', lineHeight: 1.5, color: 'var(--text-tertiary)' }}>
+      <p style={{ margin: '5px 0 4px', fontSize: '12px', lineHeight: 1.5, color: 'var(--text-tertiary)' }}>
         {note}
       </p>
 
@@ -286,7 +286,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
           if (signal && signal.openPosts > 0) meta.push(`모집 중 ${signal.openPosts}건`);
 
           return (
-            <li key={entry.id} style={{ borderTop: index === 0 ? 'none' : '1px solid #F1EDE4' }}>
+            <li key={entry.id} style={{ borderTop: index === 0 ? 'none' : '1px solid #F1F5F9' }}>
               <button
                 type="button"
                 onClick={() => onSelectAnnouncement(ann)}
@@ -309,7 +309,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
                     width: '14px',
                     marginTop: '1px',
                     fontSize: '14px',
-                    fontWeight: 800,
+                    fontWeight: 700,
                     lineHeight: '17px',
                     color: entry.rank === 1 ? 'var(--text-primary)' : 'var(--text-tertiary)',
                     fontVariantNumeric: 'tabular-nums'
@@ -325,7 +325,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
-                      fontSize: '13.5px',
+                      fontSize: '14px',
                       fontWeight: 700,
                       lineHeight: 1.4,
                       color: 'var(--text-primary)',
@@ -335,7 +335,7 @@ export const WeeklyPopularRanking: React.FC<WeeklyPopularRankingProps> = ({
                     {ann.title}
                   </span>
                   {meta.length > 0 && (
-                    <span style={{ display: 'block', marginTop: '3px', fontSize: '11.5px', fontWeight: 600, color: 'var(--text-tertiary)' }}>
+                    <span style={{ display: 'block', marginTop: '3px', fontSize: '12px', fontWeight: 600, color: 'var(--text-tertiary)' }}>
                       {meta.join(' · ')}
                     </span>
                   )}

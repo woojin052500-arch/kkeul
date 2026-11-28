@@ -21,9 +21,9 @@ const badgeBase: React.CSSProperties = {
   border: 'none',
   borderRadius: '30px',
   padding: '4px 9px',
-  fontSize: '11.5px',
+  fontSize: '12px',
   lineHeight: 1,
-  fontWeight: 800
+  fontWeight: 700
 };
 
 // 대회 카드 아래 한 줄: 지금 모집 중인 팀원 글 수, 나갈래요 수, 최근 새 글.
@@ -48,7 +48,7 @@ export const ActivityLine: React.FC<ActivityLineProps> = ({ activity, allowStart
   return (
     <div
       className="activity-line"
-      style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '11.5px', fontWeight: 700, color: 'var(--text-secondary)' }}
+      style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}
     >
       {showRoster && (
         onOpenRoster ? (
@@ -79,7 +79,7 @@ export const ActivityLine: React.FC<ActivityLineProps> = ({ activity, allowStart
           onClick={(e) => handle(e, onStartTeam)}
           className="spring-active"
           aria-label="이 대회 첫 팀장 되어 팀원 모집 글 쓰기"
-          style={{ ...badgeBase, background: '#FFFFFF', color: 'var(--text-secondary)', border: '1px solid #E4DFD4', cursor: 'pointer' }}
+          style={{ ...badgeBase, background: '#FFFFFF', color: 'var(--text-secondary)', border: '1px solid #E5E7EB', cursor: 'pointer' }}
         >
           <Plus size={11} strokeWidth={3} aria-hidden="true" />
           첫 팀장 되기

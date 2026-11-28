@@ -359,14 +359,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
               }}
               style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '8px', marginLeft: '-8px' }}
             >
-              <ArrowLeft size={24} color="#171717" />
+              <ArrowLeft size={24} color="#111827" />
             </button>
           </div>
         )}
 
         {/* Progress Bar */}
         {step > 0 && mode === 'signup' && (
-          <div style={{ width: '100%', height: '4px', backgroundColor: '#F1EDE4', borderRadius: '2px', marginBottom: '32px' }}>
+          <div style={{ width: '100%', height: '4px', backgroundColor: '#F1F5F9', borderRadius: '2px', marginBottom: '32px' }}>
             <div style={{ 
               width: `${getProgressPercent()}%`, 
               height: '100%', 
@@ -385,7 +385,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '40px' }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ marginBottom: '20px' }}><PremiumLogo size="lg" /></div>
-              <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '12px' }}>
+              <h1 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '12px' }}>
                 대회 같이 나갈 팀원,<br />끌에서 찾아요
               </h1>
               <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
@@ -411,7 +411,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 1: Email */}
         {step === 1 && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
               {mode === 'signup' ? '로그인에 사용할\n이메일을 입력해 주세요' : '이메일을\n입력해 주세요'}
             </h1>
             <div className="toss-input-group" style={{ marginTop: '24px' }}>
@@ -437,7 +437,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 2: Password */}
         {step === 2 && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
               비밀번호를 입력해 주세요
             </h1>
             <div className="toss-input-group" style={{ marginTop: '24px', position: 'relative' }}>
@@ -467,7 +467,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 3: Name */}
         {step === 3 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
               이름(실명)을<br />알려주세요
             </h1>
             <div className="toss-input-group" style={{ marginTop: '24px' }}>
@@ -488,7 +488,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 4: Agreements (Simplified to skip huge text block, we can just render the agreements list) */}
         {step === 4 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
               끌에 오신 것을 환영합니다
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
@@ -504,7 +504,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                 autoComplete="off"
                 onChange={(e) => handleBirthDateChange(e.target.value)}
                 className="input-field"
-                style={{ padding: '12px', fontSize: '15px', border: '1px solid #E4DFD4', borderRadius: '10px', background: '#FFFFFF' }}
+                style={{ padding: '12px', fontSize: '15px', border: '1px solid #E5E7EB', borderRadius: '10px', background: '#FFFFFF' }}
               />
               <span style={{ fontSize: '12px', color: ageStatus === 'under' ? 'var(--color-red)' : 'var(--text-tertiary)' }}>
                 {ageStatus === 'under'
@@ -514,10 +514,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="consent-row" style={{ padding: '16px', backgroundColor: '#FBF9F5', borderRadius: '12px', border: '1px solid #E4DFD4' }}>
+              <div className="consent-row" style={{ padding: '16px', backgroundColor: '#FAFBFC', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
                 <button type="button" className="consent-row-toggle" role="checkbox" aria-checked={allAgreed} onClick={handleAllAgree}>
                   <span className="consent-check" data-on={allAgreed}><Check size={16} color="#FFFFFF" /></span>
-                  <span className="consent-label" style={{ fontSize: '16px', fontWeight: 700 }}>전체 동의하기 <span style={{ fontSize: '12.5px', fontWeight: 400, color: 'var(--text-tertiary)' }}>(선택 항목 포함)</span></span>
+                  <span className="consent-label" style={{ fontSize: '16px', fontWeight: 700 }}>전체 동의하기 <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-tertiary)' }}>(선택 항목 포함)</span></span>
                 </button>
               </div>
 
@@ -580,38 +580,38 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 5: Role Split */}
         {step === 5 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
               어떤 목적으로<br />끌을 시작하시나요?
             </h1>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div 
                 onClick={() => { setRole('student'); setStep(7); }}
                 style={{
-                  padding: '24px', borderRadius: '12px', backgroundColor: '#FBF9F5', border: '1px solid #E4DFD4',
+                  padding: '24px', borderRadius: '12px', backgroundColor: '#FAFBFC', border: '1px solid #E5E7EB',
                   display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s'
                 }}
               >
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(49, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <User size={24} color="#2D4BFF" />
+                  <User size={24} color="#2563EB" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#171717' }}>대회 참여 / 스펙 관리</h3>
-                  <p style={{ fontSize: '14px', color: '#8E887D', margin: 0 }}>학생 및 참가자용</p>
+                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#111827' }}>대회 참여 / 스펙 관리</h3>
+                  <p style={{ fontSize: '14px', color: '#6B7280', margin: 0 }}>학생 및 참가자용</p>
                 </div>
               </div>
               <div 
                 onClick={() => { setRole('host'); setStep(10); }}
                 style={{
-                  padding: '24px', borderRadius: '12px', backgroundColor: '#FBF9F5', border: '1px solid #E4DFD4',
+                  padding: '24px', borderRadius: '12px', backgroundColor: '#FAFBFC', border: '1px solid #E5E7EB',
                   display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s'
                 }}
               >
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(124, 58, 237, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <ShieldCheck size={24} color="#2D4BFF" />
+                  <ShieldCheck size={24} color="#2563EB" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#171717' }}>대회 주최 / 모집</h3>
-                  <p style={{ fontSize: '14px', color: '#8E887D', margin: 0 }}>주최 기관 및 동아리용</p>
+                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 4px 0', color: '#111827' }}>대회 주최 / 모집</h3>
+                  <p style={{ fontSize: '14px', color: '#6B7280', margin: 0 }}>주최 기관 및 동아리용</p>
                 </div>
               </div>
             </div>
@@ -621,7 +621,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 6: Region (Student) */}
         {step === 6 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
               주로 활동하는<br />지역을 선택해 주세요
             </h1>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
@@ -631,8 +631,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                   onClick={() => setLocation(loc)}
                   style={{
                     padding: '12px 0', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                    border: location === loc ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                    backgroundColor: location === loc ? 'var(--color-indigo-light)' : '#FBF9F5',
+                    border: location === loc ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                    backgroundColor: location === loc ? 'var(--color-indigo-light)' : '#FAFBFC',
                     color: location === loc ? 'var(--color-indigo)' : 'var(--text-secondary)'
                   }}
                 >
@@ -646,7 +646,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 7: Grade (Student) */}
         {step === 7 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
               현재 학년을<br />선택해 주세요
             </h1>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -656,8 +656,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                   onClick={() => setGrade(g)}
                   style={{
                     padding: '16px 0', borderRadius: '12px', fontSize: '15px', fontWeight: 600,
-                    border: grade === g ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                    backgroundColor: grade === g ? 'var(--color-indigo-light)' : '#FBF9F5',
+                    border: grade === g ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                    backgroundColor: grade === g ? 'var(--color-indigo-light)' : '#FAFBFC',
                     color: grade === g ? 'var(--color-indigo)' : 'var(--text-secondary)'
                   }}
                 >
@@ -671,7 +671,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 8: School (Student) */}
         {step === 8 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '24px' }}>
               재학 중인 학교를<br />찾아서 골라 주세요
             </h1>
             <SchoolPicker value={school} onChange={setSchool} autoFocus />
@@ -681,7 +681,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 9: Interests (Student) - removed B2B, B2C, SaaS etc */}
         {step === 9 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '8px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '8px' }}>
               관심 분야를 모두 골라주세요
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
@@ -699,8 +699,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                   }}
                   style={{
                     padding: '12px 16px', borderRadius: '16px', fontSize: '14px', fontWeight: 600,
-                    border: interests.includes(interest) ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                    backgroundColor: interests.includes(interest) ? 'var(--color-indigo-light)' : '#FBF9F5',
+                    border: interests.includes(interest) ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                    backgroundColor: interests.includes(interest) ? 'var(--color-indigo-light)' : '#FAFBFC',
                     color: interests.includes(interest) ? 'var(--color-indigo)' : 'var(--text-secondary)'
                   }}
                 >
@@ -714,7 +714,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 13: Student Play Style */}
         {step === 13 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '8px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '8px' }}>
               나의 플레이 스타일은?
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
@@ -733,8 +733,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                       )}
                       style={{
                         padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                        border: playStyleTeamSize.includes(opt) ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                        backgroundColor: playStyleTeamSize.includes(opt) ? 'var(--color-indigo-light)' : '#FBF9F5',
+                        border: playStyleTeamSize.includes(opt) ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                        backgroundColor: playStyleTeamSize.includes(opt) ? 'var(--color-indigo-light)' : '#FAFBFC',
                         color: playStyleTeamSize.includes(opt) ? 'var(--color-indigo)' : 'var(--text-secondary)'
                       }}
                     >
@@ -753,8 +753,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                       onClick={() => setPlayStyleDuration(opt)}
                       style={{
                         padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                        border: playStyleDuration === opt ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                        backgroundColor: playStyleDuration === opt ? 'var(--color-indigo-light)' : '#FBF9F5',
+                        border: playStyleDuration === opt ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                        backgroundColor: playStyleDuration === opt ? 'var(--color-indigo-light)' : '#FAFBFC',
                         color: playStyleDuration === opt ? 'var(--color-indigo)' : 'var(--text-secondary)'
                       }}
                     >
@@ -773,8 +773,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
                       onClick={() => setPlayStyleType(opt)}
                       style={{
                         padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
-                        border: playStyleType === opt ? '2px solid var(--color-indigo)' : '1px solid #E4DFD4',
-                        backgroundColor: playStyleType === opt ? 'var(--color-indigo-light)' : '#FBF9F5',
+                        border: playStyleType === opt ? '2px solid var(--color-indigo)' : '1px solid #E5E7EB',
+                        backgroundColor: playStyleType === opt ? 'var(--color-indigo-light)' : '#FAFBFC',
                         color: playStyleType === opt ? 'var(--color-indigo)' : 'var(--text-secondary)'
                       }}
                     >
@@ -790,7 +790,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 14: Invitation Code */}
         {step === 14 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '8px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: '8px' }}>
               추천인 코드가 있나요?
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
@@ -817,7 +817,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 10: Host Institution Name Input */}
         {step === 10 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
               공고를 개최하는<br />기관의 이름을 적어주세요
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '8px' }}>
@@ -846,7 +846,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
         {/* STEP 11: Host Contact Info Input */}
         {step === 11 && mode === 'signup' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
               담당자 연락처를<br />입력해 주세요
             </h1>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '8px' }}>
@@ -874,7 +874,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'var(--color-indigo)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
               <Check size={32} color="#FFFFFF" />
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, textAlign: 'center', lineHeight: 1.4 }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, textAlign: 'center', lineHeight: 1.4 }}>
               호스트 가입이<br />완료되었습니다
             </h1>
             <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
@@ -964,7 +964,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, backRef, onB
       {showWelcome && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--color-indigo)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
           <Sparkles size={48} color="#FFFFFF" style={{ marginBottom: '24px' }} />
-          <h1 style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: 800, textAlign: 'center', lineHeight: 1.4 }}>
+          <h1 style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: 700, textAlign: 'center', lineHeight: 1.4 }}>
             환영합니다,<br />{welcomeName}님!
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.8)', marginTop: '16px' }}>

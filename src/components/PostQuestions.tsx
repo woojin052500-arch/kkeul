@@ -13,12 +13,12 @@ interface PostQuestionsProps {
 }
 
 const smallBtn: React.CSSProperties = {
-  border: '1px solid #E4DFD4', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600,
+  border: '1px solid #E5E7EB', background: '#FFFFFF', color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 600,
   padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px'
 };
 
 const inputStyle: React.CSSProperties = {
-  flex: 1, minWidth: 0, padding: '9px 10px', fontSize: '13px', border: '1px solid #E4DFD4', borderRadius: '8px', outline: 'none', background: '#FBF9F5'
+  flex: 1, minWidth: 0, padding: '9px 10px', fontSize: '13px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', background: '#FAFBFC'
 };
 
 const errText = (err: unknown) => (err instanceof Error ? err.message : '보내지 못했어요. 잠시 후 다시 시도해 주세요.');
@@ -79,16 +79,16 @@ export const PostQuestions: React.FC<PostQuestionsProps> = ({ postId, isMine, as
     if (mine.length === 0) return null;
     const waiting = mine.filter(q => !q.answer).length;
     return (
-      <div className="post-questions" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1EDE4', paddingTop: '10px' }}>
-        <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <div className="post-questions" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #F1F5F9', paddingTop: '10px' }}>
+        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
           받은 한 줄 질문 {mine.length}개
-          {waiting > 0 && <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#FFFFFF', background: 'var(--color-red)', padding: '1px 6px', borderRadius: '8px' }}>답변 대기 {waiting}</span>}
+          {waiting > 0 && <span style={{ fontSize: '11px', fontWeight: 700, color: '#FFFFFF', background: 'var(--color-red)', padding: '1px 6px', borderRadius: '8px' }}>답변 대기 {waiting}</span>}
         </div>
         {mine.map(q => (
-          <div key={q.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#FAF8F3', borderRadius: '10px', padding: '10px' }}>
-            <div style={{ fontSize: '12.5px', color: 'var(--text-primary)' }}><strong>{q.asker_name}</strong> · {q.question}</div>
+          <div key={q.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#F8FAFC', borderRadius: '10px', padding: '10px' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-primary)' }}><strong>{q.asker_name}</strong> · {q.question}</div>
             {q.answer ? (
-              <div style={{ fontSize: '12.5px', color: 'var(--color-indigo)', fontWeight: 600 }}>내 답변 · {q.answer}</div>
+              <div style={{ fontSize: '13px', color: 'var(--color-indigo)', fontWeight: 600 }}>내 답변 · {q.answer}</div>
             ) : (
               <div style={{ display: 'flex', gap: '6px' }}>
                 <input
@@ -122,9 +122,9 @@ export const PostQuestions: React.FC<PostQuestionsProps> = ({ postId, isMine, as
         <MessageCircle size={12} /> 한 줄 질문{mine.length > 0 ? ` (${unread}/${mine.length} 답변)` : ''}
       </button>
       {open && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#FAF8F3', borderRadius: '10px', padding: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#F8FAFC', borderRadius: '10px', padding: '10px' }}>
           {mine.map(q => (
-            <div key={q.id} style={{ fontSize: '12.5px', lineHeight: 1.5 }}>
+            <div key={q.id} style={{ fontSize: '13px', lineHeight: 1.5 }}>
               <div style={{ color: 'var(--text-primary)' }}>나 · {q.question}</div>
               {q.answer
                 ? <div style={{ color: 'var(--color-indigo)', fontWeight: 600 }}>답변 · {q.answer}</div>

@@ -42,7 +42,7 @@ export const GuestHomeGate: React.FC<GuestHomeGateProps> = ({ announcements, onS
       {byCategory.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
           {byCategory.map(([name, n]) => (
-            <span key={name} style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', background: 'var(--color-bg-gray)', padding: '6px 10px', borderRadius: '8px' }}>
+            <span key={name} style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)', background: 'var(--color-bg-gray)', padding: '6px 10px', borderRadius: '8px' }}>
               {name} {n}
             </span>
           ))}
@@ -51,7 +51,7 @@ export const GuestHomeGate: React.FC<GuestHomeGateProps> = ({ announcements, onS
 
       <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {BENEFITS.map(b => (
-          <li key={b} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', fontSize: '13.5px', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+          <li key={b} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', fontSize: '14px', color: 'var(--text-primary)', lineHeight: 1.5 }}>
             <Check size={16} color="var(--color-indigo)" strokeWidth={3} style={{ flexShrink: 0, marginTop: '2px' }} />
             {b}
           </li>

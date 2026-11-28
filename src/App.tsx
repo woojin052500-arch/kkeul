@@ -831,7 +831,7 @@ function App() {
       {/* 1. iOS-style Simulated Push Notification Banner */}
       {pushNotification && (
         <div className="custom-push-banner" onClick={() => setPushNotification(null)}>
-          <div className="push-logo" style={{ background: '#FFFFFF', border: '1px solid #E4DFD4', padding: '2px', overflow: 'hidden' }}>
+          <div className="push-logo" style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', padding: '2px', overflow: 'hidden' }}>
             <img src={logoImg} alt="끌" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <div className="push-content">
@@ -956,7 +956,7 @@ function App() {
           <div className="login-prompt" role="dialog" aria-modal="true" aria-labelledby="login-prompt-title" onClick={(e) => e.stopPropagation()}>
             <h2 id="login-prompt-title">가입하고 이어서 하기</h2>
             <p>{loginPrompt || '가입하면 전체 공고, 관심 분야 맞춤 스와이프, 대회별 팀원 찾기를 쓸 수 있어요.'}</p>
-            <p style={{ fontSize: '12.5px', color: 'var(--text-tertiary)' }}>무료 · 이메일만 있으면 1분 · 가입하면 보던 화면으로 바로 돌아와요.</p>
+            <p style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>무료 · 이메일만 있으면 1분 · 가입하면 보던 화면으로 바로 돌아와요.</p>
             <button type="button" className="btn btn-primary" onClick={goToSignup}>가입 · 로그인</button>
             <button type="button" className="login-prompt-later" onClick={() => setLoginPrompt(null)}>나중에 할게요</button>
           </div>
